@@ -1,0 +1,208 @@
+name: superpower-openspec
+version: 1
+description: Superpower-extended OpenSpec workflow for Codex
+
+artifacts:
+  - id: brainstorm
+    generates: brainstorm.md
+    description: Superpower brainstorm output before formal OpenSpec artifacts
+    template: brainstorm.md
+    instruction: |
+      Explore the requirement before creating formal OpenSpec artifacts.
+      Read applicable default Java, Python, configuration, and testing rule files when they match the requested work.
+      Use this as input to proposal.md, not as an implementation source.
+      Do not write code.
+    requires: []
+
+  - id: context
+    generates: context.md
+    description: Context research from rules, wiki, standards, existing specs, and code
+    template: context.md
+    instruction: |
+      Read docs/ai-context/source-index.md.
+      Read relevant project-defined docs/rules/*.md files.
+      Read docs/rules/java-code-standards.md, docs/rules/python-code-standards.md, docs/rules/configuration-standards.md, and docs/rules/testing-standards.md when applicable.
+      Read relevant docs/standards and docs/wiki files.
+      Inspect existing specs and similar implementation.
+      Capture sources, existing patterns, conflicts, gaps, and design implications.
+      Do not write code.
+    requires:
+      - brainstorm
+
+  - id: brainstorm-review
+    generates: brainstorm-review.md
+    description: Phase review for brainstorm and context alignment before proposal/spec work
+    template: brainstorm-review.md
+    instruction: |
+      Review brainstorm.md and context.md before formal OpenSpec artifacts are created.
+      Use Superpower-style review or an independent review pass when available.
+      Check alignment with the user request, project rules, source coverage, existing specs, context gaps, and scope risks.
+      Fix in-scope brainstorm/context issues before continuing.
+      Do not write code.
+    requires:
+      - brainstorm
+      - context
+
+  - id: proposal
+    generates: proposal.md
+    description: OpenSpec change proposal
+    template: proposal.md
+    instruction: |
+      Create a formal OpenSpec proposal based on brainstorm.md and context.md.
+      Identify project-defined rules that affect scope.
+      Focus on problem, goal, scope, value, risks, and open questions.
+      Do not include low-level implementation details.
+    requires:
+      - brainstorm
+      - context
+      - brainstorm-review
+
+  - id: specs
+    generates: specs/**/*.md
+    description: OpenSpec capability requirements and scenarios
+    template: spec.md
+    instruction: |
+      Create capability specs using Requirement and Scenario format.
+      Encode relevant behavior-affecting rules as observable requirements or scenarios.
+      Requirements must describe observable behavior.
+      Use SHALL, SHOULD, and MAY correctly.
+      Do not include implementation tasks.
+    requires:
+      - proposal
+
+  - id: spec-review
+    generates: spec-review.md
+    description: Phase review for proposal and specs before design/task work
+    template: spec-review.md
+    instruction: |
+      Review proposal.md and specs against brainstorm.md, context.md, brainstorm-review.md, project rules, existing specs, and OpenSpec formatting.
+      Use Superpower-style review or an independent review pass when available.
+      Check requirement quality, scenario coverage, missing behavior, out-of-scope behavior, and implementation leakage.
+      Fix in-scope proposal/spec issues before continuing.
+      Do not write code.
+    requires:
+      - proposal
+      - specs
+
+  - id: design
+    generates: design.md
+    description: Technical design based on specs and context research
+    template: design.md
+    instruction: |
+      Create the technical design based on proposal.md, specs, and context.md.
+      The design must reference rules, wiki, standards, and existing implementation patterns.
+      Apply default Java, Python, configuration, and testing standards when target files or validation touch those areas.
+      Include Rules Compliance, Source Mapping, and Spec Gaps.
+      Recommend generated/modified code paths and keep planned code files <= 1000 lines by splitting when needed.
+      Explicitly decide whether a database is required; if required, use SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
+      Design backend APIs from OpenAPI contracts, separate at least Controller and Service responsibilities, document API IO, and require async handling for very time-consuming operations.
+      Do not add behavior not covered by specs.
+    requires:
+      - proposal
+      - specs
+      - spec-review
+      - context
+
+  - id: tasks
+    generates: tasks.md
+    description: Implementation task checklist
+    template: tasks.md
+    instruction: |
+      Create implementation tasks from specs and design.
+      Each task must reference a specific requirement, applicable rules, target code paths, implementation-standard impact, and validation.
+      Tasks touching Java, Python, configuration, or tests must cite the matching default rule IDs.
+      Each task must include the <= 1000 line file-size guardrail and split plan when needed.
+      Each task must identify database, OpenAPI/Controller/Service, API IO, and async impact when relevant.
+      Each task must specify independent test parameter files under openspec/changes/<change-id>/test-params/.
+      Each task must require at least 90% coverage for changed/affected code.
+      Each task must require two post-implementation reviews: Alignment Review and Security Review.
+      Findings from either review must be fixed and re-reviewed before the next task starts.
+      Do not write code.
+    requires:
+      - specs
+      - design
+
+  - id: tasks-review
+    generates: tasks-review.md
+    description: Phase review for design and tasks before implementation
+    template: tasks-review.md
+    instruction: |
+      Review design.md and tasks.md against specs, spec-review.md, project rules, source mapping, and validation coverage.
+      Use Superpower-style review or an independent review pass when available.
+      Check that every task maps to requirements, applicable rules, target code paths, implementation standards, and concrete validation.
+      Check code path planning, <= 1000 line split plans, database runtime/pool decisions, OpenAPI and Controller/Service decisions, API IO, and async handling.
+      Fix in-scope design/task issues before implementation.
+      Do not write code.
+    requires:
+      - specs
+      - design
+      - tasks
+
+  - id: task-reviews
+    generates: task-reviews.md
+    description: Per-task implementation review log with alignment and security review findings
+    template: task-reviews.md
+    instruction: |
+      During implementation, record two review rounds for every completed task.
+      Alignment Review checks specs, design, task text, rules, and changed code.
+      Security Review checks security-sensitive behavior, authorization, data handling, validation, logging, dependencies, configuration, and project-defined security rules.
+      Both reviews check coverage >= 90%, generated/modified code files <= 1000 lines, database runtime/pool evidence when relevant, OpenAPI and Controller/Service evidence when relevant, API IO/async evidence when relevant, independent test parameter files, meaningful assertions, no empty/no-op code tests, and no tests limited to class/method initialization.
+      Every finding must be fixed and re-reviewed before the next task starts.
+      Completion requires zero open findings.
+    requires:
+      - tasks-review
+
+  - id: test-params
+    generates: test-params/**/*.md
+    description: Independent test parameter files used by implementation tests
+    template: test-params.md
+    instruction: |
+      Save explicit test parameters independently from test code.
+      Each parameter file must reference the related task, requirement, and scenario.
+      Tests must use these parameters to assert meaningful behavior.
+      Do not use parameter files to justify empty/no-op tests or initialization-only tests.
+    requires:
+      - tasks
+
+  - id: review
+    generates: review.md
+    description: Final implementation review against OpenSpec and per-task review findings
+    template: review.md
+    instruction: |
+      Review implementation against proposal.md, specs, design.md, tasks.md, spec-review.md, tasks-review.md, and task-reviews.md.
+      Check requirement coverage, task completion, per-task review completion, out-of-spec behavior, rule compliance, architecture compliance, implementation standards compliance, coverage >= 90%, independent test parameter files, meaningful tests, and unresolved findings.
+      Check Java, Python, configuration, and testing rule compliance when those areas changed.
+      Completion requires zero unresolved findings.
+      Do not modify code during review unless explicitly asked.
+    requires:
+      - task-reviews
+      - test-params
+
+  - id: wiki
+    generates: docs/wiki/<feature-or-story-title>.md
+    description: Feature or story wiki documentation generated from completed OpenSpec artifacts and implementation
+    template: wiki.md
+    instruction: |
+      Generate feature/story documentation from specs, design, implemented code paths, database/API/IO decisions, rules, validation evidence, task-reviews.md, and review.md.
+      Derive a concise semantic kebab-case filename from the completed feature or story, not from the raw change ID.
+      The wiki page must describe user-facing behavior, workflow, design summary, security and permissions, operational notes, validation evidence, and source mapping.
+    requires:
+      - review
+
+  - id: completion
+    generates: completion.md
+    description: Completion gate evidence before archiving an implemented change
+    template: completion.md
+    instruction: |
+      Verify all tasks are marked complete, task-reviews.md has zero open findings, and review.md has zero unresolved findings.
+      Verify coverage evidence is at least 90% and test parameter files are independently saved.
+      Verify implementation-standard evidence: code files <= 1000 lines, database runtime/pool rules, OpenAPI and Controller/Service rules, API IO, and async handling when relevant.
+      Verify the generated wiki page reflects specs, design, implemented code, rules, and validation evidence.
+      Record completion gate results and archive target.
+    requires:
+      - wiki
+
+apply:
+  requires:
+    - completion
+  tracks: tasks.md

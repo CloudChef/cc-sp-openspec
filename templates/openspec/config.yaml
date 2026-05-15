@@ -1,0 +1,99 @@
+schema: superpower-openspec
+
+context: |
+  This project uses Codex + Superpower-style skills + OpenSpec.
+  Superpower-style skills provide brainstorm, implementation discipline, phase review, and implementation review.
+  OpenSpec is the source of truth for proposal, specs, design, and tasks.
+  Rules under docs/rules are mandatory inputs.
+  docs/rules/project-implementation-standards.md is the baseline implementation rule file when present.
+  docs/rules/java-code-standards.md, docs/rules/python-code-standards.md, docs/rules/configuration-standards.md, and docs/rules/testing-standards.md are default language/configuration/testing standards when present and applicable.
+  Wiki and standards under docs/ are design inputs.
+  Specs must reflect relevant behavior-affecting rules.
+  Design and implementation must use docs/ai-context/source-index.md, docs/rules, docs/standards, docs/wiki, and existing code patterns.
+
+rules:
+  brainstorm:
+    - Produce brainstorm.md and context.md only.
+    - Produce brainstorm-review.md before moving to proposal/spec work.
+    - Use Superpower-style review when available.
+    - Review alignment with user request, context, rules, existing specs, and source gaps.
+    - Do not write code.
+    - Do not create proposal/specs/design/tasks yet.
+  context:
+    - Read docs/ai-context/source-index.md first.
+    - Read relevant project-defined docs/rules/*.md files.
+    - Read default Java, Python, configuration, and testing rules when the change touches those areas.
+    - Read relevant docs/standards and docs/wiki files.
+    - Inspect existing specs and similar implementation.
+    - Record conflicts and context gaps instead of guessing.
+  proposal:
+    - Base proposal.md on brainstorm.md and context.md.
+    - Identify project-defined rules that affect scope.
+    - Produce spec-review.md after proposal/specs are drafted.
+    - Use Superpower-style review when available.
+    - Keep it product-oriented and requirement-oriented.
+    - Do not include low-level implementation details.
+  specs:
+    - Use Requirement + Scenario format.
+    - Encode relevant behavior-affecting rules as observable requirements or scenarios.
+    - Use SHALL, SHOULD, and MAY correctly.
+    - Describe observable behavior only.
+    - Do not include implementation tasks.
+    - Review alignment with brainstorm.md, context.md, brainstorm-review.md, rules, and existing specs.
+  design:
+    - Read context.md before writing design.md.
+    - Read relevant project-defined docs/rules/*.md files.
+    - Apply Java, Python, configuration, and testing rule files when the target files or validation touch those areas.
+    - Recommend generated/modified code paths by feature point.
+    - Keep planned generated/modified code files at or below 1000 lines; split before implementation when needed.
+    - Explicitly decide whether a database is required.
+    - If database access is required, use SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
+    - Design backend APIs from OpenAPI contracts and separate at least Controller and Service responsibilities.
+    - Document API IO and require async execution for very time-consuming operations.
+    - Include Source Mapping.
+    - Include Rules Compliance.
+    - Include Spec Gaps if behavior is needed but not covered by specs.
+    - Do not add behavior outside specs.
+  tasks:
+    - Each task must reference a requirement.
+    - Each task must include applicable rules when relevant.
+    - Each task touching Java, Python, configuration, or tests must cite matching default rule IDs.
+    - Each task must list target generated/modified code paths.
+    - Each task must include the <= 1000 line file-size guardrail and split plan when needed.
+    - Each task must identify database, OpenAPI/Controller/Service, API IO, and async impact when relevant.
+    - Each task must include validation.
+    - Each task must specify independent test parameter files under openspec/changes/<change-id>/test-params/.
+    - Each task must require at least 90% coverage for changed/affected code.
+    - Each task must include an Alignment Review gate.
+    - Each task must include a Security Review gate.
+    - Every per-task review finding must be fixed and re-reviewed before the next task starts.
+    - Do not create tasks not covered by specs.
+    - Produce tasks-review.md before implementation.
+    - Use Superpower-style review when available.
+    - Review alignment with specs, spec-review.md, design.md, rules, and validation coverage.
+  review:
+    - Check implementation against specs and tasks.
+    - Check implementation against brainstorm-review.md, spec-review.md, and tasks-review.md.
+    - Check task-reviews.md and require zero unresolved findings.
+    - Check coverage evidence and require at least 90% coverage for changed/affected code.
+    - Check generated/modified code files are at or below 1000 lines.
+    - Check database runtime and connection pool rules when database access is required.
+    - Check backend APIs follow OpenAPI and separate Controller and Service responsibilities when APIs changed.
+    - Check API IO and async rules when APIs changed.
+    - Check that tests use independent parameter files and meaningful assertions.
+    - Reject tests that only cover empty/no-op code or class/method initialization.
+    - Check implementation against applicable project-defined rules.
+    - Check Java, Python, configuration, and testing rule compliance when those areas changed.
+    - Mark out-of-spec behavior explicitly.
+    - Do not silently add new requirements.
+  complete:
+    - Require every task in tasks.md to be marked complete.
+    - Require task-reviews.md to show zero open findings.
+    - Require review.md to show zero unresolved findings.
+    - Require coverage evidence to show at least 90% coverage.
+    - Require independent test parameter files.
+    - Require implementation-standard evidence for code paths, file length, database runtime/pool, OpenAPI/layers, API IO, and async handling when relevant.
+    - Generate docs/wiki/<feature-or-story-title>.md from specs, design, implemented code, rules, and review evidence.
+    - Derive the wiki filename from the completed feature/story, not from the raw change ID.
+    - Create completion.md with gate results and archive target.
+    - Archive the change only after all gates pass.

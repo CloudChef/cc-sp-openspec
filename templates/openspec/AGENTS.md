@@ -1,0 +1,381 @@
+# OpenSpec Instructions
+
+This project uses OpenSpec with the Superpower-style `/sp-*` workflow.
+
+OpenSpec is the source of truth for approved behavior. Brainstorm and context files are discovery inputs; proposal, specs, design, tasks, and review are the controlled change artifacts. Project rules under `docs/rules/` are mandatory inputs.
+
+## Required Workflow
+
+```text
+/sp-brainstorm <requirement>
+  -> openspec/changes/<change-id>/brainstorm.md
+  -> openspec/changes/<change-id>/context.md
+  -> openspec/changes/<change-id>/brainstorm-review.md
+
+/sp-spec <change-id>
+  -> openspec/changes/<change-id>/proposal.md
+  -> openspec/changes/<change-id>/specs/<capability>/spec.md
+  -> openspec/changes/<change-id>/spec-review.md
+
+/sp-tasks <change-id>
+  -> openspec/changes/<change-id>/design.md
+  -> openspec/changes/<change-id>/tasks.md
+  -> openspec/changes/<change-id>/tasks-review.md
+
+/sp-impl <change-id>
+  -> code changes
+  -> updated openspec/changes/<change-id>/tasks.md
+  -> openspec/changes/<change-id>/test-params/
+  -> openspec/changes/<change-id>/task-reviews.md
+  -> openspec/changes/<change-id>/review.md
+
+/sp-complete <change-id>
+  -> openspec/changes/<change-id>/completion.md
+  -> docs/wiki/<feature-or-story-title>.md
+  -> openspec/changes/archive/<YYYY-MM-DD>-<change-id>/
+```
+
+Do not implement directly from `brainstorm.md` or `context.md`.
+
+## Before Any OpenSpec Task
+
+- Read `openspec/project.md`.
+- Inspect `openspec/changes/` to see active changes.
+- Inspect `openspec/specs/` to see existing capabilities.
+- Check pending change folders for overlapping specs or scope conflicts.
+- Read `docs/ai-context/source-index.md` when doing context research or design.
+- Read relevant project-defined rules under `docs/rules/*.md` when creating specs, design, tasks, implementation, or review.
+- Treat `docs/rules/project-implementation-standards.md` as the default baseline implementation rule file when present.
+- Treat these rule files as default project standards when present and applicable:
+  - `docs/rules/java-code-standards.md` for Java/Spring source.
+  - `docs/rules/python-code-standards.md` for Python source.
+  - `docs/rules/configuration-standards.md` for config, packaging, database, OpenAPI, async, queues, and migrations.
+  - `docs/rules/testing-standards.md` for tests, coverage, fixtures, and independent test parameter files.
+
+## Change Directory Structure
+
+```text
+openspec/changes/<change-id>/
+  brainstorm.md
+  context.md
+  brainstorm-review.md
+  proposal.md
+  specs/
+    <capability>/
+      spec.md
+  spec-review.md
+  design.md
+  tasks.md
+  tasks-review.md
+  test-params/
+  task-reviews.md
+  review.md
+  completion.md
+```
+
+## Phase Review Gates
+
+Use Superpower-style review early and often. Each stage must review its own outputs before the next stage starts.
+
+When a Superpower review capability or independent reviewer is available, use it for the phase review. Give the reviewer only the relevant artifacts and expected alignment checks, not the full chat history.
+
+Review gates:
+
+- `/sp-brainstorm` creates `brainstorm-review.md` and checks user request, context coverage, source usage, rules, scope risks, and missing context.
+- `/sp-spec` creates `spec-review.md` and checks alignment with `brainstorm.md`, `context.md`, `brainstorm-review.md`, rules, existing specs, requirement quality, scenario coverage, and implementation leakage.
+- `/sp-tasks` creates `tasks-review.md` and checks alignment with specs, `spec-review.md`, design decisions, rules, task quality, validation coverage, and implementation readiness.
+- `/sp-impl` creates `review.md` and checks implementation against all prior artifacts.
+
+Do not proceed to the next phase while the current phase review has unresolved blocking gaps.
+
+## Proposal Format
+
+Use `proposal.md` for why, what, and impact. Include these sections:
+
+```md
+# Change: <title>
+
+## Why
+
+## What Changes
+
+## Scope
+
+## Out of Scope
+
+## Impact
+
+## Rules Applied
+
+## Risks
+
+## Open Questions
+```
+
+## Spec Delta Format
+
+Create spec deltas under:
+
+```text
+openspec/changes/<change-id>/specs/<capability>/spec.md
+```
+
+Use these operation headers:
+
+- `## ADDED Requirements`
+- `## MODIFIED Requirements`
+- `## REMOVED Requirements`
+- `## RENAMED Requirements`
+
+Requirement format:
+
+```md
+## ADDED Requirements
+
+### Requirement: <name>
+The system SHALL <observable behavior>.
+
+#### Scenario: <name>
+- **GIVEN** <condition>
+- **WHEN** <action>
+- **THEN** <result>
+```
+
+Rules:
+
+- Every requirement must have at least one `#### Scenario:` header.
+- Specs describe observable behavior only.
+- Relevant project-defined rules from `docs/rules/*.md` must become requirements or scenarios when they affect observable behavior.
+- Use SHALL/MUST for required behavior.
+- For `MODIFIED`, include the complete updated requirement block.
+
+## Design Rules
+
+Create `design.md` before implementation when the change affects architecture, data, APIs, UI, integrations, security, migrations, or cross-cutting behavior.
+
+This workflow requires `design.md` for `/sp-tasks`. Include:
+
+- Current Behavior
+- Target Behavior
+- Architecture Impact
+- Generated Code Paths
+- File Size / Split Plan
+- Data Impact
+- Database Decision
+- API Impact
+- OpenAPI / Backend Layering
+- UI Impact
+- Integration Impact
+- Security Impact
+- Error Handling
+- Compatibility / Migration
+- Test Strategy
+- Source Mapping
+- Rules Compliance
+- Spec Gaps
+
+Mandatory implementation-standard design decisions:
+
+- Read default Java/Python/configuration/testing rule files when the change touches those areas.
+- Recommend generated or modified code paths for each feature point.
+- Keep every generated or modified code file at or below 1000 lines; split planned files before implementation when needed.
+- Explicitly state whether a database is required.
+- If a database is required, use SQLite for development-stage local behavior and MySQL for implementation/deployment-stage behavior.
+- If a database is required, configure a connection pool with maximum pool size <= 100.
+- Design backend APIs from OpenAPI contracts.
+- Separate at least Controller and Service responsibilities for backend APIs.
+- Document IO behavior for every API.
+- Design very time-consuming API operations as async.
+
+`Source Mapping` format:
+
+```md
+| Design Decision | Source | Reason |
+|---|---|---|
+```
+
+## Task Rules
+
+Create `tasks.md` with implementation tasks only after specs and design exist.
+
+Task format:
+
+```md
+## 1. Implementation
+
+- [ ] 1.1 <task title>
+  - Related requirement: `<requirement name>`
+  - Applicable rules: `<rule id>`, `<rule id>`
+  - Target code paths: `<path>`, `<path>`
+  - File size guardrail: each generated/modified code file must stay <= 1000 lines; split plan: `<none/path split>`
+  - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
+  - API contract/layers: `<none/OpenAPI operation + Controller path + Service path>`
+  - API IO / async: `<none/IO profile/async required>`
+  - Change: <specific implementation work>
+  - Validation: <how to verify>
+  - Test parameters: `openspec/changes/<change-id>/test-params/<scenario-name>.md`
+  - Coverage target: at least 90% code coverage for changed/affected code
+  - Required reviews after implementation:
+    - Alignment review against spec, design, task, rules, and changed code
+    - Security review against security-sensitive behavior and project-defined security rules
+  - Review gate: all findings must be fixed and re-reviewed before the next task starts
+```
+
+Rules:
+
+- Every task must reference a requirement.
+- Every task must list applicable project-defined rules when relevant.
+- Every task touching Java, Python, configuration, or tests must cite the matching default rule IDs.
+- Every task must list target generated or modified code paths.
+- Every task must include the file-size guardrail and split plan when needed.
+- Every task must identify database, API contract/layering, and API IO/async impact when relevant.
+- Every task must include validation.
+- Every task must specify independent test parameter files.
+- Every task must require at least 90% coverage for changed/affected code.
+- Every task must include both per-task implementation review gates.
+- Do not create tasks for behavior not covered by specs.
+
+## Per-Task Implementation Review
+
+During `/sp-impl`, every task must pass two review rounds before the next task starts:
+
+1. Alignment Review: verify the completed task against specs, design, task text, project-defined rules, and changed code.
+2. Security Review: verify security-sensitive behavior, authorization, data handling, validation, logging, dependencies, configuration, and project-defined security rules.
+
+Testing rules:
+
+- Changed/affected code must reach at least 90% coverage.
+- Tests must use explicit parameters saved independently under `openspec/changes/<change-id>/test-params/`.
+- Tests must assert meaningful behavior from specs and design.
+- Tests for empty/no-op code are not allowed.
+- Tests that only verify class or method initialization do not count.
+
+Rules:
+
+- Record every per-task review in `task-reviews.md`.
+- Fix every finding immediately.
+- Re-run the relevant review after fixes.
+- Do not start the next task while the current task has open findings.
+- Do not mark the task complete until validation, Alignment Review, and Security Review all have no open findings.
+- Do not mark the task complete until coverage is at least 90% and test parameter files are saved.
+- Do not mark the task complete while any generated or modified code file exceeds 1000 lines.
+- Do not mark the task complete if database, OpenAPI, Controller/Service, API IO, or async evidence is missing when relevant.
+- If a finding requires behavior outside approved specs/design/tasks, stop and update OpenSpec before coding more.
+- Final completion requires `task-reviews.md` and `review.md` to show zero unresolved findings.
+
+## Complete and Archive
+
+Use `/sp-complete <change-id>` only after implementation review is finished.
+
+Completion gates:
+
+- Every task in `tasks.md` is marked complete.
+- Every task has Alignment Review and Security Review evidence in `task-reviews.md`.
+- `task-reviews.md` has zero open findings.
+- `review.md` has zero unresolved findings.
+- Coverage evidence is at least 90% for changed/affected code.
+- Test parameter files are saved independently under `test-params/`.
+- The generated wiki page reflects specs, design, implemented code, rules, and validation evidence.
+- The generated wiki filename is a semantic feature/story title derived from specs, design, code, rules, and review evidence, not the raw change ID.
+
+Completion outputs:
+
+- Create or update `completion.md` in the active change folder.
+- Create or update `docs/wiki/<feature-or-story-title>.md`.
+- Move `openspec/changes/<change-id>/` to `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`.
+
+Do not archive if any gate fails. Do not overwrite an existing archive folder.
+
+The wiki page must include:
+
+- Story / Capability Summary
+- User-Facing Behavior
+- Workflow
+- Rules Applied
+- Design Summary
+- API / Data / UI Impact, when relevant
+- Security and Permissions
+- Operational Notes
+- Validation Evidence
+- Source Mapping
+
+Wiki filename rules:
+
+- Derive the title from the completed feature/story using specs, design, implemented code, rules, and review evidence.
+- Prefer user-facing capability language over mechanical change IDs.
+- Use concise kebab-case.
+- Do not use raw `<change-id>.md` unless the change ID is already the best human-facing feature/story title.
+- Preserve traceability with `change_id: <change-id>` in front matter.
+
+## Implementation Rules
+
+- Do not start implementation until proposal, specs, design, and tasks exist.
+- Implement only unchecked tasks in `tasks.md`.
+- Complete tasks one at a time.
+- Do not add behavior outside specs.
+- Do not modify unrelated files.
+- Reuse existing code patterns.
+- Follow applicable project-defined rules under `docs/rules/*.md`.
+- Follow applicable default Java, Python, configuration, and testing rules before editing related files.
+- Run relevant verification.
+- Mark tasks complete only after validation, coverage, file length checks, independent test parameters, implementation-standard evidence, and both per-task reviews have no open findings.
+
+## Review Rules
+
+For each phase review, record findings with evidence and gaps. Fix issues that are inside the current phase scope before moving forward.
+
+After implementation, create or update `review.md` with:
+
+- Summary
+- Requirement Coverage
+- Scenario Coverage
+- Task Completion
+- Per-Task Review Completion
+- Out-of-Spec Behavior
+- Architecture Compliance
+- Implementation Standards Compliance
+- Rules Compliance
+- Test Coverage
+- Test Quality
+- Documentation Consistency
+- Blocking Issues
+- Unresolved Findings
+- Recommended Fixes
+
+If review finds missing behavior not covered by specs, stop and update OpenSpec before coding more.
+
+## No CLI Requirement
+
+This workflow does not require OpenSpec CLI. Codex must read, write, compare, and validate the workflow artifacts directly as files.
+
+For validation, inspect:
+
+- Required files for the current phase exist.
+- Specs use the required Requirement and Scenario format.
+- Design does not add behavior outside specs.
+- Tasks map to requirements, rules, validation, and per-task review gates.
+- Reviews have no unresolved blocking gaps before the next phase.
+- `task-reviews.md` and final `review.md` show zero unresolved findings before completion.
+- Test coverage is at least 90% for changed/affected code.
+- Tests have independent parameter files and meaningful assertions.
+- Generated/modified code files are at or below 1000 lines.
+- Database decisions and connection pool constraints are satisfied when relevant.
+- Backend APIs follow OpenAPI and separate Controller and Service responsibilities when relevant.
+- API IO and async decisions are implemented when relevant.
+- `completion.md` records completion gates and archive target.
+- `docs/wiki/<feature-or-story-title>.md` documents the completed feature/story from specs, design, and code.
+
+## Source Priority
+
+When sources conflict, use this priority:
+
+1. `AGENTS.md`
+2. Current OpenSpec change files
+3. `openspec/project.md`
+4. `docs/rules/*.md`
+5. `docs/standards/*.md`
+6. active `docs/wiki/*.md`
+7. existing implementation patterns
+8. user prompt
+
+Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
