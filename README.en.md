@@ -43,7 +43,6 @@ sp-openspec/
   templates/
     AGENTS.md
     agent.md
-    README.md
     openspec/
     docs/
       codex-superpower-openspec.png
@@ -90,7 +89,6 @@ The target project should then contain:
 ```text
 AGENTS.md
 agent.md
-README.md
 openspec/
 docs/
 ```

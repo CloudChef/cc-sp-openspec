@@ -25,7 +25,6 @@ project-root/
       SKILL.md
 
   templates/
-    README.md
     AGENTS.md
     agent.md
     openspec/

@@ -45,7 +45,6 @@ sp-openspec/
   templates/
     AGENTS.md
     agent.md
-    README.md
     openspec/
     docs/
       codex-superpower-openspec.png
@@ -92,7 +91,6 @@ cp -R /path/to/sp-openspec/templates/. /path/to/project/
 ```text
 AGENTS.md
 agent.md
-README.md
 openspec/
 docs/
 ```
