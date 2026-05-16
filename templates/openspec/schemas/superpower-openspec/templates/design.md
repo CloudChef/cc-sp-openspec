@@ -11,6 +11,11 @@
 | Feature Point | Recommended Path(s) | Reason | Split Needed |
 |---|---|---|---|
 
+## Reuse / Common Logic Plan
+
+| Logic Area | Existing Code to Reuse | Shared Abstraction / Owner | Duplication Risk | Decision |
+|---|---|---|---|---|
+
 ## File Size / Split Plan
 
 - Generated or modified code files must stay at or below 1000 lines.
@@ -44,6 +49,11 @@
 ## Compatibility / Migration
 
 ## Test Strategy
+
+## Standalone Verification Plan
+
+| Change Area | Entry Point | Verification Method | Request/Input | Expected Response/Output | External Service Check / Skip Reason |
+|---|---|---|---|---|---|
 
 ## Rules Compliance
 

@@ -33,15 +33,16 @@ Create or update:
 2. Inspect similar implementation patterns in code.
 3. Write `design.md` with rule-backed and source-backed decisions plus explicit gaps.
 4. In `design.md`, explicitly recommend generated/modified code paths by feature point and define a split plan for any file that may exceed 1000 lines.
-5. In `design.md`, explicitly decide whether a database is required. If required, specify SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
-6. In `design.md`, define backend APIs from OpenAPI contracts, separate at least Controller and Service responsibilities, document API IO, and require async handling for very time-consuming operations.
-7. Write `tasks.md` as a checklist where every task maps to a requirement, applicable rules, target code paths, file-size guardrail, database/API/IO impact when relevant, validation method, test parameter file, coverage target, and required per-task review gates.
-8. Require every implementation task to complete two reviews after implementation: Alignment Review and Security Review.
-9. Require all findings from both reviews to be fixed and re-reviewed before the next task starts.
-10. Review design and tasks for alignment with specs, spec review findings, rules, source mapping, code path planning, file-size limits, database/API/IO rules, per-task review gates, and implementation readiness.
-11. Create `tasks-review.md` with findings and required fixes before `/sp-impl`.
-12. Fix review findings that are inside the approved design/task scope.
-13. Stop before writing code.
+5. In `design.md`, identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
+6. In `design.md`, explicitly decide whether a database is required. If required, specify SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
+7. In `design.md`, define backend APIs from OpenAPI contracts, separate at least Controller and Service responsibilities, document API IO, and require async handling for very time-consuming operations.
+8. Write `tasks.md` as a checklist where every task maps to a requirement, applicable rules, target code paths, reuse/common logic impact, file-size guardrail, database/API/IO impact when relevant, standalone verification method, test parameter file, coverage target, and required per-task review gates.
+9. Require every implementation task to complete two reviews after implementation: Alignment Review and Security Review.
+10. Require all findings from both reviews to be fixed and re-reviewed before the next task starts.
+11. Review design and tasks for alignment with specs, spec review findings, rules, source mapping, code path planning, reuse/common logic plans, file-size limits, database/API/IO rules, per-task review gates, and implementation readiness.
+12. Create `tasks-review.md` with findings and required fixes before `/sp-impl`.
+13. Fix review findings that are inside the approved design/task scope.
+14. Stop before writing code.
 
 ## Required `design.md` Sections
 
@@ -49,6 +50,7 @@ Create or update:
 - Target Behavior
 - Architecture Impact
 - Generated Code Paths
+- Reuse / Common Logic Plan
 - File Size / Split Plan
 - Data Impact
 - Database Decision
@@ -60,6 +62,7 @@ Create or update:
 - Error Handling
 - Compatibility / Migration
 - Test Strategy
+- Standalone Verification Plan
 - Rules Compliance
 - Source Mapping
 - Spec Gaps
@@ -78,11 +81,13 @@ Create or update:
   - Related requirement: `<requirement name>`
   - Applicable rules: `<rule id>`, `<rule id>`
   - Target code paths: `<path>`, `<path>`
+  - Reuse/common logic impact: `<reuse existing/extract shared abstraction/extend shared abstraction/isolated with justification>`
   - File size guardrail: each generated/modified code file must stay <= 1000 lines; split plan: `<none/path split>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
   - API contract/layers: `<none/OpenAPI operation + Controller path + Service path>`
   - API IO / async: `<none/IO profile/async required>`
   - Change: <specific implementation work>
+  - Standalone verification: `<entry point + command/test + request/input + expected response/output + side effects>`
   - Validation: <how to verify>
   - Test parameters: `openspec/changes/<change-id>/test-params/<scenario-name>.md`
   - Coverage target: at least 90% code coverage for changed/affected code
@@ -130,6 +135,9 @@ Do not pass the full conversation history as review context.
 - Every task must list applicable project-defined rules when relevant.
 - Design must recommend target code paths for each feature point.
 - Every task must list target generated/modified code paths.
+- Design must identify same or equivalent existing logic and define reuse, extraction, extension, or justified isolation decisions.
+- Every task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
+- Avoidable same/equivalent logic duplication must be treated as a design/task review finding.
 - Design and tasks must enforce the 1000-line maximum for each generated or modified code file and split files before implementation when needed.
 - Design must explicitly say whether a database is required.
 - If a database is required, design must specify SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, a connection pool, and maximum pool size <= 100.
@@ -137,6 +145,11 @@ Do not pass the full conversation history as review context.
 - Every API design must document IO behavior.
 - Very time-consuming API work must be designed as async and tasks must include async validation.
 - Every task must include concrete validation.
+- Every task must include standalone full verification from the relevant entry point.
+- Backend service tasks must require a real API call against a running service or project-supported test server, including request and response checks.
+- UI tasks must require a UI test case and actual interface behavior verification.
+- Bug fix tasks must identify the bug entry point and verify that the changed code fixes the original behavior through that entry point.
+- External service tasks involving database, Redis, Elasticsearch, queues, caches, or integrations must verify against the project-provided connection or test environment when available; otherwise record a skip reason and verify locally testable behavior.
 - Every task must specify one or more independent test parameter files under `openspec/changes/<change-id>/test-params/`.
 - Every task must include a coverage validation target of at least 90% for changed/affected code.
 - Validation must reject tests that only execute empty/no-op code.

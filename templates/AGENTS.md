@@ -19,6 +19,12 @@ Additional project-specific rule files may be added under `docs/rules/`.
 
 Use this workflow for feature work and behavior changes:
 
+Automatic goal mode:
+
+1. `/sp-goal <requirement-or-change-id>`
+
+Manual phase mode:
+
 1. `/sp-brainstorm <requirement>`
 2. `/sp-spec <change-id>`
 3. `/sp-tasks <change-id>`
@@ -42,6 +48,30 @@ For real project use, copy or sync these skills into the user-level skill direct
 ~/.agents/skills/
 $CODEX_HOME/skills/
 ```
+
+## /sp-goal
+
+Use `sp-goal`.
+
+Purpose:
+
+- Detect the earliest incomplete phase for the requested or active change.
+- Start from that phase and run all remaining phases through `/sp-complete`.
+- Never skip phase artifacts, tests, coverage, reviews, finding closure, wiki generation, or archive gates.
+
+Rules:
+
+- If no change exists and the user provides a requirement, derive a change ID and start from `/sp-brainstorm`.
+- If exactly one active change exists and no change ID is provided, continue that change.
+- If multiple active changes exist and no change ID is provided, ask which change to finish.
+- If `brainstorm.md`, `context.md`, or `brainstorm-review.md` is missing or blocked, start at `/sp-brainstorm`.
+- If proposal/spec artifacts or `spec-review.md` are missing or blocked, start at `/sp-spec`.
+- If `design.md`, `tasks.md`, or `tasks-review.md` is missing or blocked, start at `/sp-tasks`.
+- If tasks, tests, per-task reviews, coverage, or final `review.md` are incomplete, start at `/sp-impl`.
+- If implementation review is complete but completion/wiki/archive is missing, start at `/sp-complete`.
+- Do not mark tasks complete without implementation and review evidence.
+- Do not mark tasks complete without standalone full verification evidence when relevant.
+- Stop when progress requires user input or approved OpenSpec scope changes.
 
 ## /sp-brainstorm
 
@@ -80,6 +110,8 @@ Rules:
 - Read relevant project-defined rules under `docs/rules/*.md` and encode behavior-affecting rules as observable requirements or scenarios.
 - Read the default language, configuration, and testing rules when they affect observable behavior, validation, security, or delivery constraints.
 - Specs must describe observable behavior only.
+- Specs must define behavior so it can be verified from a real user/API/job/system entry point.
+- Backend behavior must allow later real API request/response verification; UI behavior must allow UI test verification; bug fixes must identify the bug entry point; external service behavior must identify observable effects when relevant.
 - Use OpenSpec Requirement and Scenario format.
 - Do not create design or tasks.
 - Do not write code.
@@ -104,11 +136,18 @@ Rules:
 - Include Rules Compliance in `design.md`.
 - Include Spec Gaps when behavior is needed but not covered by specs.
 - `design.md` must recommend generated/modified code paths by feature point.
+- `design.md` must identify same or equivalent existing logic and define reuse, extraction, extension, or justified isolation decisions.
+- `design.md` must define standalone full verification for every changed behavior.
 - `design.md` and `tasks.md` must keep generated/modified code files <= 1000 lines or split them before implementation.
 - `design.md` must explicitly decide whether a database is required. If required, use SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
 - Backend API design must use OpenAPI and separate at least Controller and Service.
 - Every API must document IO behavior; very time-consuming work must be async.
-- Every task must reference a requirement, applicable rules, target code paths, implementation-standard impact, and validation.
+- Every task must reference a requirement, applicable rules, target code paths, reuse/common logic impact, implementation-standard impact, and validation.
+- Every task must include standalone full verification from the relevant entry point.
+- Backend service tasks must require real API request/response verification.
+- UI tasks must require UI test cases and interface behavior verification.
+- Bug fix tasks must identify and verify through the bug entry point.
+- Database, Redis, Elasticsearch, queue, cache, or integration tasks must verify against project-provided connections/test environments when available; otherwise record skip reasons.
 - Every task must specify independent test parameter files under `openspec/changes/<change-id>/test-params/`.
 - Every task must require at least 90% coverage for changed/affected code.
 - Every task must include two implementation review gates: Alignment Review and Security Review.
@@ -143,6 +182,8 @@ Rules:
 - Create or update explicit test parameter files under `openspec/changes/<change-id>/test-params/`.
 - Tests must use explicit parameters and assert meaningful behavior from specs/design.
 - Changed/affected code must reach at least 90% coverage.
+- Standalone full verification must be completed for backend API, UI, bug-entry, and external-service behavior when relevant.
+- Same or equivalent logic must be reused or generalized; avoidable duplicate logic must be fixed before task completion.
 - Generated/modified code files must stay <= 1000 lines.
 - Database, OpenAPI, Controller/Service, API IO, and async rules must be implemented and evidenced when relevant.
 - Do not write tests for empty/no-op code.
@@ -193,18 +234,25 @@ Rules:
 - Do not complete if `task-reviews.md` has any open Alignment Review or Security Review finding.
 - Do not complete if `review.md` has unresolved findings.
 - Do not complete if coverage evidence is below 90% for changed/affected code.
+- Do not complete if standalone full verification evidence is missing for relevant changed behavior.
+- Do not complete if avoidable same/equivalent logic duplication remains.
 - Do not complete if required test parameter files are missing.
 - Generate or update a semantic `docs/wiki/<feature-or-story-title>.md` file from specs, design, code, rules, and review evidence.
 - Derive the wiki title and filename from the completed feature/story, not from the raw change ID.
 - Create `completion.md` with completion gate results and archive target.
 - Review the generated wiki against specs, design, and implemented code before archiving.
 - Archive the change by moving `openspec/changes/<change-id>/` to `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`.
+- Create a local git commit only after the completed change, tests, reviews, completion artifact, wiki, and archive are finished.
 - Do not overwrite an existing archive folder.
+- Do not push unless the user explicitly asks.
+- Commit only files belonging to the completed change; leave unrelated local changes unstaged.
+- Commit message must include the complete requirement, completed changes, solution/design approach, workflow/completion evidence, and frontend/backend completion content when relevant.
 
 Final response must include:
 
 - Archived change path
 - Wiki page path
+- Local git commit hash, or git skip reason
 - Completion gates result
 - Review/finding status
 - Any skipped or blocked item

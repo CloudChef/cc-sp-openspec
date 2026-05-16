@@ -37,24 +37,26 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 4. Use test-driven development behavior if available and appropriate for the codebase.
 5. Implement only the next unchecked task.
 6. Implement in the target code paths listed by the task, adjusting only when existing project structure clearly requires it and recording the reason.
-7. Keep every generated or modified code file at or below 1000 lines; split files before marking the task complete if a file would exceed the limit.
-8. For database work, follow the approved database plan: SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, connection pool configured, maximum pool size <= 100.
-9. For backend APIs, implement from the approved OpenAPI contract and keep at least Controller and Service responsibilities separated.
-10. For APIs, implement the documented IO behavior and use async execution for very time-consuming operations.
-11. Reuse existing project patterns and avoid unrelated edits.
-12. Create or update independent test parameter files under `openspec/changes/<change-id>/test-params/`.
-13. Add or update tests that use those explicit parameter files and assert meaningful spec/design behavior.
-14. Run the task validation, coverage check, and file length check.
-15. Verify coverage is at least 90% for changed/affected code.
-16. Run Alignment Review for that task against specs, design, task text, rules, target code paths, file lengths, database/API/IO decisions, test parameter files, tests, coverage evidence, and changed code.
-17. Fix every Alignment Review finding and re-review until there are no open alignment findings.
-18. Run Security Review for that task against security-sensitive behavior, authorization, data handling, validation, logging, dependencies, configuration, database/API/IO behavior, project-defined security rules, test parameter files, and changed code.
-19. Fix every Security Review finding and re-review until there are no open security findings.
-20. Record both review rounds, findings, fixes, coverage evidence, file length evidence, test parameter files, database/API/IO evidence, and closure evidence in `task-reviews.md`.
-21. Mark the task complete in `tasks.md` only after validation, coverage, file length checks, and both reviews have no open findings.
-22. Repeat this loop for the next unchecked task.
-23. Create or update final `review.md` after all tasks are complete and all findings are closed.
-24. Stop and report if implementation requires behavior not covered by specs.
+7. Reuse existing same/equivalent logic or implement the approved extraction/extension plan before adding new isolated logic.
+8. Keep every generated or modified code file at or below 1000 lines; split files before marking the task complete if a file would exceed the limit.
+9. For database work, follow the approved database plan: SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, connection pool configured, maximum pool size <= 100.
+10. For backend APIs, implement from the approved OpenAPI contract and keep at least Controller and Service responsibilities separated.
+11. For APIs, implement the documented IO behavior and use async execution for very time-consuming operations.
+12. Reuse existing project patterns and avoid unrelated edits.
+13. Create or update independent test parameter files under `openspec/changes/<change-id>/test-params/`.
+14. Add or update tests that use those explicit parameter files and assert meaningful spec/design behavior.
+15. Run standalone full verification from the task's required entry point.
+16. Run the task validation, coverage check, reuse/common logic check, and file length check.
+17. Verify coverage is at least 90% for changed/affected code.
+18. Run Alignment Review for that task against specs, design, task text, rules, target code paths, reuse/common logic decisions, standalone verification evidence, file lengths, database/API/IO decisions, test parameter files, tests, coverage evidence, and changed code.
+19. Fix every Alignment Review finding and re-review until there are no open alignment findings.
+20. Run Security Review for that task against security-sensitive behavior, authorization, data handling, validation, logging, dependencies, configuration, database/API/IO behavior, project-defined security rules, test parameter files, and changed code.
+21. Fix every Security Review finding and re-review until there are no open security findings.
+22. Record both review rounds, findings, fixes, standalone verification evidence, coverage evidence, reuse/common logic evidence, file length evidence, test parameter files, database/API/IO evidence, and closure evidence in `task-reviews.md`.
+23. Mark the task complete in `tasks.md` only after standalone verification, validation, coverage, reuse/common logic checks, file length checks, and both reviews have no open findings.
+24. Repeat this loop for the next unchecked task.
+25. Create or update final `review.md` after all tasks are complete and all findings are closed.
+26. Stop and report if implementation requires behavior not covered by specs.
 
 ## Implementation Rules
 
@@ -63,6 +65,9 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - Do not introduce new dependencies unless `design.md` requires them.
 - Follow applicable project-defined rules.
 - Implement in the target code paths from `tasks.md`, or record a justified path adjustment in `task-reviews.md`.
+- Reuse same/equivalent existing logic whenever possible.
+- Extract or extend shared abstractions when the same logic is needed across multiple features or modules.
+- Do not introduce avoidable duplicate logic; isolated implementation requires documented justification.
 - Keep every generated or modified code file at or below 1000 lines.
 - Split code before completion when a file would exceed 1000 lines.
 - If database access is required, preserve SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and connection pool maximum size <= 100.
@@ -77,6 +82,12 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - Do not write tests for empty/no-op code.
 - Do not count tests that only verify class or method initialization.
 - Do not hardcode test parameters only inside test code; save explicit test parameters independently under `openspec/changes/<change-id>/test-params/`.
+- Every feature, bug fix, and behavior change must have standalone full verification.
+- Backend service changes must be verified with a real API call against a running service or project-supported test server, checking request shape, response status, response body/schema, and relevant side effects.
+- UI changes must include UI test cases and verify the actual interface behavior.
+- Bug fixes must identify the bug entry point and verify through that entry point that the fix takes effect.
+- External service changes involving database, Redis, Elasticsearch, queues, caches, or integrations must be verified when the project provides a connection method, local environment, test container, or documented test configuration.
+- If no project-supported external service connection exists, record the skip reason and verify all locally testable behavior.
 
 ## Required `review.md` Sections
 
@@ -130,6 +141,8 @@ Run two distinct review passes for each task:
 Both review passes must also verify:
 
 - Coverage evidence is at least 90% for changed/affected code.
+- Standalone full verification evidence exists for API, UI, bug-entry, and external-service behavior when relevant.
+- Same/equivalent logic is reused or generalized, with no avoidable duplicate logic.
 - Changed/generated code files are at or below 1000 lines.
 - Changed files match the task target paths or have documented justification.
 - Database runtime and connection pool rules are satisfied when database access is required.

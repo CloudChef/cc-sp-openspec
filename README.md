@@ -4,7 +4,7 @@
 
 这是一个面向 Codex 或其他支持 skills 的 AI 编码代理的项目工作流模板，用来把 Superpower 风格的研发纪律、OpenSpec 风格的需求规格、项目规则、代码实现、测试、Review 和 Wiki 归档串成一个可重复执行的流程。
 
-这个仓库本身不是业务项目，而是模板仓库。正常使用时，把 `templates/` 目录复制到目标项目根目录，再把 `skills/` 目录中的 `/sp-*` workflow skills 同步到用户级 skills 目录。复制完成后，目标项目就可以直接使用 `/sp-brainstorm`、`/sp-spec`、`/sp-tasks`、`/sp-impl`、`/sp-complete` 完成从需求澄清到实现归档的完整流程。
+这个仓库本身不是业务项目，而是模板仓库。正常使用时，把 `templates/` 目录复制到目标项目根目录，再把 `skills/` 目录中的 `/sp-*` workflow skills 同步到用户级 skills 目录。复制完成后，目标项目就可以使用 `/sp-goal` 自动补完剩余流程，也可以手动使用 `/sp-brainstorm`、`/sp-spec`、`/sp-tasks`、`/sp-impl`、`/sp-complete` 完成从需求澄清到实现归档的完整流程。
 
 本流程不要求安装 OpenSpec CLI。AI 编码代理直接读取、生成、校验和归档 `openspec/` 下的文件。
 
@@ -37,6 +37,7 @@
 ```text
 sp-openspec/
   skills/
+    sp-goal/
     sp-brainstorm/
     sp-spec/
     sp-tasks/
@@ -100,6 +101,7 @@ docs/
 把本仓库的 `skills/` 下列目录复制到用户级 skills 目录：
 
 ```text
+sp-goal/
 sp-brainstorm/
 sp-spec/
 sp-tasks/
@@ -135,11 +137,11 @@ Copy-Item -Path C:\Projects\cmps\sp-openspec\skills\* -Destination $HOME\.agents
 
 模板默认提供这些规则：
 
-- `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、单文件 1000 行限制、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
+- `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、单独完整验证、相同逻辑复用、单文件 1000 行限制、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
 - `docs/rules/java-code-standards.md`: Java/Spring 规范，结合参考项目实践和 Google Java Style。
 - `docs/rules/python-code-standards.md`: Python 规范，结合参考项目实践和 Google Python Style。
 - `docs/rules/configuration-standards.md`: 配置、数据库、迁移、OpenAPI、异步队列、依赖工具配置规范。
-- `docs/rules/testing-standards.md`: 测试、覆盖率、测试参数、Mock、集成测试安全规范。
+- `docs/rules/testing-standards.md`: 测试、覆盖率、测试参数、单独完整验证、Mock、集成测试安全规范。
 
 每个项目可以继续添加自己的规则文件，例如：
 
@@ -150,6 +152,16 @@ docs/rules/data-retention.md
 ```
 
 ## 如何使用流程
+
+自动补完剩余流程：
+
+```text
+/sp-goal <requirement-or-change-id>
+```
+
+`/sp-goal` 会根据当前 change 的完成情况判断从哪一步开始。如果 brainstorm 没完成，就从 brainstorm 开始；如果 brainstorm 已完成但 spec 没完成，就从 spec 开始；后续依次类推，直到 `/sp-complete`。它不会跳过 review、测试、coverage、finding closure、Wiki 或 archive 门禁。
+
+也可以手动按阶段执行：
 
 1. 需求探索：执行 `/sp-brainstorm <requirement>`。
    - 产物：`brainstorm.md`、`context.md`、`brainstorm-review.md`。
@@ -172,6 +184,7 @@ docs/rules/data-retention.md
    - 要求：每个任务都必须先修复 Alignment Review 和 Security Review 的所有 finding，并重新 review 后，才能开始下一个任务。
 
 5. 完成和归档：执行 `/sp-complete <change-id>`。
-   - 产物：`completion.md`、`docs/wiki/<feature-or-story-title>.md`、`openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`。
-   - 目的：确认任务、测试、Review、规则和文档证据都闭环后，生成 Wiki 并归档 change。
+   - 产物：`completion.md`、`docs/wiki/<feature-or-story-title>.md`、`openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`、本地 git commit。
+   - 目的：确认任务、测试、Review、规则和文档证据都闭环后，生成 Wiki、归档 change，并创建本地提交。
    - 要求：Wiki 文件名必须根据 spec、design、实际 code、rules 和 review 证据生成语义化标题，不应简单使用 `<change-id>.md`。
+   - Commit 要求：必须等代码变更、测试、Review、`completion.md`、Wiki 和 archive 都完成之后再创建本地 commit；只提交本次完成的变更，不自动 push；commit message 需要概括完整需求、完成的变更、方案设计、流程和完成证据，并在相关时囊括前端和后端完成内容，但不展开到过细实现细节。

@@ -27,7 +27,11 @@
 | Scenario Area | Status | Evidence | Gap |
 |---|---|---|---|
 
+## Standalone Verifiability
+
+| Requirement / Scenario | Entry Point | Expected Verification | Gap |
+|---|---|---|---|
+
 ## Out-of-Scope or Implementation Leakage
 
 ## Required Fixes Before /sp-tasks
-

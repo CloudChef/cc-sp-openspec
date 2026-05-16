@@ -31,6 +31,8 @@
 | Standard | Status | Evidence | Gap |
 |---|---|---|---|
 | Generated/modified code paths match design and tasks |  |  |  |
+| Same or equivalent logic is reused or generalized without avoidable duplication |  |  |  |
+| Standalone full verification is completed for changed behavior |  |  |  |
 | Generated/modified code files are <= 1000 lines |  |  |  |
 | Database decision is implemented as designed |  |  |  |
 | Required database uses SQLite for development-stage local behavior |  |  |  |
@@ -49,6 +51,15 @@
 
 | Area | Coverage | Evidence | Gap |
 |---|---|---|---|
+
+## Standalone Verification
+
+| Area | Entry Point | Method | Evidence | Gap |
+|---|---|---|---|---|
+| Backend API request/response |  |  |  |  |
+| UI behavior |  |  |  |  |
+| Bug entry-point regression |  |  |  |  |
+| External service verification / skip reason |  |  |  |  |
 
 ## Test Quality
 

@@ -19,6 +19,12 @@ All findings must be fixed and re-reviewed before moving to the next task.
 
 - Changed files:
 - Changed file line counts:
+- Reuse/common logic evidence:
+- Standalone verification evidence:
+- API request/response evidence:
+- UI test evidence:
+- Bug entry-point evidence:
+- External service verification / skip reason:
 - Verification run:
 - Coverage result:
 - Test parameter files:
@@ -41,7 +47,9 @@ All findings must be fixed and re-reviewed before moving to the next task.
 
 - Alignment findings resolved:
 - Security findings resolved:
+- Standalone verification completed:
 - Coverage >= 90%:
+- Reuse/common logic rule satisfied:
 - Changed code files <= 1000 lines:
 - Database runtime/pool rules satisfied:
 - OpenAPI and Controller/Service rules satisfied:

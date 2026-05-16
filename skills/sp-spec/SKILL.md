@@ -34,10 +34,11 @@ Create or update:
 4. Identify project-defined rules that affect scope and observable behavior.
 5. Create capability spec files under `specs/`.
 6. Use OpenSpec Requirement and Scenario format.
-7. Review proposal and specs for alignment with brainstorm, context, rules, existing specs, and OpenSpec format.
-8. Create `spec-review.md` with findings and required fixes before `/sp-tasks`.
-9. Fix review findings that are inside the approved spec scope.
-10. Stop before creating design, tasks, or code.
+7. Make every behavior independently verifiable through an observable entry point.
+8. Review proposal and specs for alignment with brainstorm, context, rules, existing specs, OpenSpec format, and standalone verifiability.
+9. Create `spec-review.md` with findings and required fixes before `/sp-tasks`.
+10. Fix review findings that are inside the approved spec scope.
+11. Stop before creating design, tasks, or code.
 
 ## Required `proposal.md` Sections
 
@@ -58,6 +59,7 @@ Create or update:
 - Rule Alignment
 - Requirement Quality
 - Scenario Coverage
+- Standalone Verifiability
 - Out-of-Scope or Implementation Leakage
 - Required Fixes Before /sp-tasks
 
@@ -100,6 +102,11 @@ Use these groups when appropriate:
 
 - Use `SHALL` for required behavior, `SHOULD` for recommended behavior, and `MAY` for optional behavior.
 - Describe externally observable behavior.
+- Specs must be independently verifiable from a real user-facing, API-facing, job-facing, or system-facing entry point.
+- Backend behavior scenarios must be written so a real API request and response can be verified later.
+- UI behavior scenarios must be written so an interface test can verify the changed screen behavior later.
+- Bug fix scenarios must identify the bug entry point and expected fixed behavior.
+- External service behavior must identify observable database, Redis, Elasticsearch, queue, cache, or integration effects when those effects are part of the behavior.
 - Encode relevant project-defined rules as requirements or scenarios when they affect observable behavior.
 - Do not include implementation details, internal architecture, file names, classes, or database changes in specs.
 - Do not create or edit `design.md`.

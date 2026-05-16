@@ -4,7 +4,7 @@ Language: [中文](README.md) | English
 
 This repository is a workflow template for Codex or other skill-capable AI coding agents. It combines Superpower-style engineering discipline with OpenSpec-style change artifacts, moving from requirement discovery to formal specs, design, implementation, review, tests, wiki documentation, and archived change records in a repeatable way.
 
-This repository is not an application project. It is a template repository. To use it, copy `templates/` into a target project root and sync the `/sp-*` workflow skills from `skills/` into the user-level skills directory used by your agent runtime.
+This repository is not an application project. It is a template repository. To use it, copy `templates/` into a target project root and sync the `/sp-*` workflow skills from `skills/` into the user-level skills directory used by your agent runtime. The target project can use `/sp-goal` to finish the remaining workflow automatically, or run `/sp-brainstorm`, `/sp-spec`, `/sp-tasks`, `/sp-impl`, and `/sp-complete` manually.
 
 OpenSpec CLI is not required. The AI coding agent works directly with files under `openspec/`.
 
@@ -35,6 +35,7 @@ The template makes AI-assisted development more controlled and auditable:
 ```text
 sp-openspec/
   skills/
+    sp-goal/
     sp-brainstorm/
     sp-spec/
     sp-tasks/
@@ -98,6 +99,7 @@ docs/
 Copy these directories from `skills/` into the user-level Codex skills directory:
 
 ```text
+sp-goal/
 sp-brainstorm/
 sp-spec/
 sp-tasks/
@@ -133,11 +135,11 @@ After copying the template, update:
 
 The template includes these default rule files:
 
-- `docs/rules/project-implementation-standards.md`: Baseline implementation rules for code paths, file size, database runtime, OpenAPI, layering, API IO, and async work.
+- `docs/rules/project-implementation-standards.md`: Baseline implementation rules for code paths, standalone full verification, same/equivalent logic reuse, file size, database runtime, OpenAPI, layering, API IO, and async work.
 - `docs/rules/java-code-standards.md`: Java/Spring rules with Google Java Style as a default reference.
 - `docs/rules/python-code-standards.md`: Python rules with Google Python Style as a default reference.
 - `docs/rules/configuration-standards.md`: Configuration, database, migration, OpenAPI, async queue, and tool configuration rules.
-- `docs/rules/testing-standards.md`: Testing, coverage, test parameters, mocks, and integration test safety rules.
+- `docs/rules/testing-standards.md`: Testing, coverage, test parameters, standalone full verification, mocks, and integration test safety rules.
 
 Each target project can add its own rule files, for example:
 
@@ -148,6 +150,16 @@ docs/rules/data-retention.md
 ```
 
 ## Workflow Steps
+
+Run the automatic goal command to finish the remaining workflow:
+
+```text
+/sp-goal <requirement-or-change-id>
+```
+
+`/sp-goal` detects the current change status and starts from the earliest incomplete phase. If brainstorm is not complete, it starts at brainstorm. If brainstorm is complete but spec is not complete, it starts at spec. It continues through the remaining phases until `/sp-complete`. It does not skip reviews, tests, coverage, finding closure, wiki generation, or archive gates.
+
+You can also run phases manually:
 
 1. Explore the requirement: run `/sp-brainstorm <requirement>`.
    - Outputs: `brainstorm.md`, `context.md`, `brainstorm-review.md`.
@@ -170,6 +182,7 @@ docs/rules/data-retention.md
    - Requirement: every Alignment Review and Security Review finding must be fixed and re-reviewed before starting the next task.
 
 5. Complete and archive: run `/sp-complete <change-id>`.
-   - Outputs: `completion.md`, `docs/wiki/<feature-or-story-title>.md`, `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`.
-   - Purpose: close the loop across tasks, tests, reviews, rules, and documentation, then archive the change.
+   - Outputs: `completion.md`, `docs/wiki/<feature-or-story-title>.md`, `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`, and a local git commit.
+   - Purpose: close the loop across tasks, tests, reviews, rules, and documentation, then generate the wiki, archive the change, and create the local commit.
    - Requirement: the wiki filename must be semantic and derived from specs, design, actual code, rules, and review evidence. It should not simply use `<change-id>.md`.
+   - Commit requirement: create the local commit only after code changes, tests, reviews, `completion.md`, wiki, and archive are finished. Commit only the completed change files and do not push automatically. The commit message must summarize the complete requirement, completed changes, solution/design approach, workflow and completion evidence, and frontend/backend completion content when relevant, without excessive implementation detail.

@@ -12,6 +12,17 @@ context: |
   Design and implementation must use docs/ai-context/source-index.md, docs/rules, docs/standards, docs/wiki, and existing code patterns.
 
 rules:
+  goal:
+    - Resolve the active change from an explicit change ID, the only active non-archived change, or a new user requirement.
+    - Detect the earliest incomplete phase and run remaining phases through complete.
+    - If brainstorm artifacts are missing or blocked, start at brainstorm.
+    - If proposal/spec artifacts are missing or blocked, start at specs.
+    - If design/tasks artifacts are missing or blocked, start at design/tasks.
+    - If tasks, tests, task reviews, coverage, or final review are incomplete, start at implementation.
+    - If completion, wiki, or archive output is missing, start at complete.
+    - Do not skip phase reviews, per-task reviews, coverage, test parameter files, wiki generation, or archive gates.
+    - Do not mark tasks complete without implementation and review evidence.
+    - Stop and ask for user input when the active change cannot be resolved.
   brainstorm:
     - Produce brainstorm.md and context.md only.
     - Produce brainstorm-review.md before moving to proposal/spec work.
@@ -38,6 +49,11 @@ rules:
     - Encode relevant behavior-affecting rules as observable requirements or scenarios.
     - Use SHALL, SHOULD, and MAY correctly.
     - Describe observable behavior only.
+    - Ensure every changed behavior is independently verifiable from a real user-facing, API-facing, job-facing, or system-facing entry point.
+    - Backend behavior must support later real API request/response verification.
+    - UI behavior must support later UI test verification.
+    - Bug fixes must identify the bug entry point and expected fixed behavior.
+    - External service behavior must identify observable database, Redis, Elasticsearch, queue, cache, or integration effects when relevant.
     - Do not include implementation tasks.
     - Review alignment with brainstorm.md, context.md, brainstorm-review.md, rules, and existing specs.
   design:
@@ -45,6 +61,8 @@ rules:
     - Read relevant project-defined docs/rules/*.md files.
     - Apply Java, Python, configuration, and testing rule files when the target files or validation touch those areas.
     - Recommend generated/modified code paths by feature point.
+    - Identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
+    - Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
     - Keep planned generated/modified code files at or below 1000 lines; split before implementation when needed.
     - Explicitly decide whether a database is required.
     - If database access is required, use SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
@@ -59,9 +77,15 @@ rules:
     - Each task must include applicable rules when relevant.
     - Each task touching Java, Python, configuration, or tests must cite matching default rule IDs.
     - Each task must list target generated/modified code paths.
+    - Each task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
     - Each task must include the <= 1000 line file-size guardrail and split plan when needed.
     - Each task must identify database, OpenAPI/Controller/Service, API IO, and async impact when relevant.
     - Each task must include validation.
+    - Each task must include standalone full verification from the relevant entry point.
+    - Backend service tasks must require real API request/response verification against a running service or project-supported test server.
+    - UI tasks must require a UI test case and actual interface behavior verification.
+    - Bug fix tasks must identify the bug entry point and verify the fix through that entry point.
+    - External service tasks must verify database, Redis, Elasticsearch, queue, cache, or integration behavior when the project provides a connection or test environment; otherwise record a skip reason.
     - Each task must specify independent test parameter files under openspec/changes/<change-id>/test-params/.
     - Each task must require at least 90% coverage for changed/affected code.
     - Each task must include an Alignment Review gate.
@@ -76,6 +100,8 @@ rules:
     - Check implementation against brainstorm-review.md, spec-review.md, and tasks-review.md.
     - Check task-reviews.md and require zero unresolved findings.
     - Check coverage evidence and require at least 90% coverage for changed/affected code.
+    - Check standalone full verification evidence for API, UI, bug-entry, and external-service behavior when relevant.
+    - Check same/equivalent logic reuse and reject avoidable duplicate logic.
     - Check generated/modified code files are at or below 1000 lines.
     - Check database runtime and connection pool rules when database access is required.
     - Check backend APIs follow OpenAPI and separate Controller and Service responsibilities when APIs changed.
@@ -92,8 +118,13 @@ rules:
     - Require review.md to show zero unresolved findings.
     - Require coverage evidence to show at least 90% coverage.
     - Require independent test parameter files.
-    - Require implementation-standard evidence for code paths, file length, database runtime/pool, OpenAPI/layers, API IO, and async handling when relevant.
+    - Require standalone full verification evidence for changed behavior.
+    - Require implementation-standard evidence for code paths, reuse/common logic, file length, database runtime/pool, OpenAPI/layers, API IO, and async handling when relevant.
     - Generate docs/wiki/<feature-or-story-title>.md from specs, design, implemented code, rules, and review evidence.
     - Derive the wiki filename from the completed feature/story, not from the raw change ID.
     - Create completion.md with gate results and archive target.
     - Archive the change only after all gates pass.
+    - Create a local git commit only after code changes, tests, reviews, completion evidence, wiki, and archive are finished when the project is a git worktree.
+    - Commit only files belonging to the completed change and leave unrelated local changes unstaged.
+    - Commit message must include the complete requirement, completed changes, solution/design approach, workflow/completion evidence, and frontend/backend completion content when relevant.
+    - Do not push unless the user explicitly asks.

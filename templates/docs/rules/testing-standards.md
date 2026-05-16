@@ -104,3 +104,13 @@ Task review evidence MUST include test proof.
 - Integration test gates, if any.
 - Open findings and fixes.
 
+## TEST-011: Standalone Full Verification
+
+Every changed behavior MUST be verified through a complete standalone path when the project provides one.
+
+- Backend service changes require a real API request/response verification against a running service or project-supported test server.
+- UI changes require a UI test case that verifies the changed interface behavior.
+- Bug fixes require a regression verification through the original bug entry point.
+- Database, Redis, Elasticsearch, queue, cache, or external integration changes require verification against the project-provided connection, local environment, test container, or documented test configuration when available.
+- If an external service verification path is unavailable, record the skip reason and verify all locally testable behavior.
+- Mock-only tests do not replace standalone verification when a real project-supported verification path exists.

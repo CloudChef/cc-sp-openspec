@@ -13,6 +13,8 @@ project-root/
   README.en.md
 
   skills/
+    sp-goal/
+      SKILL.md
     sp-brainstorm/
       SKILL.md
     sp-spec/
@@ -152,6 +154,10 @@ project-root/
 ## Workflow Artifacts
 
 ```text
+/sp-goal
+  -> detects the earliest incomplete phase
+  -> runs the remaining workflow through /sp-complete
+
 /sp-brainstorm
   -> brainstorm.md
   -> context.md
