@@ -1,5 +1,8 @@
 # Implementation Review: <change-id>
 
+> 默认语言：除非用户明确要求英文，本文档的标题、章节内容和说明均使用中文；OpenSpec 关键字、代码标识符、API 路径、配置键和命令保持原文。
+
+
 ## Summary
 
 ## Requirement Coverage
@@ -25,6 +28,17 @@
 ## Out-of-Spec Behavior
 
 ## Architecture Compliance
+
+## Customer Confirmation Compliance
+
+| Confirmation Area | Required | Evidence Followed In Implementation | Gap |
+|---|---|---|---|
+| Brainstorm output confirmed before spec |  |  |  |
+| Backend logic confirmed before implementation |  |  |  |
+| UI mockup and functional description confirmed before implementation |  |  |  |
+| API paths and parameters confirmed before implementation |  |  |  |
+| Configuration parameter names and values confirmed before implementation |  |  |  |
+| E2E required/not-required decision confirmed before implementation |  |  |  |
 
 ## Implementation Standards Compliance
 
@@ -75,7 +89,7 @@
 
 | Requirement | Status | Evidence | Gap |
 |---|---|---|---|
-| Coverage is at least 90% for changed/affected code |  |  |  |
+| Coverage is at least 85% for changed/affected code |  |  |  |
 | Tests use explicit parameter files |  |  |  |
 | Tests do not target empty/no-op code |  |  |  |
 | Tests are not limited to class/method initialization |  |  |  |

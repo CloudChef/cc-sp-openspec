@@ -1,5 +1,8 @@
 # Task Reviews: <change-id>
 
+> 默认语言：除非用户明确要求英文，本文档的标题、章节内容和说明均使用中文；OpenSpec 关键字、代码标识符、API 路径、配置键和命令保持原文。
+
+
 ## Summary
 
 ## Review Rule
@@ -22,6 +25,7 @@ All findings must be fixed and re-reviewed before moving to the next task.
 - Reuse/common logic evidence:
 - Requirement-scope/fallback evidence:
 - Parameter-count/data-object evidence:
+- Customer/user confirmation evidence:
 - Standalone verification evidence:
 - Real E2E evidence:
 - API request/response evidence:
@@ -50,9 +54,10 @@ All findings must be fixed and re-reviewed before moving to the next task.
 
 - Alignment findings resolved:
 - Security findings resolved:
+- Customer/user confirmations followed:
 - Standalone verification completed:
 - User-confirmed required real E2E completed:
-- Coverage >= 90%:
+- Coverage >= 85%:
 - Reuse/common logic rule satisfied:
 - Requirement-scope/fallback rule satisfied:
 - Parameter-count/data-object rule satisfied:

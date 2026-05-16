@@ -12,10 +12,12 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 ## Inputs
 
 - `AGENTS.md` or project agent instructions
+- `openspec/changes/<change-id>/brainstorm-review.md`
 - `openspec/changes/<change-id>/proposal.md`
 - `openspec/changes/<change-id>/specs/<capability>/spec.md`
 - `openspec/changes/<change-id>/spec-review.md`
 - `openspec/changes/<change-id>/design.md`
+- `openspec/changes/<change-id>/mockups/`, when UI changes require mockups
 - `openspec/changes/<change-id>/tasks.md`
 - `openspec/changes/<change-id>/tasks-review.md`
 - `openspec/changes/<change-id>/test-params/`, when present or required by tasks
@@ -33,7 +35,7 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 
 1. Read all inputs before editing, including phase review files and applicable project-defined rules.
 2. Identify unchecked tasks in `tasks.md`.
-3. Stop before coding if `spec-review.md` or `tasks-review.md` contains unresolved blocking gaps.
+3. Stop before coding if `spec-review.md` or `tasks-review.md` contains unresolved blocking gaps, if `brainstorm-review.md` lacks customer/user confirmation of brainstorm output, or if `design.md` / `tasks.md` lacks applicable customer/user confirmation evidence for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E decisions.
 4. Use test-driven development behavior if available and appropriate for the codebase.
 5. Implement only the next unchecked task.
 6. Implement in the target code paths listed by the task, adjusting only when existing project structure clearly requires it and recording the reason.
@@ -50,13 +52,13 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 17. Run standalone full verification from the task's required entry point.
 18. Run the task's real E2E test against the designed runtime target when user-confirmed as required in `design.md`.
 19. Run the task validation, coverage check, reuse/common logic check, requirement-scope/fallback check, parameter-count/data-object check, and file length check.
-20. Verify coverage is at least 90% for changed/affected code.
-21. Run Alignment Review for that task against specs, design, task text, rules, target code paths, reuse/common logic decisions, requirement-scope/fallback decisions, parameter-count/data-object decisions, standalone verification evidence, real E2E evidence, file lengths, database/API/IO decisions, test parameter files, tests, coverage evidence, and changed code.
+20. Verify coverage is at least 85% for changed/affected code.
+21. Run Alignment Review for that task against specs, design, task text, customer/user confirmation evidence, rules, target code paths, reuse/common logic decisions, requirement-scope/fallback decisions, parameter-count/data-object decisions, standalone verification evidence, real E2E evidence, file lengths, database/API/IO decisions, test parameter files, tests, coverage evidence, and changed code.
 22. Fix every Alignment Review finding and re-review until there are no open alignment findings.
 23. Run Security Review for that task against security-sensitive behavior, authorization, data handling, validation, logging, dependencies, configuration, database/API/IO behavior, project-defined security rules, test parameter files, and changed code.
 24. Fix every Security Review finding and re-review until there are no open security findings.
-25. Record both review rounds, findings, fixes, standalone verification evidence, real E2E evidence, coverage evidence, reuse/common logic evidence, requirement-scope/fallback evidence, parameter-count/data-object evidence, file length evidence, test parameter files, database/API/IO evidence, and closure evidence in `task-reviews.md`.
-26. Mark the task complete in `tasks.md` only after standalone verification, user-confirmed required real E2E verification, validation, coverage, reuse/common logic checks, requirement-scope/fallback checks, parameter-count/data-object checks, file length checks, and both reviews have no open findings.
+25. Record both review rounds, findings, fixes, customer/user confirmation evidence, standalone verification evidence, real E2E evidence, coverage evidence, reuse/common logic evidence, requirement-scope/fallback evidence, parameter-count/data-object evidence, file length evidence, test parameter files, database/API/IO evidence, and closure evidence in `task-reviews.md`.
+26. Mark the task complete in `tasks.md` only after applicable customer/user confirmations, standalone verification, user-confirmed required real E2E verification, validation, coverage, reuse/common logic checks, requirement-scope/fallback checks, parameter-count/data-object checks, file length checks, and both reviews have no open findings.
 27. Repeat this loop for the next unchecked task.
 28. Run at least two final code review passes on the complete implementation diff after all tasks are complete and all per-task findings are closed.
 29. Final Code Review Pass 1 must review the complete code change against specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and changed file sizes.
@@ -69,9 +71,12 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 ## Implementation Rules
 
 - Do not add behavior outside specs.
+- Write generated implementation review, task review, test parameter, and evidence artifacts in Chinese by default unless the user explicitly requests English.
 - Do not modify unrelated files.
 - Do not introduce new dependencies unless `design.md` requires them.
 - Follow applicable project-defined rules.
+- Do not start implementation if required customer/user confirmation evidence is missing for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameter names/values, or E2E decisions.
+- Implement only the backend logic, UI behavior, API paths/parameters, and configuration parameters confirmed in `design.md` and reflected in `tasks.md`.
 - Implement in the target code paths from `tasks.md`, or record a justified path adjustment in `task-reviews.md`.
 - Reuse same/equivalent existing logic whenever possible.
 - Extract or extend shared abstractions when the same logic is needed across multiple features or modules.
@@ -92,7 +97,7 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - Do not finalize implementation until the complete diff has passed at least two final code review passes after all tasks are complete.
 - Preserve user changes and existing dirty worktree edits.
 - Update `tasks.md` only after verification supports completion.
-- Do not mark a task complete unless changed/affected code coverage is at least 90%.
+- Do not mark a task complete unless changed/affected code coverage is at least 85%.
 - Do not write tests for empty/no-op code.
 - Do not count tests that only verify class or method initialization.
 - Do not hardcode test parameters only inside test code; save explicit test parameters independently under `openspec/changes/<change-id>/test-params/`.
@@ -113,6 +118,7 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - Per-Task Review Completion
 - Out-of-Spec Behavior
 - Architecture Compliance
+- Customer Confirmation Compliance
 - Implementation Standards Compliance
 - Rules Compliance
 - Test Coverage
@@ -131,7 +137,7 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - If review finds rule violations, fix them when covered by approved specs/tasks; otherwise stop and report the needed OpenSpec update.
 - Final completion requires `task-reviews.md` and `review.md` to show zero unresolved findings.
 - Final completion requires at least two final code review passes on the complete implementation diff, recorded in `review.md`, with all findings fixed and re-reviewed.
-- Final completion requires at least 90% coverage evidence and independent test parameter files for all implemented tasks.
+- Final completion requires at least 85% coverage evidence and independent test parameter files for all implemented tasks.
 - Do not convert review findings into new requirements without an explicit spec update.
 
 ## Review Method
@@ -160,7 +166,7 @@ Run two distinct review passes for each task:
 
 Both review passes must also verify:
 
-- Coverage evidence is at least 90% for changed/affected code.
+- Coverage evidence is at least 85% for changed/affected code.
 - Standalone full verification evidence exists for API, UI, bug-entry, and external-service behavior when relevant.
 - User-confirmed required real E2E test evidence exists, or a documented environment blocker and fallback evidence are recorded.
 - Same/equivalent logic is reused or generalized, with no avoidable duplicate logic.

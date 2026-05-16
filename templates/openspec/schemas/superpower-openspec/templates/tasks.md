@@ -1,5 +1,8 @@
 # Tasks: <title>
 
+> 默认语言：除非用户明确要求英文，本文档的标题、章节内容和说明均使用中文；OpenSpec 关键字、代码标识符、API 路径、配置键和命令保持原文。
+
+
 ## 1. Implementation
 
 - [ ] 1.1 <task title>
@@ -11,14 +14,18 @@
   - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
   - File size guardrail: each generated/modified code file must stay <= 1000 lines; split plan: `<none/path split>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
+  - Backend logic confirmation: `<confirmed/not-applicable + evidence>`
   - API contract/layers: `<none/OpenAPI operation + Controller path + Service path>`
+  - API path/parameters confirmation: `<confirmed/not-applicable + method/path/path params/query params/body params evidence>`
   - API IO / async: `<none/IO profile/async required>`
+  - UI mockup/function confirmation: `<confirmed/not-applicable + mockup path + behavior description evidence>`
+  - Config parameter confirmation: `<confirmed/not-applicable + parameter names/values evidence>`
   - Change: <specific implementation work>
   - Standalone verification: `<entry point + command/test + request/input + expected response/output + side effects>`
   - Real E2E test: `<required/not-applicable with reason + command/tool + runtime target + test data + assertions + evidence>`
   - Validation: <how to verify>
   - Test parameters: `openspec/changes/<change-id>/test-params/<scenario-name>.md`
-  - Coverage target: at least 90% code coverage for changed/affected code
+  - Coverage target: at least 85% code coverage for changed/affected code
   - Required reviews after implementation:
     - Alignment review against spec, design, task, rules, and changed code
     - Security review against security-sensitive behavior and project-defined security rules
@@ -30,12 +37,13 @@
 
 Validation must include:
 
-- Code coverage check showing at least 90% coverage for changed/affected code.
+- Code coverage check showing at least 85% coverage for changed/affected code.
 - Reuse/common logic check showing no avoidable duplicate logic was introduced.
 - Requirement-scope/fallback check showing no unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior was added.
 - Parameter-count/data-object check showing no method/function has more than 5 inputs unless it uses an explicit named data object.
 - File length check showing every generated/modified code file is at or below 1000 lines.
 - Database configuration check when database access is required: SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, connection pool configured, maximum pool size <= 100.
+- Customer/user confirmation check for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.
 - OpenAPI contract check for backend APIs, with at least Controller and Service responsibilities separated.
 - API IO check for every API, including async validation for very time-consuming operations.
 - Standalone full verification from the relevant entry point: real API call for backend services, UI test for UI changes, bug entry-point verification for bug fixes, and external service verification when project connection/test config exists.

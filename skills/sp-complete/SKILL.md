@@ -12,10 +12,12 @@ Use this skill to close an implemented OpenSpec change. Completion requires all 
 ## Inputs
 
 - `AGENTS.md` or project agent instructions
+- `openspec/changes/<change-id>/brainstorm-review.md`
 - `openspec/changes/<change-id>/proposal.md`
 - `openspec/changes/<change-id>/specs/<capability>/spec.md`
 - `openspec/changes/<change-id>/spec-review.md`
 - `openspec/changes/<change-id>/design.md`
+- `openspec/changes/<change-id>/mockups/`, when UI changes require mockups
 - `openspec/changes/<change-id>/tasks.md`
 - `openspec/changes/<change-id>/tasks-review.md`
 - `openspec/changes/<change-id>/test-params/`
@@ -47,13 +49,13 @@ Then create:
 3. Verify `task-reviews.md` shows every task passed Alignment Review and Security Review.
 4. Verify `task-reviews.md` has zero open findings.
 5. Verify `review.md` has zero unresolved findings.
-6. Verify coverage evidence is at least 90% for changed/affected code.
+6. Verify coverage evidence is at least 85% for changed/affected code.
 7. Verify test parameter files are independently saved under `test-params/`.
-8. Verify implementation-standard evidence: changed code paths match tasks, same/equivalent logic is reused or generalized without avoidable duplication, existing-code changes stay inside approved requirements with no unrequested fallback/compatibility behavior, methods/functions have <= 5 inputs or use explicit named data objects, standalone full verification is complete, user-confirmed required real E2E tests are designed and executed, generated/modified code files are <= 1000 lines, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
+8. Verify implementation-standard evidence: changed code paths match tasks, applicable customer/user confirmations are recorded and followed, same/equivalent logic is reused or generalized without avoidable duplication, existing-code changes stay inside approved requirements with no unrequested fallback/compatibility behavior, methods/functions have <= 5 inputs or use explicit named data objects, standalone full verification is complete, user-confirmed required real E2E tests are designed and executed, generated/modified code files are <= 1000 lines, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
 9. Inspect relevant implementation files or diffs referenced by the change artifacts.
 10. Derive a human-readable feature/story title from specs, design, code, rules, and review evidence.
 11. Convert that title to a concise kebab-case wiki filename.
-12. Generate or update `docs/wiki/<semantic-feature-or-story-title>.md` from specs, design, code paths, database/API/IO decisions, rules, test evidence, and review evidence.
+12. Generate or update `docs/wiki/<semantic-feature-or-story-title>.md` from specs, design, customer/user confirmations, code paths, database/API/IO decisions, rules, test evidence, and review evidence.
 13. Create `completion.md` with completion evidence, wiki output path, title derivation basis, and archive target.
 14. Run a final consistency review of `completion.md`, the wiki page, tasks, reviews, specs, design, code evidence, and test evidence.
 15. Fix any completion findings and re-run the consistency review until there are no open findings.
@@ -67,12 +69,14 @@ Then create:
 
 Do not archive if any pre-archive gate fails. Do not mark completion successful if archive evidence is missing, or if local git commit evidence or a valid git skip reason is missing.
 
+- Generated completion, wiki, and final report documentation must be written in Chinese by default unless the user explicitly requests English.
 - Any task in `tasks.md` is unchecked.
 - Any task lacks Alignment Review evidence.
 - Any task lacks Security Review evidence.
 - Any finding remains open in `task-reviews.md`.
 - Any unresolved finding remains in `review.md`.
-- Coverage evidence is below 90% for changed/affected code.
+- Required customer/user confirmation evidence is missing for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E decisions.
+- Coverage evidence is below 85% for changed/affected code.
 - Required test parameter files are missing.
 - Tests only cover empty/no-op code or class/method initialization.
 - Same/equivalent logic is duplicated without documented justification.
@@ -85,7 +89,7 @@ Do not archive if any pre-archive gate fails. Do not mark completion successful 
 - Required database runtime or connection pool evidence is missing.
 - Backend API OpenAPI, Controller, or Service evidence is missing when APIs changed.
 - API IO or async evidence is missing when APIs changed.
-- The wiki page does not reflect spec, design, and implemented code.
+- The wiki page does not reflect spec, design, customer/user confirmations, and implemented code.
 - The wiki filename is only the raw `<change-id>` instead of a semantic feature/story title derived from the completed work.
 - The implementation contains behavior not covered by specs.
 - The archive target would overwrite an existing folder.
@@ -106,6 +110,7 @@ Commit message requirements:
 - The message MUST include the complete requirement in concise form.
 - The message MUST summarize the completed changes.
 - The message MUST summarize the solution/design approach.
+- The message MUST summarize customer/user confirmation evidence when confirmations were required.
 - The message MUST summarize the workflow and completion evidence: specs, design, tasks, tests, reviews, wiki, and archive.
 - The message MUST mention frontend and backend completion content when either area changed. If only one side changed, state that clearly.
 - The message SHOULD be complete but not overly detailed.
@@ -166,6 +171,7 @@ The generated wiki page must include:
 - Workflow
 - Rules Applied
 - Design Summary
+- Customer / User Confirmations
 - Implemented Code Paths
 - API / Data / UI Impact, when relevant
 - Database / API IO / Async Notes, when relevant
@@ -202,6 +208,7 @@ Include:
 
 - Requirement / outcome summary
 - Solution summary: key design decisions, architecture choices, data/API/UI flow, and important tradeoffs
+- Customer/user confirmations: brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration names/values, and E2E decisions when applicable
 - Code changes: concrete changed areas and important file paths; include backend/API/data work and frontend/UI work when relevant, or state none
 - Test and verification evidence: commands, real API/UI/E2E evidence when required, coverage result, and any accepted skip reason
 - Documentation changes: wiki/user docs/README/API docs or other non-OpenSpec documentation created or updated

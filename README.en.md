@@ -23,9 +23,9 @@ OpenSpec CLI is not required. The AI coding agent works directly with files unde
 
 The template makes AI-assisted development more controlled and auditable:
 
-- `brainstorm.md` and `context.md` capture discovery and source research.
+- `brainstorm.md`, `context.md`, and `brainstorm-review.md` capture discovery, source research, and customer/user confirmation.
 - `proposal.md` and `specs/<capability>/spec.md` capture formal behavior requirements.
-- `design.md` and `tasks.md` capture technical design, target code paths, database/API/async/test decisions, and implementation tasks.
+- `design.md`, `mockups/`, and `tasks.md` capture technical design, UI mockups, target code paths, database/API/async/test decisions, and implementation tasks.
 - `task-reviews.md` and `review.md` capture per-task alignment review, security review, and final implementation review.
 - `docs/wiki/<feature-or-story-title>.md` captures the completed feature or story documentation.
 - `docs/rules/*.md` captures project-specific business, code, configuration, and testing rules.
@@ -131,11 +131,13 @@ After copying the template, update:
 - `docs/standards/*.md`: Architecture, backend, frontend, API, integration, security, and testing standards.
 - `docs/wiki/*.md`: Existing business and feature knowledge.
 
+Default language: generated OpenSpec, review, test-parameter, mockup-description, wiki, and final report documents are Chinese by default. Use English only when the user explicitly asks for English, and record that request in the relevant artifact.
+
 ### 4. Configure Rules
 
 The template includes these default rule files:
 
-- `docs/rules/project-implementation-standards.md`: Baseline implementation rules for code paths, requirement scope and fallback control, method parameters/data objects, standalone full verification, real E2E test design and execution, same/equivalent logic reuse, file size, database runtime, OpenAPI, layering, API IO, and async work.
+- `docs/rules/project-implementation-standards.md`: Baseline implementation rules for code paths, requirement scope and fallback control, method parameters/data objects, standalone full verification, real E2E test design and execution, same/equivalent logic reuse, Chinese-by-default generated documentation, file size, database runtime, OpenAPI, layering, API IO, and async work.
 - `docs/rules/java-code-standards.md`: Java/Spring rules with Google Java Style as a default reference.
 - `docs/rules/python-code-standards.md`: Python rules with Google Python Style as a default reference.
 - `docs/rules/configuration-standards.md`: Configuration, database, migration, OpenAPI, async queue, and tool configuration rules.
@@ -157,24 +159,25 @@ Run the automatic goal command to finish the remaining workflow:
 /sp-goal <requirement-or-change-id>
 ```
 
-`/sp-goal` detects the current change status and starts from the earliest incomplete phase. If brainstorm is not complete, it starts at brainstorm. If brainstorm is complete but spec is not complete, it starts at spec. It continues through the remaining phases until `/sp-complete`. If an existing `design.md` lacks a user-confirmed E2E required/not-required decision, `/sp-goal` treats design/tasks as incomplete, confirms the decision inside the goal workflow, then updates design, tasks, and tasks-review. It does not skip reviews, tests, coverage, finding closure, wiki generation, or archive gates.
+`/sp-goal` detects the current change status and starts from the earliest incomplete phase. If brainstorm is not complete or lacks customer/user confirmation, it starts at brainstorm. If brainstorm is confirmed but spec is not complete, it starts at spec. It continues through the remaining phases until `/sp-complete`. If an existing `design.md` lacks any required confirmation for backend logic, UI mockup/function description, API paths and parameters, configuration parameter names and values, or E2E required/not-required decisions, `/sp-goal` treats design/tasks as incomplete, confirms the missing decision inside the goal workflow, then updates design, tasks, and tasks-review. It does not skip reviews, tests, coverage, finding closure, wiki generation, or archive gates.
 
 You can also run phases manually:
 
 1. Explore the requirement: run `/sp-brainstorm <requirement>`.
    - Outputs: `brainstorm.md`, `context.md`, `brainstorm-review.md`.
    - Purpose: clarify the requirement, collect context, read rules, and identify scope risks.
+   - Confirmation: the output must be confirmed with the customer/user, and the confirmation, requested changes, or rejection must be recorded in `brainstorm-review.md` before `/sp-spec`.
    - Limit: do not create formal specs, design, tasks, or code.
 
 2. Generate specs: run `/sp-spec <change-id>`.
    - Outputs: `proposal.md`, `specs/<capability>/spec.md`, `spec-review.md`.
    - Purpose: turn the requirement into a formal proposal and observable behavior specs.
-   - Requirement: specs use Requirement + Scenario format; rules that affect external behavior must be encoded in requirements or scenarios; scenarios must provide enough external-entry and expected-result detail for design to decide whether real E2E is required.
+   - Requirement: specs must be based on confirmed brainstorm output; specs use Requirement + Scenario format; rules that affect external behavior must be encoded in requirements or scenarios; scenarios must provide enough external-entry and expected-result detail for design to decide whether real E2E is required.
 
 3. Create design and tasks: run `/sp-tasks <change-id>`.
    - Outputs: `design.md`, `tasks.md`, `tasks-review.md`.
    - Purpose: define technical design, code paths, task boundaries, test strategy, and review gates.
-   - Requirement: design must decide whether the current requirement needs real E2E and confirm that decision with the user. When E2E is confirmed as required, design must specify command, runtime target, test data, assertions, and evidence. If confirmation exposes a spec gap, update specs before continuing to tasks and implementation. Tasks must include code paths, requirement-scope/fallback decisions, method-parameter/data-object plans, file split plan, database/API/IO/async impact, the confirmed E2E requirement, test parameter files, 90% coverage target, Alignment Review, and Security Review.
+   - Requirement: all backend logic must be confirmed with the customer/user. If UI changes exist, design must generate a mockup and functional description and confirm both. If APIs exist, design must list every API method, path, path/query/body parameter, and response-relevant parameter and confirm them. If configuration parameters exist, design must list parameter names, proposed values, environments/scopes, and reasons and confirm them. Design must also decide whether the current requirement needs real E2E and confirm that decision with the user. When E2E is confirmed as required, design must specify command, runtime target, test data, assertions, and evidence. If any confirmation exposes a spec gap, update specs before continuing to tasks and implementation. Tasks must include code paths, customer confirmation evidence, requirement-scope/fallback decisions, method-parameter/data-object plans, file split plan, database/API/IO/async impact, the confirmed E2E requirement, test parameter files, 85% coverage target, Alignment Review, and Security Review.
 
 4. Implement tasks: run `/sp-impl <change-id>`.
    - Outputs: code changes, updated `tasks.md`, `test-params/`, `task-reviews.md`, and `review.md`.

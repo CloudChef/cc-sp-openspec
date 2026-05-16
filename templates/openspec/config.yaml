@@ -10,16 +10,18 @@ context: |
   Wiki and standards under docs/ are design inputs.
   Specs must reflect relevant behavior-affecting rules.
   Design and implementation must use docs/ai-context/source-index.md, docs/rules, docs/standards, docs/wiki, and existing code patterns.
+  Generated OpenSpec, review, test-parameter, wiki, and workflow documents default to Chinese unless the user explicitly asks for English.
 
 rules:
   goal:
     - Resolve the active change from an explicit change ID, the only active non-archived change, or a new user requirement.
+    - Generate all workflow documents in Chinese by default unless the user explicitly requests English.
     - Detect the earliest incomplete phase and run remaining phases through complete.
-    - If brainstorm artifacts are missing or blocked, start at brainstorm.
+    - If brainstorm artifacts are missing, blocked, or lack customer/user confirmation, start at brainstorm.
     - If proposal/spec artifacts are missing or blocked, start at specs.
     - If design/tasks artifacts are missing or blocked, start at design/tasks.
-    - If design.md exists but lacks the user-confirmed E2E required/not-required decision, treat design/tasks as incomplete.
-    - When E2E confirmation is missing during goal mode, confirm the decision with the user and update design.md, tasks.md, and tasks-review.md before implementation.
+    - If design.md exists but lacks customer/user confirmation for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E required/not-required decision, treat design/tasks as incomplete.
+    - When required confirmation is missing during goal mode, confirm the decision with the customer/user and update the affected brainstorm or design/task artifacts before continuing.
     - If tasks, tests, task reviews, coverage, or final review are incomplete, start at implementation.
     - If completion, wiki, or archive output is missing, start at complete.
     - Do not skip phase reviews, per-task reviews, coverage, test parameter files, wiki generation, or archive gates.
@@ -28,6 +30,8 @@ rules:
   brainstorm:
     - Produce brainstorm.md and context.md only.
     - Produce brainstorm-review.md before moving to proposal/spec work.
+    - Ask the customer/user to confirm the final brainstorm output before moving to proposal/spec work.
+    - Record customer/user confirmation, requested changes, or rejection in brainstorm-review.md.
     - Use Superpower review skills when available; request reviews with superpowers:requesting-code-review, process findings with superpowers:receiving-code-review, and record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if the skills are unavailable.
     - Review alignment with user request, context, rules, existing specs, and source gaps.
     - Do not write code.
@@ -41,6 +45,7 @@ rules:
     - Record conflicts and context gaps instead of guessing.
   proposal:
     - Base proposal.md on brainstorm.md and context.md.
+    - Do not start proposal/spec work until brainstorm-review.md records customer/user confirmation of the brainstorm output.
     - Identify project-defined rules that affect scope.
     - Produce spec-review.md after proposal/specs are drafted.
     - Use Superpower review skills when available; request reviews with superpowers:requesting-code-review, process findings with superpowers:receiving-code-review, and record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if the skills are unavailable.
@@ -69,6 +74,10 @@ rules:
     - Define requirement scope and whether compatibility/fallback behavior is required; if specs do not require it, explicitly prohibit fallback and compatibility branches.
     - Define method/function parameter plans; no method/function may exceed 5 input parameters unless a named data object with explicit fields is used.
     - Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
+    - Identify all backend logic decisions, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
+    - If UI changes exist, generate a mockup artifact and functional description, stop to confirm both with the customer/user, and record confirmation before tasks are finalized.
+    - If APIs exist, list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
+    - If configuration parameters exist, list every parameter name, proposed value, environment/scope, and reason, stop to confirm names and values with the customer/user, and record confirmation before tasks are finalized.
     - Assess whether each changed capability requires real E2E, stop to confirm the required/not-required decision with the user, and record the confirmation in design.md.
     - For confirmed required E2E paths, define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, evidence, and fallback/skip reason when no runnable target exists.
     - If the confirmed E2E decision reveals missing or incorrect spec behavior, stop and update specs before creating tasks or implementing.
@@ -93,6 +102,7 @@ rules:
     - Each task must identify database, OpenAPI/Controller/Service, API IO, and async impact when relevant.
     - Each task must include validation.
     - Each task must include standalone full verification from the relevant entry point.
+    - Each task must include applicable customer/user confirmation evidence for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, and E2E decisions, or a clear not-applicable reason.
     - Each task must include the user-confirmed real E2E requirement or a design-confirmed not-applicable reason.
     - Specs, tasks, and implementation must follow the user-confirmed E2E decision recorded in design.md.
     - Backend service tasks must require real API request/response verification against a running service or project-supported test server.
@@ -100,7 +110,7 @@ rules:
     - Bug fix tasks must identify the bug entry point and verify the fix through that entry point.
     - External service tasks must verify database, Redis, Elasticsearch, queue, cache, or integration behavior when the project provides a connection or test environment; otherwise record a skip reason.
     - Each task must specify independent test parameter files under openspec/changes/<change-id>/test-params/.
-    - Each task must require at least 90% coverage for changed/affected code.
+    - Each task must require at least 85% coverage for changed/affected code.
     - Each task must include an Alignment Review gate.
     - Each task must include a Security Review gate.
     - Every per-task review finding must be fixed and re-reviewed before the next task starts.
@@ -108,12 +118,14 @@ rules:
     - Produce tasks-review.md before implementation.
     - Use Superpower review skills when available; request reviews with superpowers:requesting-code-review, process findings with superpowers:receiving-code-review, and record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if the skills are unavailable.
     - Review alignment with specs, spec-review.md, design.md, rules, and validation coverage.
+    - Review customer/user confirmation gates for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.
   review:
     - Check implementation against specs and tasks.
     - Check implementation against brainstorm-review.md, spec-review.md, and tasks-review.md.
     - Check task-reviews.md and require zero unresolved findings.
-    - Check coverage evidence and require at least 90% coverage for changed/affected code.
+    - Check coverage evidence and require at least 85% coverage for changed/affected code.
     - Check standalone full verification evidence for API, UI, bug-entry, and external-service behavior when relevant.
+    - Check that customer/user-confirmed backend logic, UI behavior, API paths/parameters, configuration parameters, and E2E decisions were followed.
     - Check user-confirmed required real E2E test evidence, including command, runtime target, test data, assertions, and evidence.
     - Check same/equivalent logic reuse and reject avoidable duplicate logic.
     - Check existing-code changes implement only approved requirements and reject unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior.
@@ -137,18 +149,19 @@ rules:
     - Require task-reviews.md to show zero open findings.
     - Require review.md to show zero unresolved findings.
     - Require review.md to record at least two final complete-diff code review passes with zero open findings.
-    - Require coverage evidence to show at least 90% coverage.
+    - Require coverage evidence to show at least 85% coverage.
+    - Require customer/user confirmation evidence for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions when applicable.
     - Require independent test parameter files.
     - Require standalone full verification evidence for changed behavior.
     - Require real E2E test evidence when user-confirmed as required in design.
     - Require implementation-standard evidence for code paths, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, file length, database runtime/pool, OpenAPI/layers, API IO, and async handling when relevant.
-    - Generate docs/wiki/<feature-or-story-title>.md from specs, design, implemented code, rules, and review evidence.
+    - Generate docs/wiki/<feature-or-story-title>.md from specs, design, customer/user confirmations, implemented code, rules, and review evidence.
     - Derive the wiki filename from the completed feature/story, not from the raw change ID.
     - Create completion.md with gate results and archive target.
     - Archive the change only after all gates pass.
     - Create a local git commit only after code changes, tests, reviews, completion evidence, wiki, and archive are finished when the project is a git worktree.
     - Commit only files belonging to the completed change and leave unrelated local changes unstaged.
-    - Commit message must include the complete requirement, completed changes, solution/design approach, workflow/completion evidence, and frontend/backend completion content when relevant.
+    - Commit message must include the complete requirement, completed changes, solution/design approach, customer/user confirmation evidence when required, workflow/completion evidence, and frontend/backend completion content when relevant.
     - Final response must report the completed work in user-facing terms: requirement/outcome, solution, code changes, tests/verification, documentation, review status, and local commit.
     - OpenSpec archive paths and internal artifacts may be included only as supporting evidence; do not lead the final response with OpenSpec bookkeeping.
     - Do not push unless the user explicitly asks.

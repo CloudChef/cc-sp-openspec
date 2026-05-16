@@ -1,5 +1,8 @@
 # Design: <title>
 
+> 默认语言：除非用户明确要求英文，本文档的标题、章节内容和说明均使用中文；OpenSpec 关键字、代码标识符、API 路径、配置键和命令保持原文。
+
+
 ## Current Behavior
 
 ## Target Behavior
@@ -48,14 +51,42 @@
 - Connection pool required: `<yes/no>`
 - Maximum pool size: `<= 100`
 
+## Backend Logic Confirmation
+
+All backend behavior and business logic decisions must be confirmed with the customer/user before tasks are finalized.
+
+| Backend Logic Area | Proposed Behavior | Affected Service / Module | Customer/User Confirmation | Evidence / Follow-Up |
+|---|---|---|---|---|
+
 ## API Impact
 
 ## OpenAPI / Backend Layering
 
-| API | OpenAPI Operation / Schema | Controller Path | Service Path | IO Profile | Async Required |
-|---|---|---|---|---|---|
+| API | Method | Path | OpenAPI Operation / Schema | Controller Path | Service Path | IO Profile | Async Required |
+|---|---|---|---|---|---|---|---|
+
+## API Path / Parameter Confirmation
+
+Every API path and parameter set must be confirmed with the customer/user before tasks are finalized.
+
+| API | Method | Path | Path Parameters | Query Parameters | Request Body Parameters | Response-Relevant Parameters | Customer/User Confirmation | Evidence / Follow-Up |
+|---|---|---|---|---|---|---|---|---|
 
 ## UI Impact
+
+## UI Mockup / Functional Description
+
+When UI changes exist, create a mockup artifact and a functional description, then confirm both with the customer/user before tasks are finalized.
+
+| UI Area | Mockup Path | Functional Description | Customer/User Confirmation | Evidence / Follow-Up |
+|---|---|---|---|---|
+
+## Configuration Parameter Confirmation
+
+Every new or changed configuration parameter name and value must be confirmed with the customer/user before tasks are finalized.
+
+| Parameter Name | Proposed Value | Environment / Scope | Reason | Customer/User Confirmation | Evidence / Follow-Up |
+|---|---|---|---|---|---|
 
 ## Integration Impact
 
@@ -78,6 +109,19 @@ Confirm the E2E required/not-required decision with the user before creating tas
 
 | Capability / Scenario | E2E Required | User Confirmation | Command / Tool | Runtime Target | Test Data / Parameter File | Flow / Trigger | Assertions | Evidence / Skip Reason |
 |---|---|---|---|---|---|---|---|---|
+
+## Customer Confirmation
+
+Record all customer/user confirmations required before tasks or implementation.
+
+| Confirmation Area | Required | Status | Evidence | Follow-Up |
+|---|---|---|---|---|
+| Brainstorm output confirmed before spec |  |  |  |  |
+| Backend logic confirmed |  |  |  |  |
+| UI mockup and functional description confirmed |  |  |  |  |
+| API paths and parameters confirmed |  |  |  |  |
+| Configuration parameter names and values confirmed |  |  |  |  |
+| E2E required/not-required decision confirmed |  |  |  |  |
 
 ## Rules Compliance
 

@@ -29,17 +29,18 @@ Create or update:
 ## Workflow
 
 1. Confirm `<change-id>` from the user command or existing brainstorm artifact.
-2. Read `brainstorm.md`, `context.md`, `openspec/project.md`, relevant existing specs, and relevant project-defined rules under `docs/rules/*.md` when present.
-3. Create `proposal.md` with product-level scope and risk.
-4. Identify project-defined rules that affect scope and observable behavior.
-5. Create capability spec files under `specs/`.
-6. Use OpenSpec Requirement and Scenario format.
-7. Make every behavior independently verifiable through an observable entry point.
-8. Make scenarios specific enough for the later design phase to decide whether real E2E is required.
-9. Review proposal and specs for alignment with brainstorm, context, rules, existing specs, OpenSpec format, standalone verifiability, and E2E-verifiability.
-10. Create `spec-review.md` with findings and required fixes before `/sp-tasks`.
-11. Fix review findings that are inside the approved spec scope.
-12. Stop before creating design, tasks, or code.
+2. Verify `brainstorm-review.md` records customer/user confirmation of the brainstorm output. If confirmation is missing or rejected, stop and return to `/sp-brainstorm` confirmation before proposal/spec work.
+3. Read `brainstorm.md`, `context.md`, `openspec/project.md`, relevant existing specs, and relevant project-defined rules under `docs/rules/*.md` when present.
+4. Create `proposal.md` with product-level scope and risk.
+5. Identify project-defined rules that affect scope and observable behavior.
+6. Create capability spec files under `specs/`.
+7. Use OpenSpec Requirement and Scenario format.
+8. Make every behavior independently verifiable through an observable entry point.
+9. Make scenarios specific enough for the later design phase to decide whether real E2E is required.
+10. Review proposal and specs for alignment with confirmed brainstorm, context, rules, existing specs, OpenSpec format, standalone verifiability, and E2E-verifiability.
+11. Create `spec-review.md` with findings and required fixes before `/sp-tasks`.
+12. Fix review findings that are inside the approved spec scope.
+13. Stop before creating design, tasks, or code.
 
 ## Required `proposal.md` Sections
 
@@ -56,6 +57,7 @@ Create or update:
 
 - Summary
 - Brainstorm Alignment
+- Brainstorm Confirmation
 - Context Alignment
 - Rule Alignment
 - Requirement Quality
@@ -105,6 +107,9 @@ Use these groups when appropriate:
 ## Rules
 
 - Use `SHALL` for required behavior, `SHOULD` for recommended behavior, and `MAY` for optional behavior.
+- Write generated proposal, spec, and review artifacts in Chinese by default unless the user explicitly requests English. Keep required OpenSpec keywords such as `SHALL`, `SHOULD`, and `MAY` unchanged.
+- Do not create proposal or spec artifacts from unconfirmed brainstorm output.
+- `brainstorm-review.md` must contain customer/user confirmation evidence before `/sp-spec` work continues.
 - Describe externally observable behavior.
 - Specs must be independently verifiable from a real user-facing, API-facing, job-facing, or system-facing entry point.
 - Specs must define behavior with enough external-entry detail for design to decide whether real E2E is required: actor/client, trigger, expected observable result, and externally visible side effects.

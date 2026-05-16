@@ -1,5 +1,8 @@
 # Tasks Review: <change-id>
 
+> 默认语言：除非用户明确要求英文，本文档的标题、章节内容和说明均使用中文；OpenSpec 关键字、代码标识符、API 路径、配置键和命令保持原文。
+
+
 ## Summary
 
 ## Spec Alignment
@@ -27,6 +30,10 @@
 | Database need is explicitly decided |  |  |  |
 | Required database plan uses SQLite for development and MySQL for implementation/deployment |  |  |  |
 | Required database plan configures a pool with maximum size <= 100 |  |  |  |
+| Backend logic decisions have customer/user confirmation |  |  |  |
+| UI changes have confirmed mockup and functional description |  |  |  |
+| API paths and parameters have customer/user confirmation |  |  |  |
+| Configuration parameter names and values have customer/user confirmation |  |  |  |
 | Backend APIs have OpenAPI contract coverage |  |  |  |
 | Backend APIs separate Controller and Service responsibilities |  |  |  |
 | Every API has IO analysis and long-running work is async |  |  |  |
@@ -61,6 +68,17 @@
 | UI behavior test case |  |  |  |
 | Bug entry-point regression verification |  |  |  |
 | External service verification or skip reason |  |  |  |
+
+## Customer Confirmation Gates
+
+| Confirmation Area | Required | Recorded In Design | Reflected In Tasks | Evidence | Gap |
+|---|---|---|---|---|---|
+| Brainstorm output before spec |  |  |  |  |  |
+| Backend logic |  |  |  |  |  |
+| UI mockup and functional description |  |  |  |  |  |
+| API paths and parameters |  |  |  |  |  |
+| Configuration parameter names and values |  |  |  |  |  |
+| E2E required/not-required decision |  |  |  |  |  |
 
 ## Per-Task Review Gates
 

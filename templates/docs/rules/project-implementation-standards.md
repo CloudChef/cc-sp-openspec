@@ -84,7 +84,21 @@ Design artifacts MUST decide whether real E2E tests are required before implemen
 - Implementation cannot mark a task complete until the required E2E test has run and evidence is recorded, unless a documented environment blocker prevents running it.
 - Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots MUST NOT be accepted as substitutes for required real E2E tests.
 
-## PIR-009: Requirement Scope, Fallback Control, and Parameter Objects
+## PIR-009: Customer Confirmation Gates
+
+Brainstorm and design artifacts MUST record required customer/user confirmations before later phases continue.
+
+- `brainstorm-review.md` MUST record customer/user confirmation of the brainstorm output before `/sp-spec` starts.
+- Backend logic decisions in `design.md` MUST be confirmed with the customer/user before `/sp-impl` starts.
+- UI changes MUST include a mockup artifact and functional description, and both MUST be confirmed with the customer/user before `/sp-impl` starts.
+- API changes MUST list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter before customer/user confirmation.
+- API paths and parameters MUST be confirmed with the customer/user before `/sp-impl` starts.
+- Configuration changes MUST list every parameter name, proposed value, environment/scope, and reason before customer/user confirmation.
+- Configuration parameter names and values MUST be confirmed with the customer/user before `/sp-impl` starts.
+- If required confirmation is missing in an older change, `/sp-goal` MUST treat the corresponding phase as incomplete and collect the confirmation before continuing.
+- Tasks, implementation reviews, and completion evidence MUST show that confirmed backend logic, UI behavior, API paths/parameters, configuration parameters, and E2E decisions were followed.
+
+## PIR-010: Requirement Scope, Fallback Control, and Parameter Objects
 
 Code changes MUST stay inside the approved requirement and design scope.
 
@@ -98,3 +112,11 @@ Code changes MUST stay inside the approved requirement and design scope.
 - Data objects used for parameters MUST have clear field names, types or schema, validation expectations, and ownership.
 - Design and task artifacts MUST call out compatibility/fallback decisions and parameter-object needs before implementation.
 - Implementation review MUST reject unrequested fallback behavior, over-broad compatibility behavior, avoidable duplicate one-off logic, methods/functions with more than 5 inputs, and vague map-like parameter objects.
+
+## PIR-011: Documentation Language Default
+
+Generated workflow documentation MUST be written in Chinese by default unless the user explicitly requests English.
+
+- This applies to OpenSpec artifacts, review artifacts, task review logs, test parameter files, mockup descriptions, completion evidence, generated wiki pages, and final user-facing completion reports.
+- If English is requested, the request MUST be recorded in the relevant artifact.
+- Required technical keywords, code identifiers, API paths, configuration keys, commands, and standard requirement keywords such as `SHALL`, `SHOULD`, and `MAY` may remain in their required literal form.

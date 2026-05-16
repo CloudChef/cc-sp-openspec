@@ -1,5 +1,8 @@
 # Brainstorm Review: <change-id>
 
+> 默认语言：除非用户明确要求英文，本文档的标题、章节内容和说明均使用中文；OpenSpec 关键字、代码标识符、API 路径、配置键和命令保持原文。
+
+
 ## Summary
 
 ## Requirement Alignment
@@ -21,5 +24,15 @@
 
 ## Missing Context
 
-## Required Follow-Up Before /sp-spec
+## Customer Confirmation
 
+The brainstorm output must be confirmed with the customer/user before `/sp-spec`.
+
+| Confirmation Item | Status | Evidence | Follow-Up |
+|---|---|---|---|
+| Problem framing confirmed |  |  |  |
+| Candidate scope confirmed |  |  |  |
+| Recommended direction confirmed |  |  |  |
+| Open questions / required follow-up acknowledged |  |  |  |
+
+## Required Follow-Up Before /sp-spec

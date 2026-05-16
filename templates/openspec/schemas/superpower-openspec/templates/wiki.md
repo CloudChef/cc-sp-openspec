@@ -9,6 +9,8 @@ change_id: <change-id>
 filename_basis: spec-design-code-rules-review
 ---
 
+> 默认语言：除非用户明确要求英文，本文档的标题、章节内容和说明均使用中文；OpenSpec 关键字、代码标识符、API 路径、配置键和命令保持原文。
+
 # <Feature or Story Title>
 
 ## Story / Capability Summary
@@ -20,6 +22,17 @@ filename_basis: spec-design-code-rules-review
 ## Rules Applied
 
 ## Design Summary
+
+## Customer / User Confirmations
+
+| Confirmation Area | Evidence |
+|---|---|
+| Brainstorm output |  |
+| Backend logic |  |
+| UI mockup and functional description |  |
+| API paths and parameters |  |
+| Configuration parameter names and values |  |
+| E2E decision |  |
 
 ## Implemented Code Paths
 

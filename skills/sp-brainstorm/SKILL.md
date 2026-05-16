@@ -37,7 +37,9 @@ Create or update:
 8. Review `brainstorm.md` and `context.md` for alignment with the user request, sources, rules, existing specs, and context gaps.
 9. Create `brainstorm-review.md` with findings and required fixes before `/sp-spec`.
 10. Fix review findings that are inside the brainstorm/context scope.
-11. Stop before creating proposal, specs, design, tasks, or code.
+11. Ask the customer/user to confirm the final brainstorm output, including problem framing, candidate scope, recommended direction, open questions, and required follow-up before `/sp-spec`.
+12. Record the customer/user confirmation, requested changes, or rejection in `brainstorm-review.md`. If changes are requested, update `brainstorm.md`, `context.md`, and `brainstorm-review.md`, then request confirmation again.
+13. Stop before creating proposal, specs, design, tasks, or code.
 
 ## Required `brainstorm.md` Sections
 
@@ -72,6 +74,7 @@ Create or update:
 - Rule Alignment
 - Scope Risks
 - Missing Context
+- Customer Confirmation
 - Required Follow-Up Before /sp-spec
 
 ## Review Method
@@ -92,6 +95,7 @@ If the Superpower review skills are unavailable in the current runtime, record t
 ## Rules
 
 - Do not write code.
+- Write generated brainstorm, context, and review artifacts in Chinese by default unless the user explicitly requests English.
 - Do not create or edit `proposal.md`.
 - Do not create or edit `specs/<capability>/spec.md`.
 - Do not create or edit `design.md`.
@@ -99,3 +103,5 @@ If the Superpower review skills are unavailable in the current runtime, record t
 - Treat brainstorm output as discovery input, not approved scope.
 - Record missing or conflicting context explicitly instead of guessing.
 - Do not proceed to `/sp-spec` if `brainstorm-review.md` has unresolved blocking gaps.
+- Do not proceed to `/sp-spec` until the customer/user has confirmed the brainstorm output and `brainstorm-review.md` records that confirmation evidence.
+- If the customer/user requests changes to brainstorm output, update the artifacts and re-confirm before `/sp-spec`.

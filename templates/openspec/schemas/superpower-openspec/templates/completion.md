@@ -1,5 +1,8 @@
 # Completion: <change-id>
 
+> 默认语言：除非用户明确要求英文，本文档的标题、章节内容和说明均使用中文；OpenSpec 关键字、代码标识符、API 路径、配置键和命令保持原文。
+
+
 ## Summary
 
 ## Completion Gate Results
@@ -9,10 +12,11 @@
 | All tasks marked complete |  |  |  |
 | Alignment reviews closed |  |  |  |
 | Security reviews closed |  |  |  |
-| Test coverage >= 90% |  |  |  |
+| Test coverage >= 85% |  |  |  |
 | Test parameters independently saved |  |  |  |
 | Tests assert meaningful behavior |  |  |  |
 | No empty/no-op or initialization-only tests |  |  |  |
+| Required customer/user confirmations recorded and followed |  |  |  |
 | Same or equivalent logic is reused or generalized |  |  |  |
 | Existing-code changes stay inside approved requirements |  |  |  |
 | No unrequested fallback or compatibility behavior |  |  |  |
@@ -56,6 +60,7 @@
 | Standard | Status | Evidence | Gap |
 |---|---|---|---|
 | Code paths match design/tasks |  |  |  |
+| Customer/user confirmations are recorded and followed |  |  |  |
 | Reuse/common logic rule satisfied |  |  |  |
 | Requirement-scope/fallback rule satisfied |  |  |  |
 | Parameter-count/data-object rule satisfied |  |  |  |
@@ -81,6 +86,7 @@
 - Commit created: `<yes/no/skipped>`
 - Commit hash:
 - Commit message summary:
+- Customer/user confirmation evidence in commit message:
 - Included frontend changes:
 - Included backend changes:
 - Included docs/OpenSpec/review artifacts:

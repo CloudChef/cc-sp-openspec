@@ -45,6 +45,7 @@ project-root/
             proposal.md
             spec.md
             design.md
+            mockup.md
             tasks.md
             review.md
     docs/
@@ -94,6 +95,8 @@ project-root/
             spec.md
         spec-review.md
         design.md
+        mockups/
+          <ui-area>.md
         tasks.md
         tasks-review.md
         test-params/
@@ -111,6 +114,7 @@ project-root/
             proposal.md
             spec.md
             design.md
+            mockup.md
             tasks.md
             spec-review.md
             tasks-review.md
@@ -161,7 +165,7 @@ project-root/
 /sp-brainstorm
   -> brainstorm.md
   -> context.md
-  -> brainstorm-review.md
+  -> brainstorm-review.md (includes customer/user confirmation before /sp-spec)
 
 /sp-spec
   -> proposal.md
@@ -170,8 +174,9 @@ project-root/
 
 /sp-tasks
   -> design.md
+  -> mockups/<ui-area>.md (when UI changes require mockups)
   -> tasks.md
-  -> tasks-review.md
+  -> tasks-review.md (checks backend/UI/API/config/E2E confirmations)
 
 /sp-impl
   -> code changes

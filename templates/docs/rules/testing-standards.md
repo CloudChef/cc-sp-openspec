@@ -4,7 +4,7 @@ These rules are derived from the Java reference project at `C:\Projects\cmps\sma
 
 ## TEST-001: Coverage Gate
 
-Changed or affected code MUST reach at least 90% code coverage.
+Changed or affected code MUST reach at least 85% code coverage.
 
 - Java projects SHOULD use the target project's Maven/Jacoco setup when present.
 - Python projects SHOULD use coverage.py, pytest-cov, or the target project's existing coverage tool.

@@ -1,6 +1,6 @@
 name: superpower-openspec
 version: 1
-description: Superpower-extended OpenSpec workflow for Codex
+description: Superpower-extended OpenSpec workflow for Codex. Generated documentation defaults to Chinese unless the user explicitly asks for English.
 
 artifacts:
   - id: brainstorm
@@ -11,6 +11,7 @@ artifacts:
       Explore the requirement before creating formal OpenSpec artifacts.
       Read applicable default Java, Python, configuration, and testing rule files when they match the requested work.
       Use this as input to proposal.md, not as an implementation source.
+      The final brainstorm output must be confirmed with the customer/user before proposal/spec work.
       Do not write code.
     requires: []
 
@@ -38,6 +39,7 @@ artifacts:
       Use Superpower review skills when available: request reviews with superpowers:requesting-code-review and process findings with superpowers:receiving-code-review. If the skills are unavailable, record the reason and use Codex or the current tool/agent's own review capability to perform the same checklist.
       Check alignment with the user request, project rules, source coverage, existing specs, context gaps, and scope risks.
       Fix in-scope brainstorm/context issues before continuing.
+      Record customer/user confirmation, requested changes, or rejection before proposal/spec work.
       Do not write code.
     requires:
       - brainstorm
@@ -49,6 +51,7 @@ artifacts:
     template: proposal.md
     instruction: |
       Create a formal OpenSpec proposal based on brainstorm.md and context.md.
+      Do not start proposal/spec work until brainstorm-review.md records customer/user confirmation of the brainstorm output.
       Identify project-defined rules that affect scope.
       Focus on problem, goal, scope, value, risks, and open questions.
       Do not include low-level implementation details.
@@ -81,7 +84,7 @@ artifacts:
     instruction: |
       Review proposal.md and specs against brainstorm.md, context.md, brainstorm-review.md, project rules, existing specs, and OpenSpec formatting.
       Use Superpower review skills when available: request reviews with superpowers:requesting-code-review and process findings with superpowers:receiving-code-review. If the skills are unavailable, record the reason and use Codex or the current tool/agent's own review capability to perform the same checklist.
-      Check requirement quality, scenario coverage, standalone verifiability, E2E-verifiable external behavior, missing behavior, out-of-scope behavior, and implementation leakage.
+      Check customer/user confirmation of brainstorm output, requirement quality, scenario coverage, standalone verifiability, E2E-verifiable external behavior, missing behavior, out-of-scope behavior, and implementation leakage.
       Fix in-scope proposal/spec issues before continuing.
       Do not write code.
     requires:
@@ -102,6 +105,10 @@ artifacts:
       Define requirement scope and whether compatibility/fallback behavior is required; if specs do not require it, explicitly prohibit fallback and compatibility branches.
       Define method/function parameter plans; no method/function may exceed 5 input parameters unless a named data object with explicit fields is used.
       Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
+      Identify all backend logic decisions, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
+      If UI changes exist, generate a mockup artifact and functional description, stop to confirm both with the customer/user, and record confirmation before tasks are finalized.
+      If APIs exist, list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
+      If configuration parameters exist, list every parameter name, proposed value, environment/scope, and reason, stop to confirm names and values with the customer/user, and record confirmation before tasks are finalized.
       Assess whether each changed capability requires real E2E, stop to confirm the required/not-required decision with the user, and record that confirmation in design.md.
       For confirmed required E2E paths, define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, evidence, and fallback/skip reason when no runnable target exists.
       If the confirmed E2E decision reveals missing or incorrect spec behavior, stop and update specs before creating tasks or implementing.
@@ -113,6 +120,17 @@ artifacts:
       - specs
       - spec-review
       - context
+
+  - id: mockups
+    generates: mockups/**/*.md
+    description: UI mockup artifacts required when a change includes UI behavior
+    template: mockup.md
+    instruction: |
+      When UI changes exist, create a mockup artifact and functional description under the change folder.
+      Confirm the mockup and functional description with the customer/user before implementation tasks are finalized.
+      If there are no UI changes, record the not-applicable reason in design.md instead of creating mockup files.
+    requires:
+      - design
 
   - id: tasks
     generates: tasks.md
@@ -126,13 +144,14 @@ artifacts:
       Each task must state requirement-scope/fallback rules and prohibit unrequested fallback or compatibility behavior.
       Each task must state method/function parameter constraints and any required named data object.
       Each task must include standalone full verification from the relevant entry point.
+      Each task must include applicable customer/user confirmation evidence for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, and E2E decisions, or a clear not-applicable reason.
       Each task must include the user-confirmed real E2E requirement or a design-confirmed not-applicable reason.
       Specs, tasks, and implementation must follow the user-confirmed E2E decision recorded in design.md.
       Backend service tasks must require real API request/response verification, UI tasks must require UI behavior tests, bug fix tasks must verify through the bug entry point, and external service tasks must verify project-provided database/Redis/Elasticsearch/queue/cache/integration connections when available.
       Each task must include the <= 1000 line file-size guardrail and split plan when needed.
       Each task must identify database, OpenAPI/Controller/Service, API IO, and async impact when relevant.
       Each task must specify independent test parameter files under openspec/changes/<change-id>/test-params/.
-      Each task must require at least 90% coverage for changed/affected code.
+      Each task must require at least 85% coverage for changed/affected code.
       Each task must require two post-implementation reviews: Alignment Review and Security Review.
       Findings from either review must be fixed and re-reviewed before the next task starts.
       Do not write code.
@@ -149,6 +168,7 @@ artifacts:
       Use Superpower review skills when available: request reviews with superpowers:requesting-code-review and process findings with superpowers:receiving-code-review. If the skills are unavailable, record the reason and use Codex or the current tool/agent's own review capability to perform the same checklist.
       Check that every task maps to requirements, applicable rules, target code paths, implementation standards, standalone verification, and concrete validation.
       Check code path planning, reuse/common logic plans, requirement-scope/fallback decisions, parameter-count/data-object plans, standalone verification plans, real E2E test designs, <= 1000 line split plans, database runtime/pool decisions, OpenAPI and Controller/Service decisions, API IO, and async handling.
+      Check customer/user confirmation gates for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.
       Fix in-scope design/task issues before implementation.
       Do not write code.
     requires:
@@ -164,7 +184,7 @@ artifacts:
       During implementation, record two review rounds for every completed task.
       Alignment Review checks specs, design, task text, rules, and changed code.
       Security Review checks security-sensitive behavior, authorization, data handling, validation, logging, dependencies, configuration, and project-defined security rules.
-      Both reviews check coverage >= 90%, standalone full verification evidence, user-confirmed required real E2E evidence, reuse/common logic evidence with no avoidable duplicate logic, requirement-scope/fallback evidence with no unrequested fallback or compatibility behavior, parameter-count/data-object evidence, generated/modified code files <= 1000 lines, database runtime/pool evidence when relevant, OpenAPI and Controller/Service evidence when relevant, API IO/async evidence when relevant, independent test parameter files, meaningful assertions, no empty/no-op code tests, and no tests limited to class/method initialization.
+      Both reviews check coverage >= 85%, customer/user confirmation evidence, standalone full verification evidence, user-confirmed required real E2E evidence, reuse/common logic evidence with no avoidable duplicate logic, requirement-scope/fallback evidence with no unrequested fallback or compatibility behavior, parameter-count/data-object evidence, generated/modified code files <= 1000 lines, database runtime/pool evidence when relevant, OpenAPI and Controller/Service evidence when relevant, API IO/async evidence when relevant, independent test parameter files, meaningful assertions, no empty/no-op code tests, and no tests limited to class/method initialization.
       Every finding must be fixed and re-reviewed before the next task starts.
       Completion requires zero open findings.
     requires:
@@ -188,7 +208,7 @@ artifacts:
     template: review.md
     instruction: |
       Review implementation against proposal.md, specs, design.md, tasks.md, spec-review.md, tasks-review.md, and task-reviews.md.
-      Check requirement coverage, task completion, per-task review completion, out-of-spec behavior, rule compliance, architecture compliance, implementation standards compliance, standalone verification compliance, real E2E compliance, reuse/common logic compliance, requirement-scope/fallback compliance, parameter-count/data-object compliance, coverage >= 90%, independent test parameter files, meaningful tests, and unresolved findings.
+      Check requirement coverage, task completion, per-task review completion, out-of-spec behavior, customer/user confirmation compliance, rule compliance, architecture compliance, implementation standards compliance, standalone verification compliance, real E2E compliance, reuse/common logic compliance, requirement-scope/fallback compliance, parameter-count/data-object compliance, coverage >= 85%, independent test parameter files, meaningful tests, and unresolved findings.
       Check Java, Python, configuration, and testing rule compliance when those areas changed.
       Run at least two final code review passes on the complete implementation diff after all tasks are complete. Pass 1 checks specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes. Pass 2 runs after Pass 1 fixes and checks regressions, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations. Fix every finding and re-review until both passes have zero open findings.
       Completion requires zero unresolved findings.
@@ -202,9 +222,9 @@ artifacts:
     description: Feature or story wiki documentation generated from completed OpenSpec artifacts and implementation
     template: wiki.md
     instruction: |
-      Generate feature/story documentation from specs, design, implemented code paths, database/API/IO decisions, rules, validation evidence, task-reviews.md, and review.md.
+      Generate feature/story documentation from specs, design, customer/user confirmations, implemented code paths, database/API/IO decisions, rules, validation evidence, task-reviews.md, and review.md.
       Derive a concise semantic kebab-case filename from the completed feature or story, not from the raw change ID.
-      The wiki page must describe user-facing behavior, workflow, design summary, security and permissions, operational notes, validation evidence, and source mapping.
+      The wiki page must describe user-facing behavior, workflow, design summary, customer/user confirmations, security and permissions, operational notes, validation evidence, and source mapping.
     requires:
       - review
 
@@ -214,12 +234,12 @@ artifacts:
     template: completion.md
     instruction: |
       Verify all tasks are marked complete, task-reviews.md has zero open findings, and review.md has zero unresolved findings.
-      Verify coverage evidence is at least 90% and test parameter files are independently saved.
-      Verify implementation-standard evidence: standalone full verification, user-confirmed required real E2E test execution, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, code files <= 1000 lines, database runtime/pool rules, OpenAPI and Controller/Service rules, API IO, and async handling when relevant.
-      Verify the generated wiki page reflects specs, design, implemented code, rules, and validation evidence.
+      Verify coverage evidence is at least 85% and test parameter files are independently saved.
+      Verify implementation-standard evidence: customer/user confirmations are recorded and followed, standalone full verification, user-confirmed required real E2E test execution, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, code files <= 1000 lines, database runtime/pool rules, OpenAPI and Controller/Service rules, API IO, and async handling when relevant.
+      Verify the generated wiki page reflects specs, design, customer/user confirmations, implemented code, rules, and validation evidence.
       Record completion gate results, archive target, and local git commit evidence.
       Create a local git commit only after code changes, tests, reviews, completion evidence, wiki, and archive are finished when the project is a git worktree.
-      The commit message must include the complete requirement, completed changes, solution/design approach, workflow/completion evidence, and frontend/backend completion content when relevant.
+      The commit message must include the complete requirement, completed changes, solution/design approach, customer/user confirmation evidence when required, workflow/completion evidence, and frontend/backend completion content when relevant.
       Final response must be user-facing and concrete: summarize the requirement/outcome, solution, code changes, tests/verification, documentation, review status, and local commit. Keep OpenSpec archive paths and internal artifacts as brief supporting evidence only.
     requires:
       - wiki

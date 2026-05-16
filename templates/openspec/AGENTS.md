@@ -4,6 +4,8 @@ This project uses OpenSpec with the Superpower-style `/sp-*` workflow.
 
 OpenSpec is the source of truth for approved behavior. Brainstorm and context files are discovery inputs; proposal, specs, design, tasks, and review are the controlled change artifacts. Project rules under `docs/rules/` are mandatory inputs.
 
+Generated OpenSpec, review, test-parameter, wiki, and workflow documents default to Chinese. Use English only when the user explicitly asks for English, and record that request in the relevant artifact.
+
 ## Required Workflow
 
 ```text
@@ -25,6 +27,7 @@ OpenSpec is the source of truth for approved behavior. Brainstorm and context fi
   -> openspec/changes/<change-id>/design.md
   -> openspec/changes/<change-id>/tasks.md
   -> openspec/changes/<change-id>/tasks-review.md
+  -> openspec/changes/<change-id>/mockups/ (when UI changes require mockups)
 
 /sp-impl <change-id>
   -> code changes
@@ -49,14 +52,14 @@ Use `/sp-goal <requirement-or-change-id>` to finish the remaining workflow from 
 Rules:
 
 - Resolve the active change from the explicit command, the only active change folder, or a new requirement.
-- If the active change has no completed brainstorm artifacts, start from `/sp-brainstorm`.
+- If the active change has no completed brainstorm artifacts, or the brainstorm output lacks customer/user confirmation, start from `/sp-brainstorm`.
 - If brainstorm is complete but proposal/spec artifacts are missing or blocked, start from `/sp-spec`.
 - If specs are complete but design/tasks are missing or blocked, start from `/sp-tasks`.
-- If `design.md` exists but lacks the user-confirmed E2E required/not-required decision, treat design/tasks as incomplete; confirm the decision with the user inside `/sp-goal`, then update `design.md`, `tasks.md`, and `tasks-review.md` before implementation.
+- If `design.md` exists but lacks customer/user confirmation for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E required/not-required decision, treat design/tasks as incomplete; confirm the missing decision inside `/sp-goal`, then update `design.md`, `tasks.md`, and `tasks-review.md` before implementation.
 - If tasks exist but implementation, tests, per-task reviews, coverage, or final review are incomplete, start from `/sp-impl`.
 - If implementation review is complete but completion/wiki/archive is missing, start from `/sp-complete`.
 - Never skip phase review, per-task Alignment Review, per-task Security Review, coverage, test parameter files, wiki generation, or archive gates.
-- Never skip the design-phase user confirmation for E2E required/not-required decisions, including for older changes created before this rule existed.
+- Never skip brainstorm output confirmation or design-phase customer/user confirmations for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E decisions, including for older changes created before these rules existed.
 - Stop and ask for user input when multiple active changes exist and no change ID is provided.
 
 ## Before Any OpenSpec Task
@@ -87,6 +90,7 @@ openspec/changes/<change-id>/
       spec.md
   spec-review.md
   design.md
+  mockups/
   tasks.md
   tasks-review.md
   test-params/
@@ -103,9 +107,9 @@ If the Superpower review skills are unavailable in the current runtime, record t
 
 Review gates:
 
-- `/sp-brainstorm` creates `brainstorm-review.md` and checks user request, context coverage, source usage, rules, scope risks, and missing context.
+- `/sp-brainstorm` creates `brainstorm-review.md` and checks user request, context coverage, source usage, rules, scope risks, missing context, and customer/user confirmation of brainstorm output before `/sp-spec`.
 - `/sp-spec` creates `spec-review.md` and checks alignment with `brainstorm.md`, `context.md`, `brainstorm-review.md`, rules, existing specs, requirement quality, scenario coverage, standalone verifiability, and implementation leakage.
-- `/sp-tasks` creates `tasks-review.md` and checks alignment with specs, `spec-review.md`, design decisions, rules, task quality, standalone verification coverage, validation coverage, and implementation readiness.
+- `/sp-tasks` creates `tasks-review.md` and checks alignment with specs, `spec-review.md`, design decisions, customer/user confirmations, rules, task quality, standalone verification coverage, validation coverage, and implementation readiness.
 - `/sp-impl` creates `review.md` and checks implementation against all prior artifacts.
 
 Do not proceed to the next phase while the current phase review has unresolved blocking gaps.
@@ -165,6 +169,7 @@ The system SHALL <observable behavior>.
 
 Rules:
 
+- Do not start `/sp-spec` until `brainstorm-review.md` records customer/user confirmation of the brainstorm output.
 - Every requirement must have at least one `#### Scenario:` header.
 - Specs describe observable behavior only.
 - Specs must be independently verifiable from a real user-facing, API-facing, job-facing, or system-facing entry point.
@@ -205,6 +210,11 @@ This workflow requires `design.md` for `/sp-tasks`. Include:
 - Test Strategy
 - Standalone Verification Plan
 - Real E2E Test Design
+- Backend Logic Confirmation
+- API Path / Parameter Confirmation
+- UI Mockup / Functional Description
+- Configuration Parameter Confirmation
+- Customer Confirmation
 - Source Mapping
 - Rules Compliance
 - Spec Gaps
@@ -217,6 +227,10 @@ Mandatory implementation-standard design decisions:
 - Define requirement scope and whether compatibility or fallback behavior is required. If specs do not require it, explicitly prohibit fallback and compatibility branches.
 - Define method/function parameter plans. No method/function may exceed 5 input parameters; if more inputs are needed, use a named data object with explicit fields, not a vague map/dict/object/key-value bag.
 - Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
+- Identify all backend logic decisions, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
+- If UI changes exist, generate a mockup artifact and functional description, stop to confirm both with the customer/user, and record confirmation before tasks are finalized.
+- If APIs exist, list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
+- If configuration parameters exist, list every parameter name, proposed value, environment/scope, and reason, stop to confirm names and values with the customer/user, and record confirmation before tasks are finalized.
 - Assess whether each changed capability requires real E2E, stop to confirm the required/not-required decision with the user, and record the confirmation in `design.md`.
 - For confirmed required E2E paths, define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, evidence, and fallback/skip reason when no runnable target exists.
 - If the confirmed E2E decision reveals missing or incorrect spec behavior, stop and update specs before creating tasks or implementing.
@@ -254,14 +268,18 @@ Task format:
   - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
   - File size guardrail: each generated/modified code file must stay <= 1000 lines; split plan: `<none/path split>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
+  - Backend logic confirmation: `<confirmed/not-applicable + evidence>`
   - API contract/layers: `<none/OpenAPI operation + Controller path + Service path>`
+  - API path/parameters confirmation: `<confirmed/not-applicable + method/path/path params/query params/body params evidence>`
   - API IO / async: `<none/IO profile/async required>`
+  - UI mockup/function confirmation: `<confirmed/not-applicable + mockup path + behavior description evidence>`
+  - Config parameter confirmation: `<confirmed/not-applicable + parameter names/values evidence>`
   - Change: <specific implementation work>
   - Standalone verification: `<entry point + command/test + request/input + expected response/output + side effects>`
   - Real E2E test: `<required/not-applicable with reason + command/tool + runtime target + test data + assertions + evidence>`
   - Validation: <how to verify>
   - Test parameters: `openspec/changes/<change-id>/test-params/<scenario-name>.md`
-  - Coverage target: at least 90% code coverage for changed/affected code
+  - Coverage target: at least 85% code coverage for changed/affected code
   - Required reviews after implementation:
     - Alignment review against spec, design, task, rules, and changed code
     - Security review against security-sensitive behavior and project-defined security rules
@@ -279,6 +297,7 @@ Rules:
 - Every task must state method/function parameter constraints and any named data object required for more than 5 inputs.
 - Every task must include the file-size guardrail and split plan when needed.
 - Every task must identify database, API contract/layering, and API IO/async impact when relevant.
+- Every task must include applicable customer/user confirmation evidence for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, and E2E decisions, or a clear not-applicable reason.
 - Every task must include validation.
 - Every task must include standalone full verification from the relevant entry point.
 - Every task must include the user-confirmed real E2E requirement or a design-confirmed not-applicable reason.
@@ -288,7 +307,7 @@ Rules:
 - Bug fix tasks must identify the bug entry point and verify the fix through that entry point.
 - External service tasks involving database, Redis, Elasticsearch, queues, caches, or integrations must verify against the project-provided connection or test environment when available; otherwise record a skip reason and verify locally testable behavior.
 - Every task must specify independent test parameter files.
-- Every task must require at least 90% coverage for changed/affected code.
+- Every task must require at least 85% coverage for changed/affected code.
 - Every task must include both per-task implementation review gates.
 - Do not create tasks for behavior not covered by specs.
 
@@ -301,7 +320,7 @@ During `/sp-impl`, every task must pass two review rounds before the next task s
 
 Testing rules:
 
-- Changed/affected code must reach at least 90% coverage.
+- Changed/affected code must reach at least 85% coverage.
 - Tests must use explicit parameters saved independently under `openspec/changes/<change-id>/test-params/`.
 - Tests must assert meaningful behavior from specs and design.
 - Standalone full verification must be completed for backend API, UI, bug-entry, and external-service behavior when relevant.
@@ -320,7 +339,7 @@ Rules:
 - Do not mark the task complete until validation, Alignment Review, and Security Review all have no open findings.
 - Do not mark the task complete until standalone full verification evidence is recorded, or an allowed external-service skip reason is recorded.
 - Do not mark the task complete until user-confirmed required real E2E evidence is recorded, or a documented environment blocker and fallback evidence are recorded.
-- Do not mark the task complete until coverage is at least 90% and test parameter files are saved.
+- Do not mark the task complete until coverage is at least 85% and test parameter files are saved.
 - Do not mark the task complete while avoidable same/equivalent logic duplication remains.
 - Do not mark the task complete while unrequested fallback/compatibility behavior exists.
 - Do not mark the task complete while methods/functions exceed 5 input parameters without explicit named data objects.
@@ -339,9 +358,10 @@ Completion gates:
 - Every task has Alignment Review and Security Review evidence in `task-reviews.md`.
 - `task-reviews.md` has zero open findings.
 - `review.md` has zero unresolved findings.
-- Coverage evidence is at least 90% for changed/affected code.
+- Coverage evidence is at least 85% for changed/affected code.
 - Test parameter files are saved independently under `test-params/`.
-- The generated wiki page reflects specs, design, implemented code, rules, and validation evidence.
+- Required customer/user confirmations are recorded and followed for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.
+- The generated wiki page reflects specs, design, customer/user confirmations, implemented code, rules, and validation evidence.
 - Standalone verification evidence is present for API, UI, bug-entry, and external-service behavior when relevant.
 - User-confirmed required real E2E test evidence is present.
 - The generated wiki filename is a semantic feature/story title derived from specs, design, code, rules, and review evidence, not the raw change ID.
@@ -361,13 +381,14 @@ Local git commit rules:
 - Commit only files belonging to the completed change; do not include unrelated local changes.
 - If unrelated local changes are present, leave them unstaged.
 - If the repository is not a git worktree, record the skip reason in `completion.md`.
-- The commit message must include the complete requirement, completed changes, solution/design approach, workflow/completion evidence, and frontend/backend completion content when relevant.
+- The commit message must include the complete requirement, completed changes, solution/design approach, customer/user confirmation evidence, workflow/completion evidence, and frontend/backend completion content when relevant.
 - Keep the commit message complete but not overly detailed.
 
 Final response rules:
 
 - Provide a user-facing completion report after `/sp-complete`.
 - Lead with the requirement/outcome, solution summary, code changes, tests/verification, documentation changes, review/finding status, and local commit.
+- Include customer/user confirmation status for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration names/values, and E2E decisions when applicable.
 - Code changes must name concrete changed areas and important file paths, including backend/API/data work and frontend/UI work when relevant, or state none.
 - Test/verification summary must include commands, real API/UI/E2E evidence when required, coverage result, and any accepted skip reason.
 - Documentation summary must include wiki, user docs, README, API docs, or other non-OpenSpec documentation created or updated.
@@ -380,6 +401,7 @@ The wiki page must include:
 - Workflow
 - Rules Applied
 - Design Summary
+- Customer / User Confirmations
 - API / Data / UI Impact, when relevant
 - Security and Permissions
 - Operational Notes
@@ -397,6 +419,7 @@ Wiki filename rules:
 ## Implementation Rules
 
 - Do not start implementation until proposal, specs, design, and tasks exist.
+- Do not start implementation until required customer/user confirmations are recorded for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions when applicable.
 - Implement only unchecked tasks in `tasks.md`.
 - Complete tasks one at a time.
 - Do not add behavior outside specs.
@@ -449,7 +472,8 @@ For validation, inspect:
 - Reviews have no unresolved blocking gaps before the next phase.
 - `task-reviews.md` and final `review.md` show zero unresolved findings before completion.
 - Final `review.md` records at least two complete-diff code review passes after all tasks are complete, with zero open findings.
-- Test coverage is at least 90% for changed/affected code.
+- Required customer/user confirmations are recorded and followed for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.
+- Test coverage is at least 85% for changed/affected code.
 - Standalone verification evidence is present for changed behavior, including real API calls, UI tests, bug-entry regression checks, and external service checks when relevant.
 - User-confirmed required real E2E tests are designed and executed with command, runtime target, test data, assertions, and evidence; unit/mock/initialization/isolated method checks are not accepted as E2E substitutes.
 - Tests have independent parameter files and meaningful assertions.
@@ -462,7 +486,7 @@ For validation, inspect:
 - API IO and async decisions are implemented when relevant.
 - `completion.md` records completion gates and archive target.
 - A local git commit is created after all completion artifacts, wiki documentation, and archive movement are finished, or a git skip reason is recorded when no git worktree exists.
-- `docs/wiki/<feature-or-story-title>.md` documents the completed feature/story from specs, design, and code.
+- `docs/wiki/<feature-or-story-title>.md` documents the completed feature/story from specs, design, customer/user confirmations, and code.
 
 ## Source Priority
 

@@ -23,9 +23,9 @@
 
 传统的 AI 编码容易跳过需求澄清、设计、任务拆分、测试证据和 Review 证据。本模板把这些动作文件化：
 
-- 用 `openspec/changes/<change-id>/brainstorm.md` 和 `context.md` 保存需求探索和上下文。
+- 用 `openspec/changes/<change-id>/brainstorm.md`、`context.md` 和 `brainstorm-review.md` 保存需求探索、上下文和客户确认。
 - 用 `proposal.md` 和 `specs/<capability>/spec.md` 保存正式需求规格。
-- 用 `design.md` 和 `tasks.md` 保存技术设计、代码路径、数据库/API/异步/测试计划。
+- 用 `design.md`、`mockups/` 和 `tasks.md` 保存技术设计、UI Mockup、代码路径、数据库/API/异步/测试计划。
 - 用 `task-reviews.md` 和 `review.md` 保存每个任务的对齐 Review、安全 Review 和最终实现 Review。
 - 用 `docs/wiki/<feature-or-story-title>.md` 保存功能完成后的可读 Wiki。
 - 用 `docs/rules/*.md` 保存项目级业务规范、代码规范、配置规范和测试规范。
@@ -133,11 +133,13 @@ Copy-Item -Path C:\Projects\cmps\sp-openspec\skills\* -Destination $HOME\.agents
 - `docs/standards/*.md`: 放架构、后端、前端、API、集成、安全、测试等标准。
 - `docs/wiki/*.md`: 放已有业务知识和功能说明。
 
+默认语言：所有由流程生成的 OpenSpec、Review、测试参数、Mockup 说明、Wiki 和最终汇报文档默认使用中文。只有用户明确要求英文时才使用英文，并在相关 artifact 中记录该要求。
+
 ### 4. 调整 rules
 
 模板默认提供这些规则：
 
-- `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、需求边界与 fallback 控制、方法参数/data object、单独完整验证、真实 E2E 测试设计与执行、相同逻辑复用、单文件 1000 行限制、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
+- `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、需求边界与 fallback 控制、方法参数/data object、单独完整验证、真实 E2E 测试设计与执行、相同逻辑复用、文档默认中文、单文件 1000 行限制、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
 - `docs/rules/java-code-standards.md`: Java/Spring 规范，结合参考项目实践和 Google Java Style。
 - `docs/rules/python-code-standards.md`: Python 规范，结合参考项目实践和 Google Python Style。
 - `docs/rules/configuration-standards.md`: 配置、数据库、迁移、OpenAPI、异步队列、依赖工具配置规范。
@@ -159,24 +161,25 @@ docs/rules/data-retention.md
 /sp-goal <requirement-or-change-id>
 ```
 
-`/sp-goal` 会根据当前 change 的完成情况判断从哪一步开始。如果 brainstorm 没完成，就从 brainstorm 开始；如果 brainstorm 已完成但 spec 没完成，就从 spec 开始；后续依次类推，直到 `/sp-complete`。如果已有 `design.md` 但缺少使用人确认的 E2E required/not-required 决策，`/sp-goal` 会把 design/tasks 视为未完成，先在 goal 流程中确认并更新 design、tasks 和 tasks-review。它不会跳过 review、测试、coverage、finding closure、Wiki 或 archive 门禁。
+`/sp-goal` 会根据当前 change 的完成情况判断从哪一步开始。如果 brainstorm 没完成或缺少客户确认，就从 brainstorm 开始；如果 brainstorm 已确认但 spec 没完成，就从 spec 开始；后续依次类推，直到 `/sp-complete`。如果已有 `design.md` 但缺少后台逻辑、UI Mockup/功能说明、API 路径和参数、配置参数名和值、E2E required/not-required 决策中的任一必要确认，`/sp-goal` 会把 design/tasks 视为未完成，先在 goal 流程中确认并更新 design、tasks 和 tasks-review。它不会跳过 review、测试、coverage、finding closure、Wiki 或 archive 门禁。
 
 也可以手动按阶段执行：
 
 1. 需求探索：执行 `/sp-brainstorm <requirement>`。
    - 产物：`brainstorm.md`、`context.md`、`brainstorm-review.md`。
    - 目的：澄清需求、收集上下文、读取规则、识别范围风险。
+   - 确认：输出必须和客户/使用人确认，并把确认、修改意见或拒绝记录在 `brainstorm-review.md` 后，才能进入 `/sp-spec`。
    - 限制：不写正式 spec、design、tasks，也不写代码。
 
 2. 规格生成：执行 `/sp-spec <change-id>`。
    - 产物：`proposal.md`、`specs/<capability>/spec.md`、`spec-review.md`。
    - 目的：把需求转成正式提案和可观察行为规格。
-   - 要求：Specs 使用 Requirement + Scenario 格式；影响外部行为的规则必须进入需求或场景；场景必须提供足够的外部入口和结果信息，供 design 阶段判断是否需要真实 E2E。
+   - 要求：必须基于已确认的 brainstorm 输出；Specs 使用 Requirement + Scenario 格式；影响外部行为的规则必须进入需求或场景；场景必须提供足够的外部入口和结果信息，供 design 阶段判断是否需要真实 E2E。
 
 3. 设计和任务拆分：执行 `/sp-tasks <change-id>`。
    - 产物：`design.md`、`tasks.md`、`tasks-review.md`。
    - 目的：明确技术设计、代码路径、任务边界、测试策略和 Review 入口。
-   - 要求：设计阶段必须判断当前需求是否需要真实 E2E，并和使用人确认；确认需要后再设计 E2E 的命令、运行目标、测试数据、断言和证据。如果确认结果暴露 spec 缺口，先更新 spec，再继续 task 和 impl。任务必须包含代码路径、需求边界/fallback 决策、方法参数/data object 计划、文件拆分计划、数据库/API/IO/异步影响、确认后的 E2E 要求、测试参数文件、90% 覆盖率目标、Alignment Review 和 Security Review。
+   - 要求：所有后台逻辑都必须和客户/使用人确认；如果有 UI 变更，必须生成 Mockup 和功能说明并确认；如果有 API，必须明确每个 API 的 method、path、path/query/body 参数和响应相关参数并确认；如果有配置参数，必须明确参数名、建议值、环境/作用域和原因并确认；设计阶段还必须判断当前需求是否需要真实 E2E，并和使用人确认。确认需要 E2E 后，再设计 E2E 的命令、运行目标、测试数据、断言和证据。如果任一确认结果暴露 spec 缺口，先更新 spec，再继续 task 和 impl。任务必须包含代码路径、客户确认证据、需求边界/fallback 决策、方法参数/data object 计划、文件拆分计划、数据库/API/IO/异步影响、确认后的 E2E 要求、测试参数文件、85% 覆盖率目标、Alignment Review 和 Security Review。
 
 4. 实现任务：执行 `/sp-impl <change-id>`。
    - 产物：代码变更、更新后的 `tasks.md`、`test-params/`、`task-reviews.md`、`review.md`。
