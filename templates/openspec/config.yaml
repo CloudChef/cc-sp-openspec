@@ -18,6 +18,8 @@ rules:
     - If brainstorm artifacts are missing or blocked, start at brainstorm.
     - If proposal/spec artifacts are missing or blocked, start at specs.
     - If design/tasks artifacts are missing or blocked, start at design/tasks.
+    - If design.md exists but lacks the user-confirmed E2E required/not-required decision, treat design/tasks as incomplete.
+    - When E2E confirmation is missing during goal mode, confirm the decision with the user and update design.md, tasks.md, and tasks-review.md before implementation.
     - If tasks, tests, task reviews, coverage, or final review are incomplete, start at implementation.
     - If completion, wiki, or archive output is missing, start at complete.
     - Do not skip phase reviews, per-task reviews, coverage, test parameter files, wiki generation, or archive gates.
@@ -50,6 +52,8 @@ rules:
     - Use SHALL, SHOULD, and MAY correctly.
     - Describe observable behavior only.
     - Ensure every changed behavior is independently verifiable from a real user-facing, API-facing, job-facing, or system-facing entry point.
+    - Describe enough external behavior for design to decide whether real E2E is required, including external entry point, actor/client, trigger, expected observable result, and side effects.
+    - Do not accept unit tests, mock-only tests, class initialization tests, isolated method tests, or static screenshots as E2E evidence when E2E is required.
     - Backend behavior must support later real API request/response verification.
     - UI behavior must support later UI test verification.
     - Bug fixes must identify the bug entry point and expected fixed behavior.
@@ -62,7 +66,12 @@ rules:
     - Apply Java, Python, configuration, and testing rule files when the target files or validation touch those areas.
     - Recommend generated/modified code paths by feature point.
     - Identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
+    - Define requirement scope and whether compatibility/fallback behavior is required; if specs do not require it, explicitly prohibit fallback and compatibility branches.
+    - Define method/function parameter plans; no method/function may exceed 5 input parameters unless a named data object with explicit fields is used.
     - Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
+    - Assess whether each changed capability requires real E2E, stop to confirm the required/not-required decision with the user, and record the confirmation in design.md.
+    - For confirmed required E2E paths, define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, evidence, and fallback/skip reason when no runnable target exists.
+    - If the confirmed E2E decision reveals missing or incorrect spec behavior, stop and update specs before creating tasks or implementing.
     - Keep planned generated/modified code files at or below 1000 lines; split before implementation when needed.
     - Explicitly decide whether a database is required.
     - If database access is required, use SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
@@ -78,10 +87,14 @@ rules:
     - Each task touching Java, Python, configuration, or tests must cite matching default rule IDs.
     - Each task must list target generated/modified code paths.
     - Each task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
+    - Each task must state requirement-scope/fallback rules and prohibit unrequested fallback or compatibility behavior.
+    - Each task must state method/function parameter constraints and any required named data object.
     - Each task must include the <= 1000 line file-size guardrail and split plan when needed.
     - Each task must identify database, OpenAPI/Controller/Service, API IO, and async impact when relevant.
     - Each task must include validation.
     - Each task must include standalone full verification from the relevant entry point.
+    - Each task must include the user-confirmed real E2E requirement or a design-confirmed not-applicable reason.
+    - Specs, tasks, and implementation must follow the user-confirmed E2E decision recorded in design.md.
     - Backend service tasks must require real API request/response verification against a running service or project-supported test server.
     - UI tasks must require a UI test case and actual interface behavior verification.
     - Bug fix tasks must identify the bug entry point and verify the fix through that entry point.
@@ -101,7 +114,10 @@ rules:
     - Check task-reviews.md and require zero unresolved findings.
     - Check coverage evidence and require at least 90% coverage for changed/affected code.
     - Check standalone full verification evidence for API, UI, bug-entry, and external-service behavior when relevant.
+    - Check user-confirmed required real E2E test evidence, including command, runtime target, test data, assertions, and evidence.
     - Check same/equivalent logic reuse and reject avoidable duplicate logic.
+    - Check existing-code changes implement only approved requirements and reject unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior.
+    - Check methods/functions have no more than 5 input parameters, or use explicit named data objects instead of vague map-like structures.
     - Check generated/modified code files are at or below 1000 lines.
     - Check database runtime and connection pool rules when database access is required.
     - Check backend APIs follow OpenAPI and separate Controller and Service responsibilities when APIs changed.
@@ -119,7 +135,8 @@ rules:
     - Require coverage evidence to show at least 90% coverage.
     - Require independent test parameter files.
     - Require standalone full verification evidence for changed behavior.
-    - Require implementation-standard evidence for code paths, reuse/common logic, file length, database runtime/pool, OpenAPI/layers, API IO, and async handling when relevant.
+    - Require real E2E test evidence when user-confirmed as required in design.
+    - Require implementation-standard evidence for code paths, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, file length, database runtime/pool, OpenAPI/layers, API IO, and async handling when relevant.
     - Generate docs/wiki/<feature-or-story-title>.md from specs, design, implemented code, rules, and review evidence.
     - Derive the wiki filename from the completed feature/story, not from the raw change ID.
     - Create completion.md with gate results and archive target.
@@ -127,4 +144,6 @@ rules:
     - Create a local git commit only after code changes, tests, reviews, completion evidence, wiki, and archive are finished when the project is a git worktree.
     - Commit only files belonging to the completed change and leave unrelated local changes unstaged.
     - Commit message must include the complete requirement, completed changes, solution/design approach, workflow/completion evidence, and frontend/backend completion content when relevant.
+    - Final response must report the completed work in user-facing terms: requirement/outcome, solution, code changes, tests/verification, documentation, review status, and local commit.
+    - OpenSpec archive paths and internal artifacts may be included only as supporting evidence; do not lead the final response with OpenSpec bookkeeping.
     - Do not push unless the user explicitly asks.

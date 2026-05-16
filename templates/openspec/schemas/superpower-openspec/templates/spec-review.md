@@ -32,6 +32,11 @@
 | Requirement / Scenario | Entry Point | Expected Verification | Gap |
 |---|---|---|---|
 
+## E2E-Verifiable Behavior
+
+| Requirement / Scenario | External Entry Point | Observable Result / Side Effect | Design E2E Decision Input Complete | Gap |
+|---|---|---|---|---|
+
 ## Out-of-Scope or Implementation Leakage
 
 ## Required Fixes Before /sp-tasks

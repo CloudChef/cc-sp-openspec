@@ -14,7 +14,11 @@
 | Tests assert meaningful behavior |  |  |  |
 | No empty/no-op or initialization-only tests |  |  |  |
 | Same or equivalent logic is reused or generalized |  |  |  |
+| Existing-code changes stay inside approved requirements |  |  |  |
+| No unrequested fallback or compatibility behavior |  |  |  |
+| Method/function parameter count and data-object rules satisfied |  |  |  |
 | Standalone full verification completed |  |  |  |
+| User-confirmed required real E2E tests designed and executed |  |  |  |
 | Generated/modified code files <= 1000 lines |  |  |  |
 | Database runtime/pool rules satisfied when relevant |  |  |  |
 | OpenAPI and Controller/Service rules satisfied when relevant |  |  |  |
@@ -53,11 +57,24 @@
 |---|---|---|---|
 | Code paths match design/tasks |  |  |  |
 | Reuse/common logic rule satisfied |  |  |  |
+| Requirement-scope/fallback rule satisfied |  |  |  |
+| Parameter-count/data-object rule satisfied |  |  |  |
 | Standalone verification evidence |  |  |  |
+| Real E2E evidence |  |  |  |
 | Code file line counts <= 1000 |  |  |  |
 | Database runtime and pool rules |  |  |  |
 | OpenAPI and Controller/Service rules |  |  |  |
 | API IO and async rules |  |  |  |
+
+## Requirement Scope / Fallback / Parameter Evidence
+
+| Check | Status | Evidence | Gap |
+|---|---|---|---|
+| Existing-code changes implement approved requirements only |  |  |  |
+| No unrequested fallback / compatibility / degraded mode / dual path / silent defaults |  |  |  |
+| Methods/functions have <= 5 inputs |  |  |  |
+| Named data objects are used when more than 5 inputs are required |  |  |  |
+| Vague maps/dicts/objects are not used as unclear data objects |  |  |  |
 
 ## Local Git Commit
 
@@ -68,6 +85,19 @@
 - Included backend changes:
 - Included docs/OpenSpec/review artifacts:
 - Skip reason, if any:
+
+## Final User Report Inputs
+
+- Requirement / outcome:
+- Solution summary:
+- Code changes:
+  - Backend/API/data:
+  - Frontend/UI:
+  - Other code/config:
+- Tests and verification:
+- Documentation updates:
+- Review/finding status:
+- OpenSpec/internal evidence to mention briefly, if useful:
 
 ## Archive Target
 

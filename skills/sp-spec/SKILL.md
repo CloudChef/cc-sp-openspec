@@ -35,10 +35,11 @@ Create or update:
 5. Create capability spec files under `specs/`.
 6. Use OpenSpec Requirement and Scenario format.
 7. Make every behavior independently verifiable through an observable entry point.
-8. Review proposal and specs for alignment with brainstorm, context, rules, existing specs, OpenSpec format, and standalone verifiability.
-9. Create `spec-review.md` with findings and required fixes before `/sp-tasks`.
-10. Fix review findings that are inside the approved spec scope.
-11. Stop before creating design, tasks, or code.
+8. Make scenarios specific enough for the later design phase to decide whether real E2E is required.
+9. Review proposal and specs for alignment with brainstorm, context, rules, existing specs, OpenSpec format, standalone verifiability, and E2E-verifiability.
+10. Create `spec-review.md` with findings and required fixes before `/sp-tasks`.
+11. Fix review findings that are inside the approved spec scope.
+12. Stop before creating design, tasks, or code.
 
 ## Required `proposal.md` Sections
 
@@ -60,6 +61,7 @@ Create or update:
 - Requirement Quality
 - Scenario Coverage
 - Standalone Verifiability
+- E2E-Verifiable Behavior
 - Out-of-Scope or Implementation Leakage
 - Required Fixes Before /sp-tasks
 
@@ -103,6 +105,9 @@ Use these groups when appropriate:
 - Use `SHALL` for required behavior, `SHOULD` for recommended behavior, and `MAY` for optional behavior.
 - Describe externally observable behavior.
 - Specs must be independently verifiable from a real user-facing, API-facing, job-facing, or system-facing entry point.
+- Specs must define behavior with enough external-entry detail for design to decide whether real E2E is required: actor/client, trigger, expected observable result, and externally visible side effects.
+- The design phase owns the required/not-required E2E decision and must confirm that decision with the user. If design confirmation exposes missing or wrong behavior in specs, return to `/sp-spec` and update specs before continuing.
+- A real E2E test means exercising the application through its actual supported boundary, such as a running backend API, browser UI, CLI/job trigger, or project-supported test server. Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not satisfy E2E.
 - Backend behavior scenarios must be written so a real API request and response can be verified later.
 - UI behavior scenarios must be written so an interface test can verify the changed screen behavior later.
 - Bug fix scenarios must identify the bug entry point and expected fixed behavior.

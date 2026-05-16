@@ -34,15 +34,18 @@ Create or update:
 3. Write `design.md` with rule-backed and source-backed decisions plus explicit gaps.
 4. In `design.md`, explicitly recommend generated/modified code paths by feature point and define a split plan for any file that may exceed 1000 lines.
 5. In `design.md`, identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
-6. In `design.md`, explicitly decide whether a database is required. If required, specify SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
-7. In `design.md`, define backend APIs from OpenAPI contracts, separate at least Controller and Service responsibilities, document API IO, and require async handling for very time-consuming operations.
-8. Write `tasks.md` as a checklist where every task maps to a requirement, applicable rules, target code paths, reuse/common logic impact, file-size guardrail, database/API/IO impact when relevant, standalone verification method, test parameter file, coverage target, and required per-task review gates.
-9. Require every implementation task to complete two reviews after implementation: Alignment Review and Security Review.
-10. Require all findings from both reviews to be fixed and re-reviewed before the next task starts.
-11. Review design and tasks for alignment with specs, spec review findings, rules, source mapping, code path planning, reuse/common logic plans, file-size limits, database/API/IO rules, per-task review gates, and implementation readiness.
-12. Create `tasks-review.md` with findings and required fixes before `/sp-impl`.
-13. Fix review findings that are inside the approved design/task scope.
-14. Stop before writing code.
+6. In `design.md`, define requirement scope, compatibility/fallback decisions, and parameter/data-object design before implementation.
+7. In `design.md`, explicitly decide whether a database is required. If required, specify SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
+8. In `design.md`, define backend APIs from OpenAPI contracts, separate at least Controller and Service responsibilities, document API IO, and require async handling for very time-consuming operations.
+9. In `design.md`, assess whether each changed capability needs real E2E testing, stop to ask the user to confirm the E2E required/not-required decision, and record the confirmation evidence.
+10. After user confirmation, define real E2E test design for required E2E paths, including runnable command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence to collect. If confirmation reveals missing or incorrect spec behavior, stop and update specs before creating tasks.
+11. Write `tasks.md` as a checklist where every task maps to a requirement, applicable rules, target code paths, reuse/common logic impact, requirement scope/fallback decision, parameter/data-object plan, file-size guardrail, database/API/IO impact when relevant, standalone verification method, confirmed real E2E test requirement, test parameter file, coverage target, and required per-task review gates.
+12. Require every implementation task to complete two reviews after implementation: Alignment Review and Security Review.
+13. Require all findings from both reviews to be fixed and re-reviewed before the next task starts.
+14. Review design and tasks for alignment with specs, spec review findings, user-confirmed E2E decisions, rules, source mapping, code path planning, reuse/common logic plans, compatibility/fallback decisions, parameter/data-object plans, real E2E test design, file-size limits, database/API/IO rules, per-task review gates, and implementation readiness.
+15. Create `tasks-review.md` with findings and required fixes before `/sp-impl`.
+16. Fix review findings that are inside the approved design/task scope.
+17. Stop before writing code.
 
 ## Required `design.md` Sections
 
@@ -51,6 +54,8 @@ Create or update:
 - Architecture Impact
 - Generated Code Paths
 - Reuse / Common Logic Plan
+- Requirement Scope / Compatibility / Fallback
+- Method / Function Parameter Plan
 - File Size / Split Plan
 - Data Impact
 - Database Decision
@@ -63,6 +68,7 @@ Create or update:
 - Compatibility / Migration
 - Test Strategy
 - Standalone Verification Plan
+- Real E2E Test Design
 - Rules Compliance
 - Source Mapping
 - Spec Gaps
@@ -82,12 +88,15 @@ Create or update:
   - Applicable rules: `<rule id>`, `<rule id>`
   - Target code paths: `<path>`, `<path>`
   - Reuse/common logic impact: `<reuse existing/extract shared abstraction/extend shared abstraction/isolated with justification>`
+  - Requirement scope / fallback: `<exact requirement behavior + no fallback/compatibility unless required>`
+  - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
   - File size guardrail: each generated/modified code file must stay <= 1000 lines; split plan: `<none/path split>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
   - API contract/layers: `<none/OpenAPI operation + Controller path + Service path>`
   - API IO / async: `<none/IO profile/async required>`
   - Change: <specific implementation work>
   - Standalone verification: `<entry point + command/test + request/input + expected response/output + side effects>`
+  - Real E2E test: `<required/not-applicable with reason + command/tool + runtime target + test data + assertions + evidence>`
   - Validation: <how to verify>
   - Test parameters: `openspec/changes/<change-id>/test-params/<scenario-name>.md`
   - Coverage target: at least 90% code coverage for changed/affected code
@@ -138,6 +147,10 @@ Do not pass the full conversation history as review context.
 - Design must identify same or equivalent existing logic and define reuse, extraction, extension, or justified isolation decisions.
 - Every task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
 - Avoidable same/equivalent logic duplication must be treated as a design/task review finding.
+- Design and tasks must state whether compatibility or fallback behavior is required. If specs do not require it, tasks must explicitly prohibit adding fallback or compatibility branches.
+- Design and tasks must require changed behavior to match approved requirements exactly, especially when modifying existing code.
+- Design and tasks must identify any method/function that would need more than 5 inputs and replace it with a named data object, request object, command object, options object, DTO, or equivalent explicit schema.
+- Do not use vague `Map`, `dict`, `object`, `**kwargs`, or key/value bags as a substitute for a clear data object unless the domain behavior is explicitly a map and the allowed keys/schema are documented.
 - Design and tasks must enforce the 1000-line maximum for each generated or modified code file and split files before implementation when needed.
 - Design must explicitly say whether a database is required.
 - If a database is required, design must specify SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, a connection pool, and maximum pool size <= 100.
@@ -146,6 +159,10 @@ Do not pass the full conversation history as review context.
 - Very time-consuming API work must be designed as async and tasks must include async validation.
 - Every task must include concrete validation.
 - Every task must include standalone full verification from the relevant entry point.
+- Design must assess whether each changed capability requires real E2E, stop to confirm that decision with the user, and record the confirmation in `design.md`.
+- For confirmed required E2E paths, design must specify command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence.
+- Every task must include the confirmed real E2E test requirement or a documented not-applicable reason tied to the user-confirmed design decision. Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not count as real E2E.
+- Specs, tasks, and implementation must follow the user-confirmed E2E decision recorded in `design.md`. If that decision exposes a spec gap, update specs before continuing.
 - Backend service tasks must require a real API call against a running service or project-supported test server, including request and response checks.
 - UI tasks must require a UI test case and actual interface behavior verification.
 - Bug fix tasks must identify the bug entry point and verify that the changed code fixes the original behavior through that entry point.

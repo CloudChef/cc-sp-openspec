@@ -99,7 +99,7 @@ Python code MUST not hide important failures.
 - Do not log secrets, decrypted passwords, tokens, access keys, or signed URLs.
 - Return empty collections only when the calling contract treats missing external data as non-fatal.
 - Raise or map exceptions when the caller must distinguish failure from empty data.
-- Use explicit fallback values for missing metrics or labels.
+- Use explicit fallback values for missing metrics or labels only when the approved requirement or design defines that fallback behavior.
 
 ## PY-008: Security and Secrets
 
@@ -143,6 +143,16 @@ Python code SHOULD follow these common Google Python practices unless the target
 - Avoid mutable default argument values such as `[]` or `{}`; use `None` and initialize inside the function, or use an immutable default.
 - Do not use `assert` for runtime validation or business preconditions; raise an explicit exception.
 - Use built-in exception classes when they clearly fit, such as `ValueError` for invalid arguments.
+
+## PY-012: Function Parameters and Data Objects
+
+Python functions and methods MUST keep inputs explicit and readable.
+
+- Do not define functions or methods with more than 5 input parameters.
+- If more than 5 inputs are required, introduce a named dataclass, pydantic model, TypedDict with a documented schema, request object, command object, or options object.
+- Do not use plain `dict`, `**kwargs`, `object`, or ambiguous key/value bags to avoid creating a clear data object.
+- Data objects used for parameters MUST have descriptive field names, type hints or schema, validation expectations, and clear ownership.
+- Do not add fallback or compatibility branches unless the approved requirement or design explicitly requires them.
 - Use context managers for files, sockets, clients, and other stateful resources when available.
 - Keep top-level executable behavior behind `main()` and `if __name__ == '__main__':`.
 - Document side effects, raised exceptions, and non-obvious arguments in docstrings for public functions.

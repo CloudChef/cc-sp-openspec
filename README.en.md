@@ -135,11 +135,11 @@ After copying the template, update:
 
 The template includes these default rule files:
 
-- `docs/rules/project-implementation-standards.md`: Baseline implementation rules for code paths, standalone full verification, same/equivalent logic reuse, file size, database runtime, OpenAPI, layering, API IO, and async work.
+- `docs/rules/project-implementation-standards.md`: Baseline implementation rules for code paths, requirement scope and fallback control, method parameters/data objects, standalone full verification, real E2E test design and execution, same/equivalent logic reuse, file size, database runtime, OpenAPI, layering, API IO, and async work.
 - `docs/rules/java-code-standards.md`: Java/Spring rules with Google Java Style as a default reference.
 - `docs/rules/python-code-standards.md`: Python rules with Google Python Style as a default reference.
 - `docs/rules/configuration-standards.md`: Configuration, database, migration, OpenAPI, async queue, and tool configuration rules.
-- `docs/rules/testing-standards.md`: Testing, coverage, test parameters, standalone full verification, mocks, and integration test safety rules.
+- `docs/rules/testing-standards.md`: Testing, coverage, test parameters, standalone full verification, real E2E tests, mocks, and integration test safety rules.
 
 Each target project can add its own rule files, for example:
 
@@ -157,7 +157,7 @@ Run the automatic goal command to finish the remaining workflow:
 /sp-goal <requirement-or-change-id>
 ```
 
-`/sp-goal` detects the current change status and starts from the earliest incomplete phase. If brainstorm is not complete, it starts at brainstorm. If brainstorm is complete but spec is not complete, it starts at spec. It continues through the remaining phases until `/sp-complete`. It does not skip reviews, tests, coverage, finding closure, wiki generation, or archive gates.
+`/sp-goal` detects the current change status and starts from the earliest incomplete phase. If brainstorm is not complete, it starts at brainstorm. If brainstorm is complete but spec is not complete, it starts at spec. It continues through the remaining phases until `/sp-complete`. If an existing `design.md` lacks a user-confirmed E2E required/not-required decision, `/sp-goal` treats design/tasks as incomplete, confirms the decision inside the goal workflow, then updates design, tasks, and tasks-review. It does not skip reviews, tests, coverage, finding closure, wiki generation, or archive gates.
 
 You can also run phases manually:
 
@@ -169,12 +169,12 @@ You can also run phases manually:
 2. Generate specs: run `/sp-spec <change-id>`.
    - Outputs: `proposal.md`, `specs/<capability>/spec.md`, `spec-review.md`.
    - Purpose: turn the requirement into a formal proposal and observable behavior specs.
-   - Requirement: specs use Requirement + Scenario format; rules that affect external behavior must be encoded in requirements or scenarios.
+   - Requirement: specs use Requirement + Scenario format; rules that affect external behavior must be encoded in requirements or scenarios; scenarios must provide enough external-entry and expected-result detail for design to decide whether real E2E is required.
 
 3. Create design and tasks: run `/sp-tasks <change-id>`.
    - Outputs: `design.md`, `tasks.md`, `tasks-review.md`.
    - Purpose: define technical design, code paths, task boundaries, test strategy, and review gates.
-   - Requirement: tasks must include code paths, file split plan, database/API/IO/async impact, test parameter files, 90% coverage target, Alignment Review, and Security Review.
+   - Requirement: design must decide whether the current requirement needs real E2E and confirm that decision with the user. When E2E is confirmed as required, design must specify command, runtime target, test data, assertions, and evidence. If confirmation exposes a spec gap, update specs before continuing to tasks and implementation. Tasks must include code paths, requirement-scope/fallback decisions, method-parameter/data-object plans, file split plan, database/API/IO/async impact, the confirmed E2E requirement, test parameter files, 90% coverage target, Alignment Review, and Security Review.
 
 4. Implement tasks: run `/sp-impl <change-id>`.
    - Outputs: code changes, updated `tasks.md`, `test-params/`, `task-reviews.md`, and `review.md`.
@@ -186,3 +186,4 @@ You can also run phases manually:
    - Purpose: close the loop across tasks, tests, reviews, rules, and documentation, then generate the wiki, archive the change, and create the local commit.
    - Requirement: the wiki filename must be semantic and derived from specs, design, actual code, rules, and review evidence. It should not simply use `<change-id>.md`.
    - Commit requirement: create the local commit only after code changes, tests, reviews, `completion.md`, wiki, and archive are finished. Commit only the completed change files and do not push automatically. The commit message must summarize the complete requirement, completed changes, solution/design approach, workflow and completion evidence, and frontend/backend completion content when relevant, without excessive implementation detail.
+   - Reporting requirement: after completion, provide a user-facing report of what was done, focused on solution, code changes, tests/verification, documentation updates, review status, and local commit. OpenSpec archive paths and internal artifacts can be brief supporting evidence.

@@ -137,11 +137,11 @@ Copy-Item -Path C:\Projects\cmps\sp-openspec\skills\* -Destination $HOME\.agents
 
 模板默认提供这些规则：
 
-- `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、单独完整验证、相同逻辑复用、单文件 1000 行限制、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
+- `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、需求边界与 fallback 控制、方法参数/data object、单独完整验证、真实 E2E 测试设计与执行、相同逻辑复用、单文件 1000 行限制、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
 - `docs/rules/java-code-standards.md`: Java/Spring 规范，结合参考项目实践和 Google Java Style。
 - `docs/rules/python-code-standards.md`: Python 规范，结合参考项目实践和 Google Python Style。
 - `docs/rules/configuration-standards.md`: 配置、数据库、迁移、OpenAPI、异步队列、依赖工具配置规范。
-- `docs/rules/testing-standards.md`: 测试、覆盖率、测试参数、单独完整验证、Mock、集成测试安全规范。
+- `docs/rules/testing-standards.md`: 测试、覆盖率、测试参数、单独完整验证、真实 E2E 测试、Mock、集成测试安全规范。
 
 每个项目可以继续添加自己的规则文件，例如：
 
@@ -159,7 +159,7 @@ docs/rules/data-retention.md
 /sp-goal <requirement-or-change-id>
 ```
 
-`/sp-goal` 会根据当前 change 的完成情况判断从哪一步开始。如果 brainstorm 没完成，就从 brainstorm 开始；如果 brainstorm 已完成但 spec 没完成，就从 spec 开始；后续依次类推，直到 `/sp-complete`。它不会跳过 review、测试、coverage、finding closure、Wiki 或 archive 门禁。
+`/sp-goal` 会根据当前 change 的完成情况判断从哪一步开始。如果 brainstorm 没完成，就从 brainstorm 开始；如果 brainstorm 已完成但 spec 没完成，就从 spec 开始；后续依次类推，直到 `/sp-complete`。如果已有 `design.md` 但缺少使用人确认的 E2E required/not-required 决策，`/sp-goal` 会把 design/tasks 视为未完成，先在 goal 流程中确认并更新 design、tasks 和 tasks-review。它不会跳过 review、测试、coverage、finding closure、Wiki 或 archive 门禁。
 
 也可以手动按阶段执行：
 
@@ -171,12 +171,12 @@ docs/rules/data-retention.md
 2. 规格生成：执行 `/sp-spec <change-id>`。
    - 产物：`proposal.md`、`specs/<capability>/spec.md`、`spec-review.md`。
    - 目的：把需求转成正式提案和可观察行为规格。
-   - 要求：Specs 使用 Requirement + Scenario 格式；影响外部行为的规则必须进入需求或场景。
+   - 要求：Specs 使用 Requirement + Scenario 格式；影响外部行为的规则必须进入需求或场景；场景必须提供足够的外部入口和结果信息，供 design 阶段判断是否需要真实 E2E。
 
 3. 设计和任务拆分：执行 `/sp-tasks <change-id>`。
    - 产物：`design.md`、`tasks.md`、`tasks-review.md`。
    - 目的：明确技术设计、代码路径、任务边界、测试策略和 Review 入口。
-   - 要求：任务必须包含代码路径、文件拆分计划、数据库/API/IO/异步影响、测试参数文件、90% 覆盖率目标、Alignment Review 和 Security Review。
+   - 要求：设计阶段必须判断当前需求是否需要真实 E2E，并和使用人确认；确认需要后再设计 E2E 的命令、运行目标、测试数据、断言和证据。如果确认结果暴露 spec 缺口，先更新 spec，再继续 task 和 impl。任务必须包含代码路径、需求边界/fallback 决策、方法参数/data object 计划、文件拆分计划、数据库/API/IO/异步影响、确认后的 E2E 要求、测试参数文件、90% 覆盖率目标、Alignment Review 和 Security Review。
 
 4. 实现任务：执行 `/sp-impl <change-id>`。
    - 产物：代码变更、更新后的 `tasks.md`、`test-params/`、`task-reviews.md`、`review.md`。
@@ -188,3 +188,4 @@ docs/rules/data-retention.md
    - 目的：确认任务、测试、Review、规则和文档证据都闭环后，生成 Wiki、归档 change，并创建本地提交。
    - 要求：Wiki 文件名必须根据 spec、design、实际 code、rules 和 review 证据生成语义化标题，不应简单使用 `<change-id>.md`。
    - Commit 要求：必须等代码变更、测试、Review、`completion.md`、Wiki 和 archive 都完成之后再创建本地 commit；只提交本次完成的变更，不自动 push；commit message 需要概括完整需求、完成的变更、方案设计、流程和完成证据，并在相关时囊括前端和后端完成内容，但不展开到过细实现细节。
+   - 汇报要求：完成后必须面向使用人完整汇报做了什么，重点说明方案、代码变更、测试/验证、文档更新、Review 状态和本地 commit；OpenSpec 归档路径和内部 artifact 可以作为辅助证据简要说明。

@@ -20,7 +20,10 @@ All findings must be fixed and re-reviewed before moving to the next task.
 - Changed files:
 - Changed file line counts:
 - Reuse/common logic evidence:
+- Requirement-scope/fallback evidence:
+- Parameter-count/data-object evidence:
 - Standalone verification evidence:
+- Real E2E evidence:
 - API request/response evidence:
 - UI test evidence:
 - Bug entry-point evidence:
@@ -48,8 +51,11 @@ All findings must be fixed and re-reviewed before moving to the next task.
 - Alignment findings resolved:
 - Security findings resolved:
 - Standalone verification completed:
+- User-confirmed required real E2E completed:
 - Coverage >= 90%:
 - Reuse/common logic rule satisfied:
+- Requirement-scope/fallback rule satisfied:
+- Parameter-count/data-object rule satisfied:
 - Changed code files <= 1000 lines:
 - Database runtime/pool rules satisfied:
 - OpenAPI and Controller/Service rules satisfied:

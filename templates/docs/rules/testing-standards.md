@@ -114,3 +114,17 @@ Every changed behavior MUST be verified through a complete standalone path when 
 - Database, Redis, Elasticsearch, queue, cache, or external integration changes require verification against the project-provided connection, local environment, test container, or documented test configuration when available.
 - If an external service verification path is unavailable, record the skip reason and verify all locally testable behavior.
 - Mock-only tests do not replace standalone verification when a real project-supported verification path exists.
+
+## TEST-012: Real E2E Decision, Design, and Execution
+
+Every changed capability MUST have an explicit real E2E required/not-required decision in design artifacts, confirmed with the user before tasks or implementation.
+
+- Specs MUST identify enough externally observable behavior for design to decide E2E applicability: external entry point, actor/client, trigger, expected externally observable result, and side effects.
+- `design.md` MUST assess whether real E2E is required for each changed capability and record user confirmation of the required/not-required decision.
+- When E2E is confirmed as required, `design.md` MUST include command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence to collect.
+- `tasks.md` MUST include a real E2E test line for each relevant task, or a documented not-applicable reason tied to the spec.
+- Backend E2E MUST call a running service or project-supported test server and verify request, response status, response body/schema, and relevant side effects.
+- UI E2E MUST use a browser-level or project-approved UI test runner and verify the changed interface behavior, not just component initialization.
+- Job, CLI, or workflow E2E MUST trigger the real supported entry point and verify resulting output, state change, or externally observable side effect.
+- Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not satisfy required E2E evidence.
+- If real E2E cannot run because the project lacks a runnable target or documented environment, record the blocker, user-confirmed skip reason, and locally testable fallback evidence in `design.md`, `tasks.md`, `task-reviews.md`, and `review.md`.

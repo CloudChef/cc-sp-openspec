@@ -49,7 +49,7 @@ Then create:
 5. Verify `review.md` has zero unresolved findings.
 6. Verify coverage evidence is at least 90% for changed/affected code.
 7. Verify test parameter files are independently saved under `test-params/`.
-8. Verify implementation-standard evidence: changed code paths match tasks, same/equivalent logic is reused or generalized without avoidable duplication, standalone full verification is complete, generated/modified code files are <= 1000 lines, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
+8. Verify implementation-standard evidence: changed code paths match tasks, same/equivalent logic is reused or generalized without avoidable duplication, existing-code changes stay inside approved requirements with no unrequested fallback/compatibility behavior, methods/functions have <= 5 inputs or use explicit named data objects, standalone full verification is complete, user-confirmed required real E2E tests are designed and executed, generated/modified code files are <= 1000 lines, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
 9. Inspect relevant implementation files or diffs referenced by the change artifacts.
 10. Derive a human-readable feature/story title from specs, design, code, rules, and review evidence.
 11. Convert that title to a concise kebab-case wiki filename.
@@ -76,7 +76,10 @@ Do not archive if any pre-archive gate fails. Do not mark completion successful 
 - Required test parameter files are missing.
 - Tests only cover empty/no-op code or class/method initialization.
 - Same/equivalent logic is duplicated without documented justification.
+- Existing-code changes include unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior.
+- Any method/function has more than 5 input parameters without an explicit named data object, or uses vague map-like parameter structures without documented schema.
 - Standalone full verification evidence is missing for API, UI, bug-entry, or external-service behavior when relevant.
+- User-confirmed required real E2E test design or execution evidence is missing.
 - Any generated or modified code file exceeds 1000 lines.
 - Changed code paths do not match `tasks.md` and lack documented justification.
 - Required database runtime or connection pool evidence is missing.
@@ -137,7 +140,9 @@ Workflow:
 - Wiki Documentation
 - Spec / Design / Code Alignment
 - Implementation Standards Evidence
+- Requirement Scope / Fallback / Parameter Evidence
 - Local Git Commit
+- Final User Report Inputs
 - Archive Target
 - Blocking Issues
 
@@ -169,6 +174,7 @@ The generated wiki page must include:
 - Validation Evidence
 - Test Parameter and Coverage Evidence
 - Standalone Verification Evidence
+- Real E2E Evidence
 - Source Mapping
 
 ## Review Method
@@ -188,12 +194,17 @@ Do not pass the full conversation history as review context.
 
 ## Final Response
 
+After completion succeeds, provide a user-facing completion report. Keep OpenSpec internal details brief; do not make archived paths or artifact names the main content.
+
 Include:
 
-- Archived change path
-- Wiki page path
+- Requirement / outcome summary
+- Solution summary: key design decisions, architecture choices, data/API/UI flow, and important tradeoffs
+- Code changes: concrete changed areas and important file paths; include backend/API/data work and frontend/UI work when relevant, or state none
+- Test and verification evidence: commands, real API/UI/E2E evidence when required, coverage result, and any accepted skip reason
+- Documentation changes: wiki/user docs/README/API docs or other non-OpenSpec documentation created or updated
+- Review and finding status
 - Local git commit hash, or the recorded skip reason
-- Completion gates result
-- Tasks completed
-- Review/finding status
-- Any skipped or blocked item
+- Remaining skipped or blocked item
+
+OpenSpec-related paths such as archive path, `completion.md`, or internal review artifacts may be included only as supporting evidence when useful. Do not lead the final report with OpenSpec bookkeeping.

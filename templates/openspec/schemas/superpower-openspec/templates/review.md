@@ -32,7 +32,12 @@
 |---|---|---|---|
 | Generated/modified code paths match design and tasks |  |  |  |
 | Same or equivalent logic is reused or generalized without avoidable duplication |  |  |  |
+| Existing-code changes are limited to approved requirements |  |  |  |
+| No unrequested fallback or compatibility behavior was added |  |  |  |
+| Methods/functions have <= 5 inputs or named data objects |  |  |  |
+| Vague maps/dicts/objects are not used as unclear data objects |  |  |  |
 | Standalone full verification is completed for changed behavior |  |  |  |
+| User-confirmed required real E2E tests are designed and executed |  |  |  |
 | Generated/modified code files are <= 1000 lines |  |  |  |
 | Database decision is implemented as designed |  |  |  |
 | Required database uses SQLite for development-stage local behavior |  |  |  |
@@ -61,6 +66,11 @@
 | Bug entry-point regression |  |  |  |  |
 | External service verification / skip reason |  |  |  |  |
 
+## Real E2E Verification
+
+| Capability / Scenario | User Confirmation | Command / Tool | Runtime Target | Test Data | Assertions | Evidence / Skip Reason | Gap |
+|---|---|---|---|---|---|---|---|
+
 ## Test Quality
 
 | Requirement | Status | Evidence | Gap |
@@ -70,6 +80,7 @@
 | Tests do not target empty/no-op code |  |  |  |
 | Tests are not limited to class/method initialization |  |  |  |
 | Tests assert meaningful behavior from specs/design |  |  |  |
+| Unit, mock-only, initialization, isolated method, or static screenshot checks are not used as E2E substitutes |  |  |  |
 
 ## Documentation Consistency
 

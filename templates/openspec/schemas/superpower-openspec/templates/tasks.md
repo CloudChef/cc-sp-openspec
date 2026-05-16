@@ -7,12 +7,15 @@
   - Applicable rules: `<rule id>`, `<rule id>`
   - Target code paths: `<path>`, `<path>`
   - Reuse/common logic impact: `<reuse existing/extract shared abstraction/extend shared abstraction/isolated with justification>`
+  - Requirement scope / fallback: `<exact requirement behavior + no fallback/compatibility unless required>`
+  - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
   - File size guardrail: each generated/modified code file must stay <= 1000 lines; split plan: `<none/path split>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
   - API contract/layers: `<none/OpenAPI operation + Controller path + Service path>`
   - API IO / async: `<none/IO profile/async required>`
   - Change: <specific implementation work>
   - Standalone verification: `<entry point + command/test + request/input + expected response/output + side effects>`
+  - Real E2E test: `<required/not-applicable with reason + command/tool + runtime target + test data + assertions + evidence>`
   - Validation: <how to verify>
   - Test parameters: `openspec/changes/<change-id>/test-params/<scenario-name>.md`
   - Coverage target: at least 90% code coverage for changed/affected code
@@ -29,11 +32,14 @@ Validation must include:
 
 - Code coverage check showing at least 90% coverage for changed/affected code.
 - Reuse/common logic check showing no avoidable duplicate logic was introduced.
+- Requirement-scope/fallback check showing no unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior was added.
+- Parameter-count/data-object check showing no method/function has more than 5 inputs unless it uses an explicit named data object.
 - File length check showing every generated/modified code file is at or below 1000 lines.
 - Database configuration check when database access is required: SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, connection pool configured, maximum pool size <= 100.
 - OpenAPI contract check for backend APIs, with at least Controller and Service responsibilities separated.
 - API IO check for every API, including async validation for very time-consuming operations.
 - Standalone full verification from the relevant entry point: real API call for backend services, UI test for UI changes, bug entry-point verification for bug fixes, and external service verification when project connection/test config exists.
+- Real E2E test execution for every capability where E2E is user-confirmed as required by design; unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not count as E2E evidence.
 - Tests with explicit parameters saved outside test code under `openspec/changes/<change-id>/test-params/`.
 - Assertions against meaningful behavior from specs and design.
 - No tests that exercise empty/no-op code.

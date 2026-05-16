@@ -52,9 +52,11 @@ Rules:
 - If the active change has no completed brainstorm artifacts, start from `/sp-brainstorm`.
 - If brainstorm is complete but proposal/spec artifacts are missing or blocked, start from `/sp-spec`.
 - If specs are complete but design/tasks are missing or blocked, start from `/sp-tasks`.
+- If `design.md` exists but lacks the user-confirmed E2E required/not-required decision, treat design/tasks as incomplete; confirm the decision with the user inside `/sp-goal`, then update `design.md`, `tasks.md`, and `tasks-review.md` before implementation.
 - If tasks exist but implementation, tests, per-task reviews, coverage, or final review are incomplete, start from `/sp-impl`.
 - If implementation review is complete but completion/wiki/archive is missing, start from `/sp-complete`.
 - Never skip phase review, per-task Alignment Review, per-task Security Review, coverage, test parameter files, wiki generation, or archive gates.
+- Never skip the design-phase user confirmation for E2E required/not-required decisions, including for older changes created before this rule existed.
 - Stop and ask for user input when multiple active changes exist and no change ID is provided.
 
 ## Before Any OpenSpec Task
@@ -166,6 +168,9 @@ Rules:
 - Every requirement must have at least one `#### Scenario:` header.
 - Specs describe observable behavior only.
 - Specs must be independently verifiable from a real user-facing, API-facing, job-facing, or system-facing entry point.
+- Specs must describe enough external behavior for design to decide whether real E2E is required: external entry point, actor/client, trigger, expected observable result, and side effects.
+- The E2E required/not-required decision is made in design and must be confirmed with the user before tasks or implementation.
+- Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not count as real E2E evidence when E2E is required.
 - Backend behavior scenarios must support later real API request/response verification.
 - UI behavior scenarios must support later UI test verification of changed interface behavior.
 - Bug fix scenarios must identify the bug entry point and expected fixed behavior.
@@ -185,6 +190,8 @@ This workflow requires `design.md` for `/sp-tasks`. Include:
 - Architecture Impact
 - Generated Code Paths
 - Reuse / Common Logic Plan
+- Requirement Scope / Compatibility / Fallback
+- Method / Function Parameter Plan
 - File Size / Split Plan
 - Data Impact
 - Database Decision
@@ -197,6 +204,7 @@ This workflow requires `design.md` for `/sp-tasks`. Include:
 - Compatibility / Migration
 - Test Strategy
 - Standalone Verification Plan
+- Real E2E Test Design
 - Source Mapping
 - Rules Compliance
 - Spec Gaps
@@ -206,7 +214,12 @@ Mandatory implementation-standard design decisions:
 - Read default Java/Python/configuration/testing rule files when the change touches those areas.
 - Recommend generated or modified code paths for each feature point.
 - Identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
+- Define requirement scope and whether compatibility or fallback behavior is required. If specs do not require it, explicitly prohibit fallback and compatibility branches.
+- Define method/function parameter plans. No method/function may exceed 5 input parameters; if more inputs are needed, use a named data object with explicit fields, not a vague map/dict/object/key-value bag.
 - Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
+- Assess whether each changed capability requires real E2E, stop to confirm the required/not-required decision with the user, and record the confirmation in `design.md`.
+- For confirmed required E2E paths, define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, evidence, and fallback/skip reason when no runnable target exists.
+- If the confirmed E2E decision reveals missing or incorrect spec behavior, stop and update specs before creating tasks or implementing.
 - Keep every generated or modified code file at or below 1000 lines; split planned files before implementation when needed.
 - Explicitly state whether a database is required.
 - If a database is required, use SQLite for development-stage local behavior and MySQL for implementation/deployment-stage behavior.
@@ -237,12 +250,15 @@ Task format:
   - Applicable rules: `<rule id>`, `<rule id>`
   - Target code paths: `<path>`, `<path>`
   - Reuse/common logic impact: `<reuse existing/extract shared abstraction/extend shared abstraction/isolated with justification>`
+  - Requirement scope / fallback: `<exact requirement behavior + no fallback/compatibility unless required>`
+  - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
   - File size guardrail: each generated/modified code file must stay <= 1000 lines; split plan: `<none/path split>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
   - API contract/layers: `<none/OpenAPI operation + Controller path + Service path>`
   - API IO / async: `<none/IO profile/async required>`
   - Change: <specific implementation work>
   - Standalone verification: `<entry point + command/test + request/input + expected response/output + side effects>`
+  - Real E2E test: `<required/not-applicable with reason + command/tool + runtime target + test data + assertions + evidence>`
   - Validation: <how to verify>
   - Test parameters: `openspec/changes/<change-id>/test-params/<scenario-name>.md`
   - Coverage target: at least 90% code coverage for changed/affected code
@@ -259,10 +275,14 @@ Rules:
 - Every task touching Java, Python, configuration, or tests must cite the matching default rule IDs.
 - Every task must list target generated or modified code paths.
 - Every task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
+- Every task must state the requirement-scope/fallback decision and prohibit unrequested fallback/compatibility behavior.
+- Every task must state method/function parameter constraints and any named data object required for more than 5 inputs.
 - Every task must include the file-size guardrail and split plan when needed.
 - Every task must identify database, API contract/layering, and API IO/async impact when relevant.
 - Every task must include validation.
 - Every task must include standalone full verification from the relevant entry point.
+- Every task must include the user-confirmed real E2E requirement or a design-confirmed not-applicable reason.
+- Specs, tasks, and implementation must follow the user-confirmed E2E decision recorded in `design.md`.
 - Backend service tasks must require a real API call against a running service or project-supported test server, including request and response checks.
 - UI tasks must require a UI test case and actual interface behavior verification.
 - Bug fix tasks must identify the bug entry point and verify the fix through that entry point.
@@ -285,6 +305,8 @@ Testing rules:
 - Tests must use explicit parameters saved independently under `openspec/changes/<change-id>/test-params/`.
 - Tests must assert meaningful behavior from specs and design.
 - Standalone full verification must be completed for backend API, UI, bug-entry, and external-service behavior when relevant.
+- User-confirmed required real E2E tests must be run against the designed runtime target and recorded with command, test data, assertions, and evidence.
+- Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not count as real E2E evidence.
 - External service verification may be skipped only when the project provides no connection method or supported test environment; the skip reason must be recorded.
 - Tests for empty/no-op code are not allowed.
 - Tests that only verify class or method initialization do not count.
@@ -297,8 +319,11 @@ Rules:
 - Do not start the next task while the current task has open findings.
 - Do not mark the task complete until validation, Alignment Review, and Security Review all have no open findings.
 - Do not mark the task complete until standalone full verification evidence is recorded, or an allowed external-service skip reason is recorded.
+- Do not mark the task complete until user-confirmed required real E2E evidence is recorded, or a documented environment blocker and fallback evidence are recorded.
 - Do not mark the task complete until coverage is at least 90% and test parameter files are saved.
 - Do not mark the task complete while avoidable same/equivalent logic duplication remains.
+- Do not mark the task complete while unrequested fallback/compatibility behavior exists.
+- Do not mark the task complete while methods/functions exceed 5 input parameters without explicit named data objects.
 - Do not mark the task complete while any generated or modified code file exceeds 1000 lines.
 - Do not mark the task complete if database, OpenAPI, Controller/Service, API IO, or async evidence is missing when relevant.
 - If a finding requires behavior outside approved specs/design/tasks, stop and update OpenSpec before coding more.
@@ -318,6 +343,7 @@ Completion gates:
 - Test parameter files are saved independently under `test-params/`.
 - The generated wiki page reflects specs, design, implemented code, rules, and validation evidence.
 - Standalone verification evidence is present for API, UI, bug-entry, and external-service behavior when relevant.
+- User-confirmed required real E2E test evidence is present.
 - The generated wiki filename is a semantic feature/story title derived from specs, design, code, rules, and review evidence, not the raw change ID.
 - A local git commit is created only after all completed change artifacts, wiki documentation, and archive movement are finished, unless the project is not a git worktree.
 
@@ -337,6 +363,15 @@ Local git commit rules:
 - If the repository is not a git worktree, record the skip reason in `completion.md`.
 - The commit message must include the complete requirement, completed changes, solution/design approach, workflow/completion evidence, and frontend/backend completion content when relevant.
 - Keep the commit message complete but not overly detailed.
+
+Final response rules:
+
+- Provide a user-facing completion report after `/sp-complete`.
+- Lead with the requirement/outcome, solution summary, code changes, tests/verification, documentation changes, review/finding status, and local commit.
+- Code changes must name concrete changed areas and important file paths, including backend/API/data work and frontend/UI work when relevant, or state none.
+- Test/verification summary must include commands, real API/UI/E2E evidence when required, coverage result, and any accepted skip reason.
+- Documentation summary must include wiki, user docs, README, API docs, or other non-OpenSpec documentation created or updated.
+- OpenSpec archive paths, `completion.md`, and internal review artifacts may be listed only as supporting evidence. Do not lead the final report with OpenSpec bookkeeping.
 
 The wiki page must include:
 
@@ -370,7 +405,7 @@ Wiki filename rules:
 - Follow applicable project-defined rules under `docs/rules/*.md`.
 - Follow applicable default Java, Python, configuration, and testing rules before editing related files.
 - Run relevant verification.
-- Mark tasks complete only after standalone verification, validation, coverage, file length checks, independent test parameters, implementation-standard evidence, and both per-task reviews have no open findings.
+- Mark tasks complete only after standalone verification, user-confirmed required real E2E evidence, validation, coverage, file length checks, independent test parameters, implementation-standard evidence, and both per-task reviews have no open findings.
 
 ## Review Rules
 
@@ -410,9 +445,12 @@ For validation, inspect:
 - `task-reviews.md` and final `review.md` show zero unresolved findings before completion.
 - Test coverage is at least 90% for changed/affected code.
 - Standalone verification evidence is present for changed behavior, including real API calls, UI tests, bug-entry regression checks, and external service checks when relevant.
+- User-confirmed required real E2E tests are designed and executed with command, runtime target, test data, assertions, and evidence; unit/mock/initialization/isolated method checks are not accepted as E2E substitutes.
 - Tests have independent parameter files and meaningful assertions.
 - Generated/modified code files are at or below 1000 lines.
 - Same or equivalent logic is reused or generalized without avoidable duplication.
+- Existing-code changes implement only approved requirements, with no unrequested fallback or compatibility branches.
+- Methods/functions have no more than 5 input parameters, or use explicit named data objects instead of vague map-like structures.
 - Database decisions and connection pool constraints are satisfied when relevant.
 - Backend APIs follow OpenAPI and separate Controller and Service responsibilities when relevant.
 - API IO and async decisions are implemented when relevant.

@@ -10,7 +10,7 @@ This project uses Codex, Superpower-style workflow skills, and OpenSpec.
 
 Always open `openspec/AGENTS.md` when a request mentions planning, proposals, specs, changes, design, tasks, implementation of an OpenSpec change, or `/sp-*` workflow commands.
 
-Read `docs/rules/project-implementation-standards.md` when present. It defines baseline design, task, implementation, and review requirements for code paths, standalone verification, logic reuse, file size, database runtime, OpenAPI, backend layering, API IO, and async work.
+Read `docs/rules/project-implementation-standards.md` when present. It defines baseline design, task, implementation, and review requirements for code paths, requirement scope, fallback control, parameter data objects, standalone verification, logic reuse, file size, database runtime, OpenAPI, backend layering, API IO, and async work.
 
 Also read these default rule files when the change touches the matching area:
 
@@ -61,6 +61,8 @@ Required skills:
 ## Artifact Rules
 
 `/sp-goal` detects the earliest incomplete phase for an active or requested change and runs all remaining workflow phases through `/sp-complete`. It must not skip phase reviews, task reviews, tests, coverage, finding closure, wiki generation, or archive gates.
+
+If `/sp-goal` finds an existing `design.md` without a user-confirmed E2E required/not-required decision, treat design/tasks as incomplete. Confirm the decision with the user inside the goal workflow, then update `design.md`, `tasks.md`, and `tasks-review.md` before implementation.
 
 `/sp-brainstorm` creates only:
 
@@ -117,14 +119,21 @@ Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
 - Do not proceed to the next phase with unresolved blocking gaps in the current phase review.
 - During design and task planning, require target code paths and keep generated/modified code files <= 1000 lines.
 - During design and task planning, identify same or equivalent existing logic and require reuse, shared abstraction extraction/extension, or documented isolation justification.
+- During design and implementation, existing-code changes must implement only approved requirements. Do not add fallback, compatibility, degraded-mode, dual-path, or silent default behavior unless specs/design/tasks explicitly require it.
+- During design and implementation, methods/functions must have no more than 5 input parameters, or use explicit named data objects instead of vague maps/dicts/objects/key-value bags.
 - During spec, design, task, and implementation work, require standalone full verification from the relevant entry point.
+- During design, assess whether each changed capability requires real E2E, stop to confirm the required/not-required decision with the user, and record that confirmation before tasks or implementation.
+- If E2E is confirmed as required, require runtime target, command/tool, test data, assertions, and evidence in design and tasks.
+- During implementation, user-confirmed required real E2E tests must run against the designed runtime target. Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not count as E2E.
 - Backend service work must verify real API request/response behavior; UI work must include UI tests; bug fixes must verify through the bug entry point; external service changes must verify project-provided database/Redis/Elasticsearch/queue/cache/integration connections when available.
 - During design, explicitly decide database need. If database is required, use SQLite for development-stage local behavior and MySQL for implementation/deployment-stage behavior with a connection pool max <= 100.
 - Backend APIs must use OpenAPI and separate at least Controller and Service.
 - Every API must document IO behavior, and very time-consuming work must be async.
 - During implementation, complete one task at a time and run both Alignment Review and Security Review before starting the next task.
 - During implementation, do not mark a task complete without standalone verification evidence or an allowed external-service skip reason.
+- During implementation, do not mark a task complete without user-confirmed required real E2E evidence or a documented environment blocker and fallback evidence.
 - During implementation, do not introduce avoidable duplicate same/equivalent logic.
+- During implementation, do not introduce unrequested fallback/compatibility behavior.
 - During implementation, require at least 90% changed/affected code coverage.
 - Save explicit test parameters independently under `openspec/changes/<change-id>/test-params/`.
 - Do not write tests for empty/no-op code or tests limited to class/method initialization.
@@ -133,6 +142,7 @@ Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
 - Do not archive a change until every task is marked complete and wiki documentation is generated from spec, design, and code with a semantic feature/story filename.
 - After the completed change, tests, reviews, completion artifact, wiki, and archive are finished, create a local git commit for the completed change.
 - The commit message must include the complete requirement, completed changes, solution/design approach, workflow/completion evidence, and frontend/backend completion content when relevant.
+- After `/sp-complete`, final response must report what was actually done in user-facing terms: solution, code changes, tests/verification, documentation, review status, and local commit. OpenSpec archive details can be brief supporting evidence.
 - Do not push unless the user explicitly asks.
 - Do not add behavior outside approved specs.
 - Do not create tasks without a related requirement.

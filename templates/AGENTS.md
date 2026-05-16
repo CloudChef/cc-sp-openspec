@@ -67,10 +67,12 @@ Rules:
 - If `brainstorm.md`, `context.md`, or `brainstorm-review.md` is missing or blocked, start at `/sp-brainstorm`.
 - If proposal/spec artifacts or `spec-review.md` are missing or blocked, start at `/sp-spec`.
 - If `design.md`, `tasks.md`, or `tasks-review.md` is missing or blocked, start at `/sp-tasks`.
+- If `design.md` exists but lacks the user-confirmed E2E required/not-required decision, treat design/tasks as incomplete; confirm the decision with the user inside `/sp-goal`, then update `design.md`, `tasks.md`, and `tasks-review.md` before implementation.
 - If tasks, tests, per-task reviews, coverage, or final `review.md` are incomplete, start at `/sp-impl`.
 - If implementation review is complete but completion/wiki/archive is missing, start at `/sp-complete`.
 - Do not mark tasks complete without implementation and review evidence.
 - Do not mark tasks complete without standalone full verification evidence when relevant.
+- Do not mark design/tasks complete without user-confirmed E2E required/not-required evidence in `design.md`.
 - Stop when progress requires user input or approved OpenSpec scope changes.
 
 ## /sp-brainstorm
@@ -111,6 +113,9 @@ Rules:
 - Read the default language, configuration, and testing rules when they affect observable behavior, validation, security, or delivery constraints.
 - Specs must describe observable behavior only.
 - Specs must define behavior so it can be verified from a real user/API/job/system entry point.
+- Specs must describe enough external behavior for design to decide whether real E2E is required: external entry point, actor/client, trigger, expected observable result, and side effects.
+- The E2E required/not-required decision is made in design and must be confirmed with the user before tasks or implementation.
+- Unit tests, mock-only tests, class initialization tests, and isolated method tests must not be accepted as E2E evidence when E2E is required.
 - Backend behavior must allow later real API request/response verification; UI behavior must allow UI test verification; bug fixes must identify the bug entry point; external service behavior must identify observable effects when relevant.
 - Use OpenSpec Requirement and Scenario format.
 - Do not create design or tasks.
@@ -137,13 +142,21 @@ Rules:
 - Include Spec Gaps when behavior is needed but not covered by specs.
 - `design.md` must recommend generated/modified code paths by feature point.
 - `design.md` must identify same or equivalent existing logic and define reuse, extraction, extension, or justified isolation decisions.
+- `design.md` must state requirement scope and whether compatibility/fallback behavior is required. If not explicitly required, generated tasks must prohibit fallback or compatibility branches.
+- `design.md` must identify methods/functions that would need more than 5 inputs and require a named data object instead of vague map-like parameters.
 - `design.md` must define standalone full verification for every changed behavior.
+- `design.md` must assess whether each changed capability requires real E2E, stop to confirm the decision with the user, and record that confirmation.
+- If E2E is confirmed as required, `design.md` must define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence.
+- If the confirmed E2E decision reveals missing or incorrect spec behavior, stop and update specs before creating tasks or implementing.
 - `design.md` and `tasks.md` must keep generated/modified code files <= 1000 lines or split them before implementation.
 - `design.md` must explicitly decide whether a database is required. If required, use SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
 - Backend API design must use OpenAPI and separate at least Controller and Service.
 - Every API must document IO behavior; very time-consuming work must be async.
 - Every task must reference a requirement, applicable rules, target code paths, reuse/common logic impact, implementation-standard impact, and validation.
+- Every task must include requirement-scope/fallback instructions and method/function parameter constraints.
 - Every task must include standalone full verification from the relevant entry point.
+- Every task must include the user-confirmed real E2E requirement or a design-confirmed not-applicable reason.
+- Specs, tasks, and implementation must follow the user-confirmed E2E decision recorded in `design.md`.
 - Backend service tasks must require real API request/response verification.
 - UI tasks must require UI test cases and interface behavior verification.
 - Bug fix tasks must identify and verify through the bug entry point.
@@ -183,7 +196,11 @@ Rules:
 - Tests must use explicit parameters and assert meaningful behavior from specs/design.
 - Changed/affected code must reach at least 90% coverage.
 - Standalone full verification must be completed for backend API, UI, bug-entry, and external-service behavior when relevant.
+- User-confirmed required real E2E tests must be run against the designed runtime target and recorded with command, test data, assertions, and evidence.
+- Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not count as real E2E evidence.
 - Same or equivalent logic must be reused or generalized; avoidable duplicate logic must be fixed before task completion.
+- Existing-code changes must implement only approved requirements. Do not add fallback, compatibility, degraded-mode, dual-path, or silent default behavior unless specs/design/tasks explicitly require it.
+- Methods/functions must have no more than 5 input parameters, or use explicit named data objects instead of vague maps/dicts/objects/key-value bags.
 - Generated/modified code files must stay <= 1000 lines.
 - Database, OpenAPI, Controller/Service, API IO, and async rules must be implemented and evidenced when relevant.
 - Do not write tests for empty/no-op code.
@@ -235,7 +252,10 @@ Rules:
 - Do not complete if `review.md` has unresolved findings.
 - Do not complete if coverage evidence is below 90% for changed/affected code.
 - Do not complete if standalone full verification evidence is missing for relevant changed behavior.
+- Do not complete if user-confirmed required real E2E test evidence is missing.
 - Do not complete if avoidable same/equivalent logic duplication remains.
+- Do not complete if unrequested fallback/compatibility behavior was added.
+- Do not complete if methods/functions exceed 5 input parameters without explicit named data objects.
 - Do not complete if required test parameter files are missing.
 - Generate or update a semantic `docs/wiki/<feature-or-story-title>.md` file from specs, design, code, rules, and review evidence.
 - Derive the wiki title and filename from the completed feature/story, not from the raw change ID.
@@ -250,12 +270,16 @@ Rules:
 
 Final response must include:
 
-- Archived change path
-- Wiki page path
+- Requirement / outcome summary
+- Solution summary: design decisions, architecture choices, data/API/UI flow, and important tradeoffs
+- Code changes: concrete changed areas and important file paths; include backend/API/data work and frontend/UI work when relevant, or state none
+- Test and verification evidence: commands, real API/UI/E2E evidence when required, coverage result, and any accepted skip reason
+- Documentation changes: wiki/user docs/README/API docs or other non-OpenSpec documentation created or updated
+- Review and finding status
 - Local git commit hash, or git skip reason
-- Completion gates result
-- Review/finding status
 - Any skipped or blocked item
+
+OpenSpec-related paths such as archive path, `completion.md`, or internal review artifacts may be included only as supporting evidence when useful. Do not lead the final report with OpenSpec bookkeeping.
 
 ## Source Priority
 

@@ -159,3 +159,13 @@ Java code SHOULD follow these common Google Java practices unless the target pro
 - Do not ignore caught exceptions. Log, rethrow, map to a domain exception, or explain the intentionally ignored case in a short comment.
 - Qualify static members with the declaring class name, not an instance expression.
 - Do not override or depend on `Object.finalize`.
+
+## JAVA-012: Method Parameters and DTOs
+
+Java methods and constructors MUST keep input parameters understandable and explicit.
+
+- Do not define methods or constructors with more than 5 input parameters.
+- If more than 5 inputs are required, introduce a named request object, command object, options object, DTO, or record with explicit typed fields.
+- Do not use `Map<String, Object>`, raw `Map`, generic `Object`, or ambiguous key/value bags to avoid creating a clear data object.
+- DTO/request object fields MUST have descriptive names, concrete types, validation expectations, and ownership near the API or service boundary that uses them.
+- Do not add fallback or compatibility branches unless the approved requirement or design explicitly requires them.
