@@ -58,8 +58,13 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 25. Record both review rounds, findings, fixes, standalone verification evidence, real E2E evidence, coverage evidence, reuse/common logic evidence, requirement-scope/fallback evidence, parameter-count/data-object evidence, file length evidence, test parameter files, database/API/IO evidence, and closure evidence in `task-reviews.md`.
 26. Mark the task complete in `tasks.md` only after standalone verification, user-confirmed required real E2E verification, validation, coverage, reuse/common logic checks, requirement-scope/fallback checks, parameter-count/data-object checks, file length checks, and both reviews have no open findings.
 27. Repeat this loop for the next unchecked task.
-28. Create or update final `review.md` after all tasks are complete and all findings are closed.
-29. Stop and report if implementation requires behavior not covered by specs.
+28. Run at least two final code review passes on the complete implementation diff after all tasks are complete and all per-task findings are closed.
+29. Final Code Review Pass 1 must review the complete code change against specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and changed file sizes.
+30. Fix every Pass 1 finding and re-review until there are no open Pass 1 findings.
+31. Final Code Review Pass 2 must review the complete code change again after Pass 1 fixes, with emphasis on regressions introduced by fixes, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations.
+32. Fix every Pass 2 finding and re-review until there are no open Pass 2 findings.
+33. Create or update final `review.md` only after both final code review passes have zero open findings.
+34. Stop and report if implementation requires behavior not covered by specs.
 
 ## Implementation Rules
 
@@ -84,6 +89,7 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - Very time-consuming API work must be async.
 - Do not rewrite completed tasks unless needed for the current unchecked task.
 - Do not start the next task while the current task has any open Alignment Review or Security Review finding.
+- Do not finalize implementation until the complete diff has passed at least two final code review passes after all tasks are complete.
 - Preserve user changes and existing dirty worktree edits.
 - Update `tasks.md` only after verification supports completion.
 - Do not mark a task complete unless changed/affected code coverage is at least 90%.
@@ -112,6 +118,8 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - Test Coverage
 - Test Quality
 - Documentation Consistency
+- Final Code Review Pass 1
+- Final Code Review Pass 2
 - Blocking Issues
 - Unresolved Findings
 - Recommended Fixes
@@ -122,12 +130,13 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - If review finds missing behavior or new behavior not covered by specs, stop and report that OpenSpec must be updated.
 - If review finds rule violations, fix them when covered by approved specs/tasks; otherwise stop and report the needed OpenSpec update.
 - Final completion requires `task-reviews.md` and `review.md` to show zero unresolved findings.
+- Final completion requires at least two final code review passes on the complete implementation diff, recorded in `review.md`, with all findings fixed and re-reviewed.
 - Final completion requires at least 90% coverage evidence and independent test parameter files for all implemented tasks.
 - Do not convert review findings into new requirements without an explicit spec update.
 
 ## Review Method
 
-Use Superpower-style review when available. Prefer an independent implementation review before finalizing `review.md`. The reviewer should receive only:
+Use Superpower review skills when available. Request each per-task Alignment Review, per-task Security Review, and each final code review pass with `superpowers:requesting-code-review`; when findings are returned, process, verify, and fix them with `superpowers:receiving-code-review` before re-review. The reviewer should receive only:
 
 - `proposal.md`
 - `specs/<capability>/spec.md`
@@ -141,6 +150,8 @@ Use Superpower-style review when available. Prefer an independent implementation
 - Changed files or diff
 - Verification output
 - Coverage output
+
+If the Superpower review skills are unavailable in the current runtime, record the unavailable reason in `task-reviews.md` or `review.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. Do not silently downgrade or skip the review.
 
 Run two distinct review passes for each task:
 
@@ -166,6 +177,8 @@ Both review passes must also verify:
 - Tests assert meaningful behavior from specs and design.
 
 Resolve all findings from both passes before starting the next task.
+
+After all tasks are complete, run at least two additional final code review passes on the complete implementation diff. These final passes are in addition to per-task Alignment Review and Security Review. Record both passes in `review.md`; implementation is not complete until both final passes have zero open findings after required fixes and re-review.
 
 Do not pass the full conversation history as review context.
 

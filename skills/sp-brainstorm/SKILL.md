@@ -76,7 +76,7 @@ Create or update:
 
 ## Review Method
 
-Use Superpower-style review when available. Prefer an independent review pass over self-review when the environment supports it. The reviewer should receive only:
+Use Superpower review skills when available. Request the phase review with `superpowers:requesting-code-review`; when findings are returned, process, verify, and fix them with `superpowers:receiving-code-review` before re-review. The reviewer should receive only:
 
 - User request
 - `brainstorm.md`
@@ -86,6 +86,8 @@ Use Superpower-style review when available. Prefer an independent review pass ov
 - The alignment checklist from this skill
 
 Do not pass the full conversation history as review context.
+
+If the Superpower review skills are unavailable in the current runtime, record the unavailable reason in `brainstorm-review.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. Do not silently downgrade or skip the review.
 
 ## Rules
 

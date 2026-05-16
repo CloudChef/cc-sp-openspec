@@ -10,7 +10,7 @@ OpenSpec CLI is not required. The AI coding agent works directly with files unde
 
 ## Prerequisites
 
-1. Superpower must be installed, and the current agent or runtime must be able to access Superpower skills such as brainstorm, review, and verification.
+1. Superpower must be installed. Prefer `superpowers:requesting-code-review` and `superpowers:receiving-code-review` for reviews; if the current agent or runtime does not have those review skills, use Codex or the current tool's own review capability to complete the same review gates.
 2. The `/sp-*` workflow skills from this repository's `skills/` directory must be synced into the user-level skills directory.
 3. The target project must contain `AGENTS.md`, `openspec/`, and `docs/` copied from `templates/`.
 4. OpenSpec CLI is not required.
@@ -179,7 +179,7 @@ You can also run phases manually:
 4. Implement tasks: run `/sp-impl <change-id>`.
    - Outputs: code changes, updated `tasks.md`, `test-params/`, `task-reviews.md`, and `review.md`.
    - Purpose: implement tasks one by one with validation and two review rounds after each task.
-   - Requirement: every Alignment Review and Security Review finding must be fixed and re-reviewed before starting the next task.
+   - Requirement: every Alignment Review and Security Review finding must be fixed and re-reviewed before starting the next task; after all tasks are complete, the full code diff must receive at least two final code review passes, and all findings must be fixed and re-reviewed before impl can finish.
 
 5. Complete and archive: run `/sp-complete <change-id>`.
    - Outputs: `completion.md`, `docs/wiki/<feature-or-story-title>.md`, `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`, and a local git commit.

@@ -28,7 +28,7 @@ rules:
   brainstorm:
     - Produce brainstorm.md and context.md only.
     - Produce brainstorm-review.md before moving to proposal/spec work.
-    - Use Superpower-style review when available.
+    - Use Superpower review skills when available; request reviews with superpowers:requesting-code-review, process findings with superpowers:receiving-code-review, and record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if the skills are unavailable.
     - Review alignment with user request, context, rules, existing specs, and source gaps.
     - Do not write code.
     - Do not create proposal/specs/design/tasks yet.
@@ -43,7 +43,7 @@ rules:
     - Base proposal.md on brainstorm.md and context.md.
     - Identify project-defined rules that affect scope.
     - Produce spec-review.md after proposal/specs are drafted.
-    - Use Superpower-style review when available.
+    - Use Superpower review skills when available; request reviews with superpowers:requesting-code-review, process findings with superpowers:receiving-code-review, and record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if the skills are unavailable.
     - Keep it product-oriented and requirement-oriented.
     - Do not include low-level implementation details.
   specs:
@@ -106,7 +106,7 @@ rules:
     - Every per-task review finding must be fixed and re-reviewed before the next task starts.
     - Do not create tasks not covered by specs.
     - Produce tasks-review.md before implementation.
-    - Use Superpower-style review when available.
+    - Use Superpower review skills when available; request reviews with superpowers:requesting-code-review, process findings with superpowers:receiving-code-review, and record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if the skills are unavailable.
     - Review alignment with specs, spec-review.md, design.md, rules, and validation coverage.
   review:
     - Check implementation against specs and tasks.
@@ -126,12 +126,17 @@ rules:
     - Reject tests that only cover empty/no-op code or class/method initialization.
     - Check implementation against applicable project-defined rules.
     - Check Java, Python, configuration, and testing rule compliance when those areas changed.
+    - Run at least two final code review passes on the complete implementation diff after all tasks are complete.
+    - Final code review pass 1 must check specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes.
+    - Final code review pass 2 must run after pass 1 fixes and check regressions, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations.
+    - Fix every finding from both final code review passes and re-review until both passes have zero open findings.
     - Mark out-of-spec behavior explicitly.
     - Do not silently add new requirements.
   complete:
     - Require every task in tasks.md to be marked complete.
     - Require task-reviews.md to show zero open findings.
     - Require review.md to show zero unresolved findings.
+    - Require review.md to record at least two final complete-diff code review passes with zero open findings.
     - Require coverage evidence to show at least 90% coverage.
     - Require independent test parameter files.
     - Require standalone full verification evidence for changed behavior.

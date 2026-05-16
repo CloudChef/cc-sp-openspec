@@ -97,9 +97,9 @@ openspec/changes/<change-id>/
 
 ## Phase Review Gates
 
-Use Superpower-style review early and often. Each stage must review its own outputs before the next stage starts.
+Use Superpower review skills early and often. Review means invoking `superpowers:requesting-code-review` when it is available, and using `superpowers:receiving-code-review` to interpret, verify, and fix findings before re-review.
 
-When a Superpower review capability or independent reviewer is available, use it for the phase review. Give the reviewer only the relevant artifacts and expected alignment checks, not the full chat history.
+If the Superpower review skills are unavailable in the current runtime, record the unavailable reason in the review artifact and use Codex or the current tool/agent's own review capability to perform the same checklist. Do not silently downgrade or skip the review. Give the reviewer only the relevant artifacts and expected alignment checks, not the full chat history.
 
 Review gates:
 
@@ -406,6 +406,7 @@ Wiki filename rules:
 - Follow applicable default Java, Python, configuration, and testing rules before editing related files.
 - Run relevant verification.
 - Mark tasks complete only after standalone verification, user-confirmed required real E2E evidence, validation, coverage, file length checks, independent test parameters, implementation-standard evidence, and both per-task reviews have no open findings.
+- After all tasks are complete, run at least two final code review passes on the complete implementation diff before finalizing `review.md`.
 
 ## Review Rules
 
@@ -425,11 +426,15 @@ After implementation, create or update `review.md` with:
 - Test Coverage
 - Test Quality
 - Documentation Consistency
+- Final Code Review Pass 1
+- Final Code Review Pass 2
 - Blocking Issues
 - Unresolved Findings
 - Recommended Fixes
 
 If review finds missing behavior not covered by specs, stop and update OpenSpec before coding more.
+
+Final implementation review must include at least two complete-diff code review passes after all tasks are complete. Pass 1 checks the full implementation against specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file-size limits. Pass 2 runs after Pass 1 fixes and checks for regressions, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations. All findings from both passes must be fixed and re-reviewed before `/sp-complete`.
 
 ## No CLI Requirement
 
@@ -443,6 +448,7 @@ For validation, inspect:
 - Tasks map to requirements, rules, validation, and per-task review gates.
 - Reviews have no unresolved blocking gaps before the next phase.
 - `task-reviews.md` and final `review.md` show zero unresolved findings before completion.
+- Final `review.md` records at least two complete-diff code review passes after all tasks are complete, with zero open findings.
 - Test coverage is at least 90% for changed/affected code.
 - Standalone verification evidence is present for changed behavior, including real API calls, UI tests, bug-entry regression checks, and external service checks when relevant.
 - User-confirmed required real E2E tests are designed and executed with command, runtime target, test data, assertions, and evidence; unit/mock/initialization/isolated method checks are not accepted as E2E substitutes.

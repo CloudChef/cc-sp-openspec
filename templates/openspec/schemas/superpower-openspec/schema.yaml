@@ -35,7 +35,7 @@ artifacts:
     template: brainstorm-review.md
     instruction: |
       Review brainstorm.md and context.md before formal OpenSpec artifacts are created.
-      Use Superpower-style review or an independent review pass when available.
+      Use Superpower review skills when available: request reviews with superpowers:requesting-code-review and process findings with superpowers:receiving-code-review. If the skills are unavailable, record the reason and use Codex or the current tool/agent's own review capability to perform the same checklist.
       Check alignment with the user request, project rules, source coverage, existing specs, context gaps, and scope risks.
       Fix in-scope brainstorm/context issues before continuing.
       Do not write code.
@@ -80,7 +80,7 @@ artifacts:
     template: spec-review.md
     instruction: |
       Review proposal.md and specs against brainstorm.md, context.md, brainstorm-review.md, project rules, existing specs, and OpenSpec formatting.
-      Use Superpower-style review or an independent review pass when available.
+      Use Superpower review skills when available: request reviews with superpowers:requesting-code-review and process findings with superpowers:receiving-code-review. If the skills are unavailable, record the reason and use Codex or the current tool/agent's own review capability to perform the same checklist.
       Check requirement quality, scenario coverage, standalone verifiability, E2E-verifiable external behavior, missing behavior, out-of-scope behavior, and implementation leakage.
       Fix in-scope proposal/spec issues before continuing.
       Do not write code.
@@ -146,7 +146,7 @@ artifacts:
     template: tasks-review.md
     instruction: |
       Review design.md and tasks.md against specs, spec-review.md, project rules, source mapping, and validation coverage.
-      Use Superpower-style review or an independent review pass when available.
+      Use Superpower review skills when available: request reviews with superpowers:requesting-code-review and process findings with superpowers:receiving-code-review. If the skills are unavailable, record the reason and use Codex or the current tool/agent's own review capability to perform the same checklist.
       Check that every task maps to requirements, applicable rules, target code paths, implementation standards, standalone verification, and concrete validation.
       Check code path planning, reuse/common logic plans, requirement-scope/fallback decisions, parameter-count/data-object plans, standalone verification plans, real E2E test designs, <= 1000 line split plans, database runtime/pool decisions, OpenAPI and Controller/Service decisions, API IO, and async handling.
       Fix in-scope design/task issues before implementation.
@@ -190,6 +190,7 @@ artifacts:
       Review implementation against proposal.md, specs, design.md, tasks.md, spec-review.md, tasks-review.md, and task-reviews.md.
       Check requirement coverage, task completion, per-task review completion, out-of-spec behavior, rule compliance, architecture compliance, implementation standards compliance, standalone verification compliance, real E2E compliance, reuse/common logic compliance, requirement-scope/fallback compliance, parameter-count/data-object compliance, coverage >= 90%, independent test parameter files, meaningful tests, and unresolved findings.
       Check Java, Python, configuration, and testing rule compliance when those areas changed.
+      Run at least two final code review passes on the complete implementation diff after all tasks are complete. Pass 1 checks specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes. Pass 2 runs after Pass 1 fixes and checks regressions, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations. Fix every finding and re-review until both passes have zero open findings.
       Completion requires zero unresolved findings.
       Do not modify code during review unless explicitly asked.
     requires:

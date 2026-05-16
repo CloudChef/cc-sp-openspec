@@ -10,7 +10,7 @@
 
 ## 前置要求
 
-1. 必须安装 Superpower，并确认当前使用的代理或运行环境能访问 Superpower 的 brainstorm、review、verification 等 skills。
+1. 必须安装 Superpower。Review 优先使用 `superpowers:requesting-code-review` 和 `superpowers:receiving-code-review`；如果当前代理或运行环境没有这些 review skills，则使用 Codex 或当前工具自己的 review 能力完成同样的 review 门禁。
 2. 必须同步本仓库 `skills/` 下的 `/sp-*` workflow skills 到用户级 skills 目录。
 3. 目标项目必须包含从 `templates/` 复制过去的 `AGENTS.md`、`openspec/` 和 `docs/`。
 4. 不需要安装 OpenSpec CLI。
@@ -181,7 +181,7 @@ docs/rules/data-retention.md
 4. 实现任务：执行 `/sp-impl <change-id>`。
    - 产物：代码变更、更新后的 `tasks.md`、`test-params/`、`task-reviews.md`、`review.md`。
    - 目的：按任务逐个实现，并在每个任务后完成验证和双 Review。
-   - 要求：每个任务都必须先修复 Alignment Review 和 Security Review 的所有 finding，并重新 review 后，才能开始下一个任务。
+   - 要求：每个任务都必须先修复 Alignment Review 和 Security Review 的所有 finding，并重新 review 后，才能开始下一个任务；所有任务完成后，还必须对完整代码 diff 至少执行两轮最终代码 review，修复并重新 review 到没有 open finding 后才能结束 impl。
 
 5. 完成和归档：执行 `/sp-complete <change-id>`。
    - 产物：`completion.md`、`docs/wiki/<feature-or-story-title>.md`、`openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`、本地 git commit。

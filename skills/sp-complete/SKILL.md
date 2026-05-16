@@ -179,7 +179,7 @@ The generated wiki page must include:
 
 ## Review Method
 
-Use Superpower-style review when available. Prefer an independent completion review before archiving. The reviewer should receive only:
+Use Superpower review skills when available. Request the completion review with `superpowers:requesting-code-review`; when findings are returned, process, verify, and fix them with `superpowers:receiving-code-review` before re-review and before archiving. The reviewer should receive only:
 
 - Specs
 - Design
@@ -191,6 +191,8 @@ Use Superpower-style review when available. Prefer an independent completion rev
 - The completion checklist from this skill
 
 Do not pass the full conversation history as review context.
+
+If the Superpower review skills are unavailable in the current runtime, record the unavailable reason in `completion.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. Do not silently downgrade or skip the review.
 
 ## Final Response
 
