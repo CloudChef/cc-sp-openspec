@@ -26,6 +26,7 @@ If there is a conflict, report it in `context.md`, `design.md`, or `review.md`. 
 Read:
 
 - `docs/rules/project-implementation-standards.md`, when present
+- `docs/rules/ai-workflow-quality-standards.md`, when present
 - `docs/rules/java-code-standards.md`, when Java code is involved
 - `docs/rules/python-code-standards.md`, when Python code is involved
 - `docs/rules/configuration-standards.md`, when configuration, packaging, database, OpenAPI, async, queue, or migration files are involved
@@ -58,6 +59,7 @@ Read:
 Read:
 
 - `docs/standards/workflow.md`
+- `docs/ai-context/project-learnings.md`, when present
 - `docs/wiki/approval-workflow.md`
 - `docs/wiki/notification.md`
 

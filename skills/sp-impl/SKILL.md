@@ -50,23 +50,24 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 15. Create or update independent test parameter files under `openspec/changes/<change-id>/test-params/`.
 16. Add or update tests that use those explicit parameter files and assert meaningful spec/design behavior.
 17. Run standalone full verification from the task's required entry point.
-18. Run the task's real E2E test against the designed runtime target when user-confirmed as required in `design.md`.
-19. Run the task validation, coverage check, reuse/common logic check, requirement-scope/fallback check, parameter-count/data-object check, and file length check.
-20. Verify coverage is at least 85% for changed/affected code.
-21. Run Alignment Review for that task against specs, design, task text, customer/user confirmation evidence, rules, target code paths, reuse/common logic decisions, requirement-scope/fallback decisions, parameter-count/data-object decisions, standalone verification evidence, real E2E evidence, file lengths, database/API/IO decisions, test parameter files, tests, coverage evidence, and changed code.
-22. Fix every Alignment Review finding and re-review until there are no open alignment findings.
-23. Run Security Review for that task against security-sensitive behavior, authorization, data handling, validation, logging, dependencies, configuration, database/API/IO behavior, project-defined security rules, test parameter files, and changed code.
-24. Fix every Security Review finding and re-review until there are no open security findings.
-25. Record both review rounds, findings, fixes, customer/user confirmation evidence, standalone verification evidence, real E2E evidence, coverage evidence, reuse/common logic evidence, requirement-scope/fallback evidence, parameter-count/data-object evidence, file length evidence, test parameter files, database/API/IO evidence, and closure evidence in `task-reviews.md`.
-26. Mark the task complete in `tasks.md` only after applicable customer/user confirmations, standalone verification, user-confirmed required real E2E verification, validation, coverage, reuse/common logic checks, requirement-scope/fallback checks, parameter-count/data-object checks, file length checks, and both reviews have no open findings.
-27. Repeat this loop for the next unchecked task.
-28. Run at least two final code review passes on the complete implementation diff after all tasks are complete and all per-task findings are closed.
-29. Final Code Review Pass 1 must review the complete code change against specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and changed file sizes.
-30. Fix every Pass 1 finding and re-review until there are no open Pass 1 findings.
-31. Final Code Review Pass 2 must review the complete code change again after Pass 1 fixes, with emphasis on regressions introduced by fixes, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations.
-32. Fix every Pass 2 finding and re-review until there are no open Pass 2 findings.
-33. Create or update final `review.md` only after both final code review passes have zero open findings.
-34. Stop and report if implementation requires behavior not covered by specs.
+18. For UI changes, run real browser QA or the project-approved UI runner when a runnable target exists, and record target, actions, assertions, screenshot path when useful, and observed failures.
+19. Run the task's real E2E test against the designed runtime target when user-confirmed as required in `design.md`.
+20. Run the task validation, coverage check, reuse/common logic check, requirement-scope/fallback check, parameter-count/data-object check, and file length check.
+21. Verify coverage is at least 85% for changed/affected code.
+22. Run Alignment Review for that task against specs, design, task text, customer/user confirmation evidence, rules, target code paths, review lens requirements, reuse/common logic decisions, requirement-scope/fallback decisions, parameter-count/data-object decisions, browser/UI QA evidence, standalone verification evidence, real E2E evidence, file lengths, database/API/IO decisions, test parameter files, tests, coverage evidence, and changed code.
+23. Fix every Alignment Review finding and re-review until there are no open alignment findings.
+24. Run Security Review for that task against concrete authentication, authorization, tenant/user isolation, input validation, output encoding, sensitive data exposure, logging, dependencies, configuration, database/API/IO behavior, async/job behavior, external service calls, project-defined security rules, test parameter files, and changed code.
+25. Fix every Security Review finding and re-review until there are no open security findings.
+26. Record both review rounds, findings, fixes, customer/user confirmation evidence, browser/UI QA evidence, standalone verification evidence, real E2E evidence, coverage evidence, reuse/common logic evidence, requirement-scope/fallback evidence, parameter-count/data-object evidence, file length evidence, test parameter files, database/API/IO evidence, and closure evidence in `task-reviews.md`.
+27. Mark the task complete in `tasks.md` only after applicable customer/user confirmations, browser/UI QA when relevant, standalone verification, user-confirmed required real E2E verification, validation, coverage, reuse/common logic checks, requirement-scope/fallback checks, parameter-count/data-object checks, file length checks, and both reviews have no open findings.
+28. Repeat this loop for the next unchecked task.
+29. Run at least two final code review passes on the complete implementation diff after all tasks are complete and all per-task findings are closed.
+30. Final Code Review Pass 1 must review the complete code change against specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and changed file sizes.
+31. Fix every Pass 1 finding and re-review until there are no open Pass 1 findings.
+32. Final Code Review Pass 2 must review the complete code change again after Pass 1 fixes, with emphasis on regressions introduced by fixes, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations.
+33. Fix every Pass 2 finding and re-review until there are no open Pass 2 findings.
+34. Create or update final `review.md` only after both final code review passes have zero open findings.
+35. Stop and report if implementation requires behavior not covered by specs.
 
 ## Implementation Rules
 
@@ -76,6 +77,7 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - Do not introduce new dependencies unless `design.md` requires them.
 - Follow applicable project-defined rules.
 - Do not start implementation if required customer/user confirmation evidence is missing for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameter names/values, or E2E decisions.
+- Do not start implementation if review lens expectations or required QA plan is missing.
 - Implement only the backend logic, UI behavior, API paths/parameters, and configuration parameters confirmed in `design.md` and reflected in `tasks.md`.
 - Implement in the target code paths from `tasks.md`, or record a justified path adjustment in `task-reviews.md`.
 - Reuse same/equivalent existing logic whenever possible.
@@ -105,6 +107,7 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - Every task with a user-confirmed real E2E test requirement must run that E2E test against the designed runtime target and record command, environment, test data, assertions, and evidence. Do not substitute unit tests, mock-only tests, class initialization tests, isolated method tests, or static screenshots for required E2E.
 - Backend service changes must be verified with a real API call against a running service or project-supported test server, checking request shape, response status, response body/schema, and relevant side effects.
 - UI changes must include UI test cases and verify the actual interface behavior.
+- UI changes must run real browser QA or the project-approved UI runner when a runnable target exists; record route/URL, auth setup if needed, actions, assertions, screenshots when useful, and failures.
 - Bug fixes must identify the bug entry point and verify through that entry point that the fix takes effect.
 - External service changes involving database, Redis, Elasticsearch, queues, caches, or integrations must be verified when the project provides a connection method, local environment, test container, or documented test configuration.
 - If no project-supported external service connection exists, record the skip reason and verify all locally testable behavior.
@@ -119,6 +122,7 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - Out-of-Spec Behavior
 - Architecture Compliance
 - Customer Confirmation Compliance
+- QA Evidence
 - Implementation Standards Compliance
 - Rules Compliance
 - Test Coverage
@@ -162,13 +166,14 @@ If the Superpower review skills are unavailable in the current runtime, record t
 Run two distinct review passes for each task:
 
 1. Alignment Review: verify spec, design, task text, rules, and code are aligned.
-2. Security Review: verify security-sensitive behavior, authorization, data handling, validation, logging, dependencies, configuration, and project-defined security rules.
+2. Security Review: verify concrete authentication, authorization, tenant/user isolation, input validation, output encoding, sensitive data exposure, logging, dependencies, configuration, database/API IO, async/job behavior, external-service calls, and project-defined security rules when relevant.
 
 Both review passes must also verify:
 
 - Coverage evidence is at least 85% for changed/affected code.
 - Standalone full verification evidence exists for API, UI, bug-entry, and external-service behavior when relevant.
 - User-confirmed required real E2E test evidence exists, or a documented environment blocker and fallback evidence are recorded.
+- Browser/UI QA evidence exists for UI changes when a runnable target exists, or a runnable-target blocker is recorded.
 - Same/equivalent logic is reused or generalized, with no avoidable duplicate logic.
 - Existing-code changes implement only approved behavior, with no unrequested fallback or compatibility branches.
 - Methods/functions have no more than 5 input parameters, or use explicit named data objects instead of vague map-like structures.

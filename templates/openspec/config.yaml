@@ -6,6 +6,7 @@ context: |
   OpenSpec is the source of truth for proposal, specs, design, and tasks.
   Rules under docs/rules are mandatory inputs.
   docs/rules/project-implementation-standards.md is the baseline implementation rule file when present.
+  docs/rules/ai-workflow-quality-standards.md is the baseline AI workflow quality rule file when present.
   docs/rules/java-code-standards.md, docs/rules/python-code-standards.md, docs/rules/configuration-standards.md, and docs/rules/testing-standards.md are default language/configuration/testing standards when present and applicable.
   Wiki and standards under docs/ are design inputs.
   Specs must reflect relevant behavior-affecting rules.
@@ -29,6 +30,7 @@ rules:
     - Stop and ask for user input when the active change cannot be resolved.
   brainstorm:
     - Produce brainstorm.md and context.md only.
+    - Challenge product scope before spec work by identifying the real user, pain point, expected outcome, success signal, smallest useful slice, rejected/deferred scope, alternatives, and open product questions.
     - Produce brainstorm-review.md before moving to proposal/spec work.
     - Ask the customer/user to confirm the final brainstorm output before moving to proposal/spec work.
     - Record customer/user confirmation, requested changes, or rejection in brainstorm-review.md.
@@ -74,8 +76,9 @@ rules:
     - Define requirement scope and whether compatibility/fallback behavior is required; if specs do not require it, explicitly prohibit fallback and compatibility branches.
     - Define method/function parameter plans; no method/function may exceed 5 input parameters unless a named data object with explicit fields is used.
     - Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
+    - Apply product, design, engineering, developer-experience, security, and QA review lenses when relevant.
     - Identify all backend logic decisions, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
-    - If UI changes exist, generate a mockup artifact and functional description, stop to confirm both with the customer/user, and record confirmation before tasks are finalized.
+    - If UI changes exist, generate a mockup artifact and functional description, define real browser QA or the project-approved UI runner when a runnable target exists, stop to confirm both with the customer/user, and record confirmation before tasks are finalized.
     - If APIs exist, list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
     - If configuration parameters exist, list every parameter name, proposed value, environment/scope, and reason, stop to confirm names and values with the customer/user, and record confirmation before tasks are finalized.
     - Assess whether each changed capability requires real E2E, stop to confirm the required/not-required decision with the user, and record the confirmation in design.md.
@@ -99,6 +102,7 @@ rules:
     - Each task must state requirement-scope/fallback rules and prohibit unrequested fallback or compatibility behavior.
     - Each task must state method/function parameter constraints and any required named data object.
     - Each task must include the <= 1000 line file-size guardrail and split plan when needed.
+    - Each task must include applicable product, design, engineering, developer-experience, security, and QA review lens requirements.
     - Each task must identify database, OpenAPI/Controller/Service, API IO, and async impact when relevant.
     - Each task must include validation.
     - Each task must include standalone full verification from the relevant entry point.
@@ -106,7 +110,7 @@ rules:
     - Each task must include the user-confirmed real E2E requirement or a design-confirmed not-applicable reason.
     - Specs, tasks, and implementation must follow the user-confirmed E2E decision recorded in design.md.
     - Backend service tasks must require real API request/response verification against a running service or project-supported test server.
-    - UI tasks must require a UI test case and actual interface behavior verification.
+    - UI tasks must require a UI test case and real browser QA or the project-approved UI runner when a runnable target exists.
     - Bug fix tasks must identify the bug entry point and verify the fix through that entry point.
     - External service tasks must verify database, Redis, Elasticsearch, queue, cache, or integration behavior when the project provides a connection or test environment; otherwise record a skip reason.
     - Each task must specify independent test parameter files under openspec/changes/<change-id>/test-params/.
@@ -125,6 +129,7 @@ rules:
     - Check task-reviews.md and require zero unresolved findings.
     - Check coverage evidence and require at least 85% coverage for changed/affected code.
     - Check standalone full verification evidence for API, UI, bug-entry, and external-service behavior when relevant.
+    - Check real browser QA or project-approved UI runner evidence for UI changes when a runnable target exists.
     - Check that customer/user-confirmed backend logic, UI behavior, API paths/parameters, configuration parameters, and E2E decisions were followed.
     - Check user-confirmed required real E2E test evidence, including command, runtime target, test data, assertions, and evidence.
     - Check same/equivalent logic reuse and reject avoidable duplicate logic.
@@ -139,7 +144,7 @@ rules:
     - Check implementation against applicable project-defined rules.
     - Check Java, Python, configuration, and testing rule compliance when those areas changed.
     - Run at least two final code review passes on the complete implementation diff after all tasks are complete.
-    - Final code review pass 1 must check specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes.
+    - Final code review pass 1 must check specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes.
     - Final code review pass 2 must run after pass 1 fixes and check regressions, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations.
     - Fix every finding from both final code review passes and re-review until both passes have zero open findings.
     - Mark out-of-spec behavior explicitly.
@@ -155,6 +160,7 @@ rules:
     - Require standalone full verification evidence for changed behavior.
     - Require real E2E test evidence when user-confirmed as required in design.
     - Require implementation-standard evidence for code paths, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, file length, database runtime/pool, OpenAPI/layers, API IO, and async handling when relevant.
+    - Require project learning notes to be updated when the completed change reveals reusable patterns, pitfalls, preferences, or verification procedures, or require completion evidence that no reusable learning was found.
     - Generate docs/wiki/<feature-or-story-title>.md from specs, design, customer/user confirmations, implemented code, rules, and review evidence.
     - Derive the wiki filename from the completed feature/story, not from the raw change ID.
     - Create completion.md with gate results and archive target.

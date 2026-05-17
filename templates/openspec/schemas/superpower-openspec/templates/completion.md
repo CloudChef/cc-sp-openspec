@@ -23,12 +23,14 @@
 | Method/function parameter count and data-object rules satisfied |  |  |  |
 | Standalone full verification completed |  |  |  |
 | User-confirmed required real E2E tests designed and executed |  |  |  |
+| Browser/UI QA completed when relevant |  |  |  |
 | Generated/modified code files <= 1000 lines |  |  |  |
 | Database runtime/pool rules satisfied when relevant |  |  |  |
 | OpenAPI and Controller/Service rules satisfied when relevant |  |  |  |
 | API IO and async rules satisfied when relevant |  |  |  |
 | Final review findings closed |  |  |  |
 | Wiki documentation generated |  |  |  |
+| Project learning notes updated or no reusable learning recorded |  |  |  |
 | Spec / design / code alignment verified |  |  |  |
 | Local git commit created |  |  |  |
 
@@ -66,6 +68,7 @@
 | Parameter-count/data-object rule satisfied |  |  |  |
 | Standalone verification evidence |  |  |  |
 | Real E2E evidence |  |  |  |
+| Browser/UI QA evidence |  |  |  |
 | Code file line counts <= 1000 |  |  |  |
 | Database runtime and pool rules |  |  |  |
 | OpenAPI and Controller/Service rules |  |  |  |
@@ -80,6 +83,14 @@
 | Methods/functions have <= 5 inputs |  |  |  |
 | Named data objects are used when more than 5 inputs are required |  |  |  |
 | Vague maps/dicts/objects are not used as unclear data objects |  |  |  |
+
+## Project Learning Notes
+
+- Updated `docs/ai-context/project-learnings.md`: `<yes/no>`
+- Reusable patterns recorded:
+- Pitfalls recorded:
+- Verification notes recorded:
+- No reusable learning reason, if not updated:
 
 ## Local Git Commit
 

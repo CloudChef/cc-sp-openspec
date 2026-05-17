@@ -9,8 +9,8 @@
 
 Each completed task requires two review rounds before the next task starts:
 
-1. Alignment Review: check task implementation against specs, design, tasks, rules, and changed code.
-2. Security Review: check security-sensitive behavior, authorization, data handling, validation, logging, dependency, configuration, and project-defined security rules.
+1. Alignment Review: check task implementation against specs, design, tasks, review lens requirements, browser/UI QA evidence when relevant, rules, and changed code.
+2. Security Review: check concrete authentication, authorization, tenant/user isolation, input validation, output encoding, sensitive data exposure, logging, dependency, configuration, database/API IO, async/job behavior, external service calls, and project-defined security rules when relevant.
 
 All findings must be fixed and re-reviewed before moving to the next task.
 
@@ -26,8 +26,10 @@ All findings must be fixed and re-reviewed before moving to the next task.
 - Requirement-scope/fallback evidence:
 - Parameter-count/data-object evidence:
 - Customer/user confirmation evidence:
+- Multi-lens review evidence:
 - Standalone verification evidence:
 - Real E2E evidence:
+- Browser/UI QA evidence:
 - API request/response evidence:
 - UI test evidence:
 - Bug entry-point evidence:
@@ -57,6 +59,7 @@ All findings must be fixed and re-reviewed before moving to the next task.
 - Customer/user confirmations followed:
 - Standalone verification completed:
 - User-confirmed required real E2E completed:
+- Browser/UI QA completed when relevant:
 - Coverage >= 85%:
 - Reuse/common logic rule satisfied:
 - Requirement-scope/fallback rule satisfied:

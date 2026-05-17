@@ -51,7 +51,7 @@ Depending on the earliest incomplete phase, create or update all remaining artif
    - Completion/archive phase: follow `sp-complete`.
 7. After each phase, review the phase artifact before moving forward. Fix in-scope findings before continuing.
 8. During implementation, complete tasks one at a time and run both Alignment Review and Security Review after every task.
-9. Do not proceed past any unresolved blocking gap, missing customer/user confirmation, open finding, failed validation, missing standalone verification evidence, missing user-confirmed required real E2E evidence, missing test parameter file, missing coverage evidence, or missing implementation-standard evidence.
+9. Do not proceed past any unresolved blocking gap, missing customer/user confirmation, open finding, failed validation, missing standalone verification evidence, missing user-confirmed required real E2E evidence, missing browser/UI QA evidence when relevant, missing test parameter file, missing coverage evidence, or missing implementation-standard evidence.
 10. Stop and report when progress requires user input, new scope, or a spec/design update outside the current approved artifacts.
 
 ## Phase Completion Checks
@@ -63,8 +63,8 @@ Use these checks to decide where to start:
 | Brainstorm | `brainstorm.md`, `context.md`, and `brainstorm-review.md` exist, `brainstorm-review.md` records customer/user confirmation of the brainstorm output, and `brainstorm-review.md` has no unresolved blocking gaps | Run `sp-brainstorm`; if only confirmation is missing, confirm with the customer/user and update the brainstorm artifacts through `sp-brainstorm` |
 | Spec | `proposal.md`, at least one `specs/<capability>/spec.md`, and `spec-review.md` exist, and `spec-review.md` has no unresolved blocking gaps | Run `sp-spec` |
 | Tasks | `design.md`, `tasks.md`, and `tasks-review.md` exist, `design.md` records all applicable customer/user confirmations for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E required/not-required decisions, `tasks.md` reflects those confirmations, and `tasks-review.md` has no unresolved blocking gaps | Run `sp-tasks`; if only confirmation evidence is missing, confirm with the customer/user and update design/tasks/review through `sp-tasks` |
-| Implementation | Every task in `tasks.md` is checked, `test-params/` exists when required, user-confirmed required real E2E evidence is present, `task-reviews.md` and `review.md` show zero unresolved findings, and required coverage evidence is present | Run `sp-impl` |
-| Complete | The change has `completion.md`, a semantic wiki page exists, and the change folder is archived under `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/` | Run `sp-complete` |
+| Implementation | Every task in `tasks.md` is checked, `test-params/` exists when required, user-confirmed required real E2E evidence is present, browser/UI QA evidence is present when relevant, `task-reviews.md` and `review.md` show zero unresolved findings, and required coverage evidence is present | Run `sp-impl` |
+| Complete | The change has `completion.md`, a semantic wiki page exists, project learning notes are updated or no reusable learning is recorded, and the change folder is archived under `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/` | Run `sp-complete` |
 
 ## Required Sub-Skills
 
@@ -90,9 +90,11 @@ Load and follow the phase skill before executing that phase:
 - Do not complete if coverage evidence is below 85% for changed/affected code.
 - Do not complete if standalone full verification evidence is missing for relevant API, UI, bug-entry, or external-service behavior.
 - Do not complete if user-confirmed required real E2E evidence is missing.
+- Do not complete if browser/UI QA evidence is missing for UI changes when a runnable target exists.
 - Do not complete if required test parameter files are missing.
 - Do not complete if implementation-standard evidence is missing, including code paths, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, file length, database, OpenAPI/layers, API IO, and async handling when relevant.
 - Do not archive until wiki documentation is generated and reviewed against specs, design, code, rules, and review evidence.
+- Do not archive until reusable project learnings are recorded in `docs/ai-context/project-learnings.md` or completion evidence records that no reusable learning was found.
 - When completion runs, require `sp-complete` to create the local git commit only after code changes, tests, reviews, wiki, completion evidence, and archive are finished, or record a git skip reason.
 
 ## Final Response

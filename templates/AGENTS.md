@@ -6,8 +6,9 @@ Superpower-style skills are the workflow layer. OpenSpec is the source of truth 
 
 Always open `openspec/AGENTS.md` when a request mentions planning, proposals, specs, changes, design, tasks, implementation of an OpenSpec change, or `/sp-*` workflow commands.
 
-The default baseline project implementation rules live in `docs/rules/project-implementation-standards.md` when present. This template also includes default Java, Python, configuration, and testing rule files derived from reference projects:
+The default baseline project implementation rules live in `docs/rules/project-implementation-standards.md` when present. This template also includes default AI workflow quality, Java, Python, configuration, and testing rule files:
 
+- `docs/rules/ai-workflow-quality-standards.md`
 - `docs/rules/java-code-standards.md`
 - `docs/rules/python-code-standards.md`
 - `docs/rules/configuration-standards.md`
@@ -92,6 +93,7 @@ Rules:
 - Read `docs/ai-context/source-index.md` first when it exists.
 - Read relevant project-defined rules under `docs/rules/*.md`, standards, wiki snapshots, existing specs, and similar code.
 - Read the default language, configuration, and testing rules when they match the requested technology or artifact type.
+- Challenge product scope before spec: real user, pain, outcome, smallest useful slice, rejected scope, alternatives, and open questions.
 - Do not write code.
 - Do not create proposal, specs, design, or tasks.
 - Record conflicts and context gaps instead of guessing.
@@ -145,6 +147,8 @@ Rules:
 - Apply the default Java, Python, configuration, and testing rules when the change touches those areas.
 - Include Source Mapping in `design.md`.
 - Include Rules Compliance in `design.md`.
+- Include product, design, engineering, developer-experience, security, and QA review lenses when applicable.
+- Include the browser/API/job QA plan before implementation.
 - Include Spec Gaps when behavior is needed but not covered by specs.
 - `design.md` must recommend generated/modified code paths by feature point.
 - `design.md` must identify same or equivalent existing logic and define reuse, extraction, extension, or justified isolation decisions.
@@ -169,7 +173,7 @@ Rules:
 - Every task must include the user-confirmed real E2E requirement or a design-confirmed not-applicable reason.
 - Specs, tasks, and implementation must follow the user-confirmed E2E decision recorded in `design.md`.
 - Backend service tasks must require real API request/response verification.
-- UI tasks must require UI test cases and interface behavior verification.
+- UI tasks must require UI test cases and real browser QA or the project-approved UI runner when a runnable target exists.
 - Bug fix tasks must identify and verify through the bug entry point.
 - Database, Redis, Elasticsearch, queue, cache, or integration tasks must verify against project-provided connections/test environments when available; otherwise record skip reasons.
 - Every task must specify independent test parameter files under `openspec/changes/<change-id>/test-params/`.
@@ -205,6 +209,7 @@ Rules:
 - Implement only unchecked tasks in `tasks.md`.
 - Stop before coding if prior phase reviews contain unresolved blocking gaps.
 - Stop before coding if required customer/user confirmation evidence is missing in `brainstorm-review.md`, `design.md`, or `tasks.md`.
+- Stop before coding if the task's required QA plan is missing.
 - Load applicable Java, Python, configuration, and testing rules before editing code, config, or tests.
 - Complete tasks one at a time.
 - Create or update explicit test parameter files under `openspec/changes/<change-id>/test-params/`.
@@ -221,7 +226,8 @@ Rules:
 - Do not write tests for empty/no-op code.
 - Do not count tests that only verify class or method initialization.
 - After each task, run Alignment Review against spec, design, task, rules, and changed code.
-- After each task, run Security Review against security-sensitive behavior and project-defined security rules.
+- After each task, run Security Review against concrete authentication, authorization, tenant/user isolation, validation, data exposure, logging, dependency, configuration, database/API IO, async, and external-service risks when relevant.
+- Security Review must check concrete authentication, authorization, validation, data exposure, logging, dependency, configuration, API IO, async, and external-service risks when relevant.
 - Fix every finding from both reviews and re-review before starting the next task.
 - Record all per-task review rounds and closure evidence in `task-reviews.md`.
 - Do not add behavior outside specs.
@@ -276,6 +282,7 @@ Rules:
 - Do not complete if methods/functions exceed 5 input parameters without explicit named data objects.
 - Do not complete if required test parameter files are missing.
 - Generate or update a semantic `docs/wiki/<feature-or-story-title>.md` file from specs, design, customer/user confirmations, code, rules, and review evidence.
+- Update `docs/ai-context/project-learnings.md` when the completed change reveals reusable patterns, pitfalls, preferences, or verification notes; otherwise record that no reusable learning was found.
 - Derive the wiki title and filename from the completed feature/story, not from the raw change ID.
 - Create `completion.md` with completion gate results and archive target.
 - Review the generated wiki against specs, design, and implemented code before archiving.

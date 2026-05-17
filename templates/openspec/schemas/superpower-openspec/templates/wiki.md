@@ -42,8 +42,6 @@ filename_basis: spec-design-code-rules-review
 
 ## Security and Permissions
 
-## Operational Notes
-
 ## Validation Evidence
 
 ### Test Parameters
@@ -51,6 +49,20 @@ filename_basis: spec-design-code-rules-review
 ### Coverage Evidence
 
 ### Test Quality Notes
+
+## Review Evidence
+
+| Review | Evidence | Result |
+|---|---|---|
+| Alignment Review |  |  |
+| Security Review |  |  |
+| Final Code Review Pass 1 |  |  |
+| Final Code Review Pass 2 |  |  |
+
+## Lessons Learned
+
+| Learning | Type | Reuse Guidance |
+|---|---|---|
 
 ## Source Mapping
 

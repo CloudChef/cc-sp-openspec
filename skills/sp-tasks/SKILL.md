@@ -36,20 +36,21 @@ Create or update:
 4. In `design.md`, explicitly recommend generated/modified code paths by feature point and define a split plan for any file that may exceed 1000 lines.
 5. In `design.md`, identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
 6. In `design.md`, define requirement scope, compatibility/fallback decisions, and parameter/data-object design before implementation.
-7. In `design.md`, explicitly decide whether a database is required. If required, specify SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
-8. In `design.md`, define all backend logic changes and stop to ask the customer/user to confirm those backend logic decisions before tasks are finalized.
-9. In `design.md`, define backend APIs from OpenAPI contracts, separate at least Controller and Service responsibilities, document API method/path/parameters, document API IO, and require async handling for very time-consuming operations. If any API exists, stop to ask the customer/user to confirm every API path and parameter set.
-10. If UI changes exist, generate a mockup artifact and functional description, then stop to ask the customer/user to confirm the mockup and behavior description before tasks are finalized.
-11. If configuration parameters exist, list every parameter name, proposed value, environment/scope, and reason, then stop to ask the customer/user to confirm the names and values before tasks are finalized.
-12. In `design.md`, assess whether each changed capability needs real E2E testing, stop to ask the user to confirm the E2E required/not-required decision, and record the confirmation evidence.
-13. After all required customer/user confirmations, define real E2E test design for required E2E paths, including runnable command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence to collect. If any confirmation reveals missing or incorrect spec behavior, stop and update specs before creating tasks.
-14. Write `tasks.md` as a checklist where every task maps to a requirement, applicable rules, target code paths, reuse/common logic impact, requirement scope/fallback decision, parameter/data-object plan, file-size guardrail, customer/user confirmation evidence, database/API/IO impact when relevant, standalone verification method, confirmed real E2E test requirement, test parameter file, coverage target, and required per-task review gates.
-15. Require every implementation task to complete two reviews after implementation: Alignment Review and Security Review.
-16. Require all findings from both reviews to be fixed and re-reviewed before the next task starts.
-17. Review design and tasks for alignment with specs, spec review findings, customer/user confirmations, user-confirmed E2E decisions, rules, source mapping, code path planning, reuse/common logic plans, compatibility/fallback decisions, parameter/data-object plans, real E2E test design, file-size limits, database/API/IO rules, per-task review gates, and implementation readiness.
-18. Create `tasks-review.md` with findings and required fixes before `/sp-impl`.
-19. Fix review findings that are inside the approved design/task scope.
-20. Stop before writing code.
+7. In `design.md`, apply product, design, engineering, developer-experience, security, and QA review lenses when relevant.
+8. In `design.md`, explicitly decide whether a database is required. If required, specify SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
+9. In `design.md`, define all backend logic changes and stop to ask the customer/user to confirm those backend logic decisions before tasks are finalized.
+10. In `design.md`, define backend APIs from OpenAPI contracts, separate at least Controller and Service responsibilities, document API method/path/parameters, document API IO, and require async handling for very time-consuming operations. If any API exists, stop to ask the customer/user to confirm every API path and parameter set.
+11. If UI changes exist, generate a mockup artifact and functional description, define real browser QA or the project-approved UI runner when a runnable target exists, then stop to ask the customer/user to confirm the mockup and behavior description before tasks are finalized.
+12. If configuration parameters exist, list every parameter name, proposed value, environment/scope, and reason, then stop to ask the customer/user to confirm the names and values before tasks are finalized.
+13. In `design.md`, assess whether each changed capability needs real E2E testing, stop to ask the user to confirm the E2E required/not-required decision, and record the confirmation evidence.
+14. After all required customer/user confirmations, define real E2E test design for required E2E paths, including runnable command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence to collect. If any confirmation reveals missing or incorrect spec behavior, stop and update specs before creating tasks.
+15. Write `tasks.md` as a checklist where every task maps to a requirement, applicable rules, target code paths, review lens requirements, reuse/common logic impact, requirement scope/fallback decision, parameter/data-object plan, file-size guardrail, customer/user confirmation evidence, database/API/IO impact when relevant, browser/UI QA when relevant, standalone verification method, confirmed real E2E test requirement, test parameter file, coverage target, and required per-task review gates.
+16. Require every implementation task to complete two reviews after implementation: Alignment Review and Security Review.
+17. Require all findings from both reviews to be fixed and re-reviewed before the next task starts.
+18. Review design and tasks for alignment with specs, spec review findings, customer/user confirmations, user-confirmed E2E decisions, rules, source mapping, code path planning, product/design/engineering/developer-experience/security/QA review lenses, browser/UI QA plans, reuse/common logic plans, compatibility/fallback decisions, parameter/data-object plans, real E2E test design, file-size limits, database/API/IO rules, per-task review gates, and implementation readiness.
+19. Create `tasks-review.md` with findings and required fixes before `/sp-impl`.
+20. Fix review findings that are inside the approved design/task scope.
+21. Stop before writing code.
 
 ## Required `design.md` Sections
 
@@ -77,6 +78,9 @@ Create or update:
 - Test Strategy
 - Standalone Verification Plan
 - Real E2E Test Design
+- Multi-Lens Planning Review
+- Browser / UI QA Plan
+- Project Learning Candidates
 - Customer Confirmation
 - Rules Compliance
 - Source Mapping
@@ -96,6 +100,7 @@ Create or update:
   - Related requirement: `<requirement name>`
   - Applicable rules: `<rule id>`, `<rule id>`
   - Target code paths: `<path>`, `<path>`
+  - Multi-lens review: `<product/design/engineering/devex/security/QA applicable + evidence>`
   - Reuse/common logic impact: `<reuse existing/extract shared abstraction/extend shared abstraction/isolated with justification>`
   - Requirement scope / fallback: `<exact requirement behavior + no fallback/compatibility unless required>`
   - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
@@ -106,6 +111,7 @@ Create or update:
   - API path/parameters confirmation: `<confirmed/not-applicable + method/path/path params/query params/body params evidence>`
   - API IO / async: `<none/IO profile/async required>`
   - UI mockup/function confirmation: `<confirmed/not-applicable + mockup path + behavior description evidence>`
+  - Browser/UI QA: `<not-applicable/real browser or project UI runner + target + evidence>`
   - Config parameter confirmation: `<confirmed/not-applicable + parameter names/values evidence>`
   - Change: <specific implementation work>
   - Standalone verification: `<entry point + command/test + request/input + expected response/output + side effects>`
@@ -115,7 +121,7 @@ Create or update:
   - Coverage target: at least 85% code coverage for changed/affected code
   - Required reviews after implementation:
     - Alignment review against spec, design, task, rules, and changed code
-    - Security review against security-sensitive behavior and project-defined security rules
+    - Security review against concrete authentication, authorization, tenant/user isolation, validation, data exposure, logging, dependency, configuration, database/API IO, async, and external-service risks when relevant
   - Review gate: all findings must be fixed and re-reviewed before the next task starts
 ```
 
@@ -128,6 +134,7 @@ Create or update:
 - Rule Alignment
 - Task Quality
 - Validation Coverage
+- Review and QA Plan
 - Customer Confirmation Gates
 - Per-Task Review Gates
 - Implementation Readiness
@@ -162,6 +169,7 @@ If the Superpower review skills are unavailable in the current runtime, record t
 - Every task must list applicable project-defined rules when relevant.
 - Design must recommend target code paths for each feature point.
 - Every task must list target generated/modified code paths.
+- Design and tasks must apply product, design, engineering, developer-experience, security, and QA review lenses when relevant.
 - Design must identify same or equivalent existing logic and define reuse, extraction, extension, or justified isolation decisions.
 - Every task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
 - Avoidable same/equivalent logic duplication must be treated as a design/task review finding.
@@ -179,6 +187,7 @@ If the Superpower review skills are unavailable in the current runtime, record t
 - Every API design must document IO behavior.
 - Very time-consuming API work must be designed as async and tasks must include async validation.
 - If UI changes are introduced, design must generate a mockup artifact and a functional description, then record customer/user confirmation of both before tasks are considered complete.
+- If UI changes are introduced and a runnable target exists, design and tasks must require real browser QA or the project-approved UI runner, including target route, actions, assertions, and evidence.
 - If configuration parameters are introduced or changed, design must list every parameter name, proposed value, environment/scope, and reason, then record customer/user confirmation before tasks are considered complete.
 - Every task must include applicable customer/user confirmation evidence for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, and E2E decisions, or a clear not-applicable reason.
 - Every task must include concrete validation.
@@ -189,6 +198,7 @@ If the Superpower review skills are unavailable in the current runtime, record t
 - Specs, tasks, and implementation must follow the user-confirmed E2E decision recorded in `design.md`. If that decision exposes a spec gap, update specs before continuing.
 - Backend service tasks must require a real API call against a running service or project-supported test server, including request and response checks.
 - UI tasks must require a UI test case and actual interface behavior verification.
+- UI tasks must record browser/UI QA evidence or a runnable-target blocker.
 - Bug fix tasks must identify the bug entry point and verify that the changed code fixes the original behavior through that entry point.
 - External service tasks involving database, Redis, Elasticsearch, queues, caches, or integrations must verify against the project-provided connection or test environment when available; otherwise record a skip reason and verify locally testable behavior.
 - Every task must specify one or more independent test parameter files under `openspec/changes/<change-id>/test-params/`.

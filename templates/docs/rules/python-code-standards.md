@@ -124,12 +124,10 @@ Exporter code MUST produce stable metric names and labels.
 
 ## PY-010: Script Rules
 
-Operational scripts MUST be safe and repeatable.
+Operational scripts MUST be clear and project-scoped.
 
 - Use `argparse`, `click`, or the target project's CLI pattern for parameters.
 - Do not hardcode production paths, credentials, or network endpoints.
-- Log actions before destructive operations.
-- Support dry-run behavior for destructive or bulk operations when feasible.
 - Keep build and packaging scripts separate from runtime business logic.
 
 ## PY-011: Google Python Practices

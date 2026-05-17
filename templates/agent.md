@@ -14,6 +14,7 @@ Read `docs/rules/project-implementation-standards.md` when present. It defines b
 
 Also read these default rule files when the change touches the matching area:
 
+- `docs/rules/ai-workflow-quality-standards.md` for product challenge, planning review lenses, browser QA, security threat review, and project learning notes.
 - `docs/rules/java-code-standards.md` for Java/Spring code.
 - `docs/rules/python-code-standards.md` for Python code.
 - `docs/rules/configuration-standards.md` for config, packaging, database, OpenAPI, async, queues, and migrations.
@@ -119,11 +120,14 @@ Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
 ## Implementation Guardrails
 
 - Do not implement directly from brainstorm output.
+- During brainstorm, challenge product scope before spec: real user, pain, outcome, smallest useful slice, rejected scope, alternatives, and open questions.
 - Do not skip OpenSpec artifacts for feature work.
 - Do not skip phase review artifacts.
 - Do not proceed to the next phase with unresolved blocking gaps in the current phase review.
 - During design and task planning, require target code paths and keep generated/modified code files <= 1000 lines.
 - During design and task planning, identify same or equivalent existing logic and require reuse, shared abstraction extraction/extension, or documented isolation justification.
+- During design and task planning, apply product, design, engineering, developer-experience, security, and QA review lenses when relevant.
+- During design and task planning, declare the browser/API/job QA plan before implementation.
 - During design and implementation, existing-code changes must implement only approved requirements. Do not add fallback, compatibility, degraded-mode, dual-path, or silent default behavior unless specs/design/tasks explicitly require it.
 - During design and implementation, methods/functions must have no more than 5 input parameters, or use explicit named data objects instead of vague maps/dicts/objects/key-value bags.
 - During spec, design, task, and implementation work, require standalone full verification from the relevant entry point.
@@ -136,6 +140,7 @@ Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
 - If E2E is confirmed as required, require runtime target, command/tool, test data, assertions, and evidence in design and tasks.
 - During implementation, user-confirmed required real E2E tests must run against the designed runtime target. Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not count as E2E.
 - Backend service work must verify real API request/response behavior; UI work must include UI tests; bug fixes must verify through the bug entry point; external service changes must verify project-provided database/Redis/Elasticsearch/queue/cache/integration connections when available.
+- UI work must use real browser QA or the project-approved UI runner when a runnable target exists.
 - During design, explicitly decide database need. If database is required, use SQLite for development-stage local behavior and MySQL for implementation/deployment-stage behavior with a connection pool max <= 100.
 - Backend APIs must use OpenAPI and separate at least Controller and Service.
 - Every API must document IO behavior, and very time-consuming work must be async.
@@ -148,12 +153,14 @@ Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
 - Save explicit test parameters independently under `openspec/changes/<change-id>/test-params/`.
 - Do not write tests for empty/no-op code or tests limited to class/method initialization.
 - Resolve and re-review every finding before proceeding.
+- Security review must check concrete authentication, authorization, validation, data exposure, logging, dependency, configuration, API IO, async, and external-service risks when relevant.
 - Final completion requires zero unresolved findings.
 - Do not start implementation while required customer/user confirmation evidence is missing.
 - Do not archive a change until every task is marked complete and wiki documentation is generated from spec, design, customer/user confirmations, and code with a semantic feature/story filename.
 - After the completed change, tests, reviews, completion artifact, wiki, and archive are finished, create a local git commit for the completed change.
 - The commit message must include the complete requirement, completed changes, solution/design approach, customer/user confirmation evidence, workflow/completion evidence, and frontend/backend completion content when relevant.
 - After `/sp-complete`, final response must report what was actually done in user-facing terms: solution, code changes, tests/verification, documentation, review status, and local commit. OpenSpec archive details can be brief supporting evidence.
+- After `/sp-complete`, update `docs/ai-context/project-learnings.md` when reusable patterns, pitfalls, preferences, or verification notes were discovered; otherwise record that no reusable learning was found.
 - Do not push unless the user explicitly asks.
 - Do not add behavior outside approved specs.
 - Do not create tasks without a related requirement.

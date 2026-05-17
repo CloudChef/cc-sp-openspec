@@ -9,6 +9,17 @@
 
 ## Architecture Impact
 
+## Multi-Lens Planning Review
+
+| Lens | Decision / Concern | Evidence | Follow-Up |
+|---|---|---|---|
+| Product |  |  |  |
+| Design |  |  |  |
+| Engineering |  |  |  |
+| Developer Experience |  |  |  |
+| Security |  |  |  |
+| QA |  |  |  |
+
 ## Generated Code Paths
 
 | Feature Point | Recommended Path(s) | Reason | Split Needed |
@@ -81,6 +92,13 @@ When UI changes exist, create a mockup artifact and a functional description, th
 | UI Area | Mockup Path | Functional Description | Customer/User Confirmation | Evidence / Follow-Up |
 |---|---|---|---|---|
 
+## Browser / UI QA Plan
+
+For UI changes, define real browser QA or the project-approved UI runner when a runnable target exists.
+
+| UI Area | Runner / Tool | Route / URL | Auth Setup | Actions | Assertions | Evidence To Collect | Runnable Target Gap |
+|---|---|---|---|---|---|---|---|
+
 ## Configuration Parameter Confirmation
 
 Every new or changed configuration parameter name and value must be confirmed with the customer/user before tasks are finalized.
@@ -131,6 +149,11 @@ Record all customer/user confirmations required before tasks or implementation.
 ## Source Mapping
 
 | Design Decision | Source | Reason |
+|---|---|---|
+
+## Project Learning Candidates
+
+| Candidate Learning | Why It May Be Reusable | Record In Wiki / Project Learnings |
 |---|---|---|
 
 ## Spec Gaps

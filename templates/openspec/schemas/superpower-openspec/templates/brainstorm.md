@@ -5,11 +5,26 @@
 
 ## Problem
 
+## Product Challenge
+
+| Question | Answer / Evidence |
+|---|---|
+| Real user |  |
+| Pain point |  |
+| Expected outcome |  |
+| Measurable success signal |  |
+| Smallest useful delivery slice |  |
+| Alternative approach considered |  |
+
 ## User Scenarios
 
 ## Scope
 
+## Smallest Useful Slice
+
 ## Out of Scope
+
+## Rejected / Deferred Scope
 
 ## Candidate Requirements
 

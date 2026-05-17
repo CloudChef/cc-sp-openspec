@@ -66,8 +66,9 @@ sp-openspec/
 - `skills/`: 本模板提供的 workflow skills。这里是 staging 区，真实项目中建议同步到用户级 skills 目录。
 - `templates/`: 可以直接复制到目标项目根目录的 OpenSpec/Codex 项目模板。
 - `templates/openspec/`: OpenSpec 风格的项目说明、变更目录、schema 和文档模板。
-- `templates/docs/rules/`: 项目规则目录，包含基础实现规则、Java 规则、Python 规则、配置规则和测试规则。
+- `templates/docs/rules/`: 项目规则目录，包含 AI 工作流质量规则、基础实现规则、Java 规则、Python 规则、配置规则和测试规则。
 - `templates/docs/ai-context/source-index.md`: 告诉 Codex 在设计和上下文研究时优先读取哪些文档。
+- `templates/docs/ai-context/project-learnings.md`: 记录完成项目后沉淀出的可复用模式、坑点、偏好和验证经验。
 - `templates/docs/codex-superpower-openspec.png`: 工作流架构图。
 - `PROJECT_STRUCTURE.md`: 模板目标结构说明。
 
@@ -129,6 +130,7 @@ Copy-Item -Path C:\Projects\cmps\sp-openspec\skills\* -Destination $HOME\.agents
 
 - `openspec/project.md`: 描述目标项目、技术栈、业务边界、架构约束。
 - `docs/ai-context/source-index.md`: 指定本项目设计时必须读取的文档、Wiki、规则和代码位置。
+- `docs/ai-context/project-learnings.md`: 记录本项目可复用经验；完成 workflow 时更新，或记录没有可沉淀经验。
 - `docs/rules/*.md`: 放项目自己的规则文件。
 - `docs/standards/*.md`: 放架构、后端、前端、API、集成、安全、测试等标准。
 - `docs/wiki/*.md`: 放已有业务知识和功能说明。
@@ -140,6 +142,7 @@ Copy-Item -Path C:\Projects\cmps\sp-openspec\skills\* -Destination $HOME\.agents
 模板默认提供这些规则：
 
 - `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、需求边界与 fallback 控制、方法参数/data object、单独完整验证、真实 E2E 测试设计与执行、相同逻辑复用、文档默认中文、单文件 1000 行限制、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
+- `docs/rules/ai-workflow-quality-standards.md`: AI 工作流质量规则，包括 brainstorm 产品挑战、design 多视角规划、UI 浏览器验证、安全审查和 wiki/项目经验沉淀。
 - `docs/rules/java-code-standards.md`: Java/Spring 规范，结合参考项目实践和 Google Java Style。
 - `docs/rules/python-code-standards.md`: Python 规范，结合参考项目实践和 Google Python Style。
 - `docs/rules/configuration-standards.md`: 配置、数据库、迁移、OpenAPI、异步队列、依赖工具配置规范。
@@ -179,7 +182,7 @@ docs/rules/data-retention.md
 3. 设计和任务拆分：执行 `/sp-tasks <change-id>`。
    - 产物：`design.md`、`tasks.md`、`tasks-review.md`。
    - 目的：明确技术设计、代码路径、任务边界、测试策略和 Review 入口。
-   - 要求：所有后台逻辑都必须和客户/使用人确认；如果有 UI 变更，必须生成 Mockup 和功能说明并确认；如果有 API，必须明确每个 API 的 method、path、path/query/body 参数和响应相关参数并确认；如果有配置参数，必须明确参数名、建议值、环境/作用域和原因并确认；设计阶段还必须判断当前需求是否需要真实 E2E，并和使用人确认。确认需要 E2E 后，再设计 E2E 的命令、运行目标、测试数据、断言和证据。如果任一确认结果暴露 spec 缺口，先更新 spec，再继续 task 和 impl。任务必须包含代码路径、客户确认证据、需求边界/fallback 决策、方法参数/data object 计划、文件拆分计划、数据库/API/IO/异步影响、确认后的 E2E 要求、测试参数文件、85% 覆盖率目标、Alignment Review 和 Security Review。
+   - 要求：所有后台逻辑都必须和客户/使用人确认；如果有 UI 变更，必须生成 Mockup 和功能说明并确认；如果有 API，必须明确每个 API 的 method、path、path/query/body 参数和响应相关参数并确认；如果有配置参数，必须明确参数名、建议值、环境/作用域和原因并确认；设计阶段还必须判断当前需求是否需要真实 E2E，并和使用人确认。确认需要 E2E 后，再设计 E2E 的命令、运行目标、测试数据、断言和证据。Design 和 tasks 还要覆盖产品、设计、工程、开发体验、安全、QA 多视角检查；UI 变更在存在可运行目标时要设计真实浏览器验证或项目认可的 UI runner。如果任一确认结果暴露 spec 缺口，先更新 spec，再继续 task 和 impl。任务必须包含代码路径、客户确认证据、需求边界/fallback 决策、方法参数/data object 计划、文件拆分计划、数据库/API/IO/异步影响、确认后的 E2E 要求、测试参数文件、85% 覆盖率目标、Alignment Review 和 Security Review。
 
 4. 实现任务：执行 `/sp-impl <change-id>`。
    - 产物：代码变更、更新后的 `tasks.md`、`test-params/`、`task-reviews.md`、`review.md`。
@@ -188,7 +191,8 @@ docs/rules/data-retention.md
 
 5. 完成和归档：执行 `/sp-complete <change-id>`。
    - 产物：`completion.md`、`docs/wiki/<feature-or-story-title>.md`、`openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`、本地 git commit。
-   - 目的：确认任务、测试、Review、规则和文档证据都闭环后，生成 Wiki、归档 change，并创建本地提交。
+   - 目的：确认任务、测试、Review、规则和文档证据都闭环后，生成 Wiki、沉淀项目经验、归档 change，并创建本地提交。
    - 要求：Wiki 文件名必须根据 spec、design、实际 code、rules 和 review 证据生成语义化标题，不应简单使用 `<change-id>.md`。
+   - 经验沉淀：如果本次变更产生可复用模式、坑点、项目偏好或验证经验，必须更新 `docs/ai-context/project-learnings.md`；如果没有可沉淀经验，在 completion 证据中说明。
    - Commit 要求：必须等代码变更、测试、Review、`completion.md`、Wiki 和 archive 都完成之后再创建本地 commit；只提交本次完成的变更，不自动 push；commit message 需要概括完整需求、完成的变更、方案设计、流程和完成证据，并在相关时囊括前端和后端完成内容，但不展开到过细实现细节。
    - 汇报要求：完成后必须面向使用人完整汇报做了什么，重点说明方案、代码变更、测试/验证、文档更新、Review 状态和本地 commit；OpenSpec 归档路径和内部 artifact 可以作为辅助证据简要说明。

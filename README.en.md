@@ -64,8 +64,9 @@ Important directories:
 - `skills/`: Workflow skills provided by this template. This is a staging area; real projects should sync them into the user-level skills directory.
 - `templates/`: The OpenSpec/Codex project template that can be copied directly into a target project root.
 - `templates/openspec/`: Project instructions, change folders, schema, and artifact templates.
-- `templates/docs/rules/`: Project rules, including baseline implementation, Java, Python, configuration, and testing rules.
+- `templates/docs/rules/`: Project rules, including AI workflow quality, baseline implementation, Java, Python, configuration, and testing rules.
 - `templates/docs/ai-context/source-index.md`: Tells Codex which sources to read during design and context research.
+- `templates/docs/ai-context/project-learnings.md`: Captures reusable project patterns, pitfalls, preferences, and verification notes learned from completed changes.
 - `templates/docs/codex-superpower-openspec.png`: Workflow architecture diagram.
 - `PROJECT_STRUCTURE.md`: Target project structure reference.
 
@@ -127,6 +128,7 @@ After copying the template, update:
 
 - `openspec/project.md`: Project overview, stack, business boundaries, and architecture constraints.
 - `docs/ai-context/source-index.md`: Required context sources for design and research.
+- `docs/ai-context/project-learnings.md`: Reusable project learnings; update it during completion, or record that no reusable learning was found.
 - `docs/rules/*.md`: Project-specific rules.
 - `docs/standards/*.md`: Architecture, backend, frontend, API, integration, security, and testing standards.
 - `docs/wiki/*.md`: Existing business and feature knowledge.
@@ -138,6 +140,7 @@ Default language: generated OpenSpec, review, test-parameter, mockup-description
 The template includes these default rule files:
 
 - `docs/rules/project-implementation-standards.md`: Baseline implementation rules for code paths, requirement scope and fallback control, method parameters/data objects, standalone full verification, real E2E test design and execution, same/equivalent logic reuse, Chinese-by-default generated documentation, file size, database runtime, OpenAPI, layering, API IO, and async work.
+- `docs/rules/ai-workflow-quality-standards.md`: AI workflow quality rules for brainstorm product challenge, multi-lens design planning, browser QA, security review, and wiki/project learning capture.
 - `docs/rules/java-code-standards.md`: Java/Spring rules with Google Java Style as a default reference.
 - `docs/rules/python-code-standards.md`: Python rules with Google Python Style as a default reference.
 - `docs/rules/configuration-standards.md`: Configuration, database, migration, OpenAPI, async queue, and tool configuration rules.
@@ -177,7 +180,7 @@ You can also run phases manually:
 3. Create design and tasks: run `/sp-tasks <change-id>`.
    - Outputs: `design.md`, `tasks.md`, `tasks-review.md`.
    - Purpose: define technical design, code paths, task boundaries, test strategy, and review gates.
-   - Requirement: all backend logic must be confirmed with the customer/user. If UI changes exist, design must generate a mockup and functional description and confirm both. If APIs exist, design must list every API method, path, path/query/body parameter, and response-relevant parameter and confirm them. If configuration parameters exist, design must list parameter names, proposed values, environments/scopes, and reasons and confirm them. Design must also decide whether the current requirement needs real E2E and confirm that decision with the user. When E2E is confirmed as required, design must specify command, runtime target, test data, assertions, and evidence. If any confirmation exposes a spec gap, update specs before continuing to tasks and implementation. Tasks must include code paths, customer confirmation evidence, requirement-scope/fallback decisions, method-parameter/data-object plans, file split plan, database/API/IO/async impact, the confirmed E2E requirement, test parameter files, 85% coverage target, Alignment Review, and Security Review.
+   - Requirement: all backend logic must be confirmed with the customer/user. If UI changes exist, design must generate a mockup and functional description and confirm both. If APIs exist, design must list every API method, path, path/query/body parameter, and response-relevant parameter and confirm them. If configuration parameters exist, design must list parameter names, proposed values, environments/scopes, and reasons and confirm them. Design must also decide whether the current requirement needs real E2E and confirm that decision with the user. When E2E is confirmed as required, design must specify command, runtime target, test data, assertions, and evidence. Design and tasks must also cover product, design, engineering, developer-experience, security, and QA review lenses; UI changes must define real browser QA or the project-approved UI runner when a runnable target exists. If any confirmation exposes a spec gap, update specs before continuing to tasks and implementation. Tasks must include code paths, customer confirmation evidence, requirement-scope/fallback decisions, method-parameter/data-object plans, file split plan, database/API/IO/async impact, the confirmed E2E requirement, test parameter files, 85% coverage target, Alignment Review, and Security Review.
 
 4. Implement tasks: run `/sp-impl <change-id>`.
    - Outputs: code changes, updated `tasks.md`, `test-params/`, `task-reviews.md`, and `review.md`.
@@ -186,7 +189,8 @@ You can also run phases manually:
 
 5. Complete and archive: run `/sp-complete <change-id>`.
    - Outputs: `completion.md`, `docs/wiki/<feature-or-story-title>.md`, `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`, and a local git commit.
-   - Purpose: close the loop across tasks, tests, reviews, rules, and documentation, then generate the wiki, archive the change, and create the local commit.
+   - Purpose: close the loop across tasks, tests, reviews, rules, and documentation, then generate the wiki, capture project learnings, archive the change, and create the local commit.
    - Requirement: the wiki filename must be semantic and derived from specs, design, actual code, rules, and review evidence. It should not simply use `<change-id>.md`.
+   - Learning capture: update `docs/ai-context/project-learnings.md` when the change produces reusable patterns, pitfalls, project preferences, or verification notes; otherwise record in completion evidence that no reusable learning was found.
    - Commit requirement: create the local commit only after code changes, tests, reviews, `completion.md`, wiki, and archive are finished. Commit only the completed change files and do not push automatically. The commit message must summarize the complete requirement, completed changes, solution/design approach, workflow and completion evidence, and frontend/backend completion content when relevant, without excessive implementation detail.
    - Reporting requirement: after completion, provide a user-facing report of what was done, focused on solution, code changes, tests/verification, documentation updates, review status, and local commit. OpenSpec archive paths and internal artifacts can be brief supporting evidence.

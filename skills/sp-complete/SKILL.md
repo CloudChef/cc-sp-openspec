@@ -24,6 +24,7 @@ Use this skill to close an implemented OpenSpec change. Completion requires all 
 - `openspec/changes/<change-id>/task-reviews.md`
 - `openspec/changes/<change-id>/review.md`
 - Relevant project-defined rules under `docs/rules/*.md`, when present
+- `docs/ai-context/project-learnings.md`, when present
 - Relevant implementation files referenced by `design.md`, `tasks.md`, `task-reviews.md`, or `review.md`
 
 ## Outputs
@@ -51,19 +52,20 @@ Then create:
 5. Verify `review.md` has zero unresolved findings.
 6. Verify coverage evidence is at least 85% for changed/affected code.
 7. Verify test parameter files are independently saved under `test-params/`.
-8. Verify implementation-standard evidence: changed code paths match tasks, applicable customer/user confirmations are recorded and followed, same/equivalent logic is reused or generalized without avoidable duplication, existing-code changes stay inside approved requirements with no unrequested fallback/compatibility behavior, methods/functions have <= 5 inputs or use explicit named data objects, standalone full verification is complete, user-confirmed required real E2E tests are designed and executed, generated/modified code files are <= 1000 lines, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
+8. Verify implementation-standard evidence: changed code paths match tasks, applicable customer/user confirmations are recorded and followed, same/equivalent logic is reused or generalized without avoidable duplication, existing-code changes stay inside approved requirements with no unrequested fallback/compatibility behavior, methods/functions have <= 5 inputs or use explicit named data objects, standalone full verification is complete, user-confirmed required real E2E tests are designed and executed, browser/UI QA is complete when relevant, generated/modified code files are <= 1000 lines, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
 9. Inspect relevant implementation files or diffs referenced by the change artifacts.
 10. Derive a human-readable feature/story title from specs, design, code, rules, and review evidence.
 11. Convert that title to a concise kebab-case wiki filename.
-12. Generate or update `docs/wiki/<semantic-feature-or-story-title>.md` from specs, design, customer/user confirmations, code paths, database/API/IO decisions, rules, test evidence, and review evidence.
-13. Create `completion.md` with completion evidence, wiki output path, title derivation basis, and archive target.
-14. Run a final consistency review of `completion.md`, the wiki page, tasks, reviews, specs, design, code evidence, and test evidence.
-15. Fix any completion findings and re-run the consistency review until there are no open findings.
-16. Stop and report if any pre-archive completion gate fails.
-17. Move the change folder to `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`.
-18. Build a local git commit message from the final completed artifacts after code changes, tests, reviews, `completion.md`, wiki, and archive are finished.
-19. Create a local git commit for the completed change as the final workflow step.
-20. If the project is not a git worktree, record the skip reason in `completion.md`; otherwise stop and report if the commit cannot be created.
+12. Generate or update `docs/wiki/<semantic-feature-or-story-title>.md` from specs, design, customer/user confirmations, code paths, database/API/IO decisions, rules, test evidence, review evidence, and reusable lessons.
+13. Update `docs/ai-context/project-learnings.md` when the completed change reveals reusable patterns, pitfalls, preferences, or verification notes; otherwise record in `completion.md` that no reusable learning was found.
+14. Create `completion.md` with completion evidence, wiki output path, title derivation basis, project learning evidence, and archive target.
+15. Run a final consistency review of `completion.md`, the wiki page, tasks, reviews, specs, design, code evidence, and test evidence.
+16. Fix any completion findings and re-run the consistency review until there are no open findings.
+17. Stop and report if any pre-archive completion gate fails.
+18. Move the change folder to `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`.
+19. Build a local git commit message from the final completed artifacts after code changes, tests, reviews, `completion.md`, wiki, and archive are finished.
+20. Create a local git commit for the completed change as the final workflow step.
+21. If the project is not a git worktree, record the skip reason in `completion.md`; otherwise stop and report if the commit cannot be created.
 
 ## Completion Gates
 
@@ -84,12 +86,14 @@ Do not archive if any pre-archive gate fails. Do not mark completion successful 
 - Any method/function has more than 5 input parameters without an explicit named data object, or uses vague map-like parameter structures without documented schema.
 - Standalone full verification evidence is missing for API, UI, bug-entry, or external-service behavior when relevant.
 - User-confirmed required real E2E test design or execution evidence is missing.
+- Browser/UI QA evidence is missing for UI changes when a runnable target exists.
 - Any generated or modified code file exceeds 1000 lines.
 - Changed code paths do not match `tasks.md` and lack documented justification.
 - Required database runtime or connection pool evidence is missing.
 - Backend API OpenAPI, Controller, or Service evidence is missing when APIs changed.
 - API IO or async evidence is missing when APIs changed.
 - The wiki page does not reflect spec, design, customer/user confirmations, and implemented code.
+- Reusable project learning notes were not updated and `completion.md` does not record that no reusable learning was found.
 - The wiki filename is only the raw `<change-id>` instead of a semantic feature/story title derived from the completed work.
 - The implementation contains behavior not covered by specs.
 - The archive target would overwrite an existing folder.
@@ -146,6 +150,7 @@ Workflow:
 - Spec / Design / Code Alignment
 - Implementation Standards Evidence
 - Requirement Scope / Fallback / Parameter Evidence
+- Project Learning Notes
 - Local Git Commit
 - Final User Report Inputs
 - Archive Target
@@ -176,11 +181,13 @@ The generated wiki page must include:
 - API / Data / UI Impact, when relevant
 - Database / API IO / Async Notes, when relevant
 - Security and Permissions
-- Operational Notes
 - Validation Evidence
 - Test Parameter and Coverage Evidence
 - Standalone Verification Evidence
 - Real E2E Evidence
+- Browser / UI QA Evidence, when relevant
+- Review Evidence
+- Lessons Learned
 - Source Mapping
 
 ## Review Method

@@ -52,7 +52,9 @@ project-root/
       codex-superpower-openspec.png
       ai-context/
         source-index.md
+        project-learnings.md
       rules/
+        ai-workflow-quality-standards.md
         project-implementation-standards.md
         java-code-standards.md
         python-code-standards.md
@@ -127,7 +129,9 @@ project-root/
     codex-superpower-openspec.png
     ai-context/
       source-index.md
+      project-learnings.md
     rules/
+      ai-workflow-quality-standards.md
       project-implementation-standards.md
       java-code-standards.md
       python-code-standards.md

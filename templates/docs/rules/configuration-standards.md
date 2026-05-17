@@ -69,7 +69,6 @@ Database migrations MUST be traceable and reviewable.
 - Place migrations under the target project's changelog module/version folder.
 - Name migration files with a ticket, story, or change identifier when available.
 - Migration changes MUST be idempotent or guarded where possible.
-- Destructive schema or data changes MUST include rollback or recovery notes in design and review.
 - Generated SQL files MUST be stored under a clear `sql/` folder and referenced by the migration or design.
 
 ## CFG-007: OpenAPI Config

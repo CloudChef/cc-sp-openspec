@@ -32,7 +32,7 @@ Create or update:
 3. Read `docs/ai-context/source-index.md` first when it exists.
 4. Read relevant project-defined rules under `docs/rules/*.md` when they exist.
 5. Inspect relevant standards, wiki snapshots, existing OpenSpec specs, and similar implementation patterns.
-6. Write `brainstorm.md` with problem framing, candidate requirements, tradeoffs, risks, and open questions.
+6. Write `brainstorm.md` with problem framing, product challenge, candidate requirements, tradeoffs, risks, and open questions.
 7. Write `context.md` with sources read, rules applied, code/spec patterns found, conflicts, gaps, and design implications.
 8. Review `brainstorm.md` and `context.md` for alignment with the user request, sources, rules, existing specs, and context gaps.
 9. Create `brainstorm-review.md` with findings and required fixes before `/sp-spec`.
@@ -44,9 +44,12 @@ Create or update:
 ## Required `brainstorm.md` Sections
 
 - Problem
+- Product Challenge
 - User Scenarios
 - Scope
 - Out of Scope
+- Smallest Useful Slice
+- Rejected / Deferred Scope
 - Candidate Requirements
 - Alternative Solutions
 - Recommended Direction
@@ -101,6 +104,7 @@ If the Superpower review skills are unavailable in the current runtime, record t
 - Do not create or edit `design.md`.
 - Do not create or edit `tasks.md`.
 - Treat brainstorm output as discovery input, not approved scope.
+- Challenge the requirement before scope is approved: identify real user, pain point, outcome, smallest useful slice, rejected scope, alternatives, success signal, and open product questions.
 - Record missing or conflicting context explicitly instead of guessing.
 - Do not proceed to `/sp-spec` if `brainstorm-review.md` has unresolved blocking gaps.
 - Do not proceed to `/sp-spec` until the customer/user has confirmed the brainstorm output and `brainstorm-review.md` records that confirmation evidence.

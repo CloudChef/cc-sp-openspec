@@ -20,6 +20,7 @@
 | Standard | Status | Evidence | Gap |
 |---|---|---|---|
 | Code paths are recommended in design and listed per task |  |  |  |
+| Product/design/engineering/developer-experience/security/QA lenses are applied where relevant |  |  |  |
 | Reuse/common logic plan is explicit and avoids duplicate logic |  |  |  |
 | Requirement scope and fallback/compatibility decisions are explicit |  |  |  |
 | Method/function parameter plans satisfy <= 5 inputs or use named data objects |  |  |  |
@@ -37,6 +38,15 @@
 | Backend APIs have OpenAPI contract coverage |  |  |  |
 | Backend APIs separate Controller and Service responsibilities |  |  |  |
 | Every API has IO analysis and long-running work is async |  |  |  |
+
+## Review and QA Plan
+
+| Area | Status | Evidence | Gap |
+|---|---|---|---|
+| Multi-lens planning review is reflected in tasks |  |  |  |
+| UI changes define real browser QA or project-approved UI runner when runnable target exists |  |  |  |
+| Browser/UI QA target, actions, assertions, and evidence are concrete |  |  |  |
+| Review gates include Alignment Review and Security Review after each task |  |  |  |
 
 ## Rule Alignment
 
@@ -66,6 +76,7 @@
 | User-confirmed required real E2E tests are designed |  |  |  |
 | Backend API real request/response verification |  |  |  |
 | UI behavior test case |  |  |  |
+| Real browser QA or project-approved UI runner for UI changes |  |  |  |
 | Bug entry-point regression verification |  |  |  |
 | External service verification or skip reason |  |  |  |
 

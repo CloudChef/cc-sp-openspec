@@ -71,6 +71,7 @@ Rules:
 - Read `docs/ai-context/source-index.md` when doing context research or design.
 - Read relevant project-defined rules under `docs/rules/*.md` when creating specs, design, tasks, implementation, or review.
 - Treat `docs/rules/project-implementation-standards.md` as the default baseline implementation rule file when present.
+- Treat `docs/rules/ai-workflow-quality-standards.md` as the default AI workflow quality rule file when present.
 - Treat these rule files as default project standards when present and applicable:
   - `docs/rules/java-code-standards.md` for Java/Spring source.
   - `docs/rules/python-code-standards.md` for Python source.
@@ -109,7 +110,7 @@ Review gates:
 
 - `/sp-brainstorm` creates `brainstorm-review.md` and checks user request, context coverage, source usage, rules, scope risks, missing context, and customer/user confirmation of brainstorm output before `/sp-spec`.
 - `/sp-spec` creates `spec-review.md` and checks alignment with `brainstorm.md`, `context.md`, `brainstorm-review.md`, rules, existing specs, requirement quality, scenario coverage, standalone verifiability, and implementation leakage.
-- `/sp-tasks` creates `tasks-review.md` and checks alignment with specs, `spec-review.md`, design decisions, customer/user confirmations, rules, task quality, standalone verification coverage, validation coverage, and implementation readiness.
+- `/sp-tasks` creates `tasks-review.md` and checks alignment with specs, `spec-review.md`, design decisions, customer/user confirmations, product/design/engineering/developer-experience/security/QA review lenses, rules, task quality, standalone verification coverage, validation coverage, and implementation readiness.
 - `/sp-impl` creates `review.md` and checks implementation against all prior artifacts.
 
 Do not proceed to the next phase while the current phase review has unresolved blocking gaps.
@@ -170,6 +171,7 @@ The system SHALL <observable behavior>.
 Rules:
 
 - Do not start `/sp-spec` until `brainstorm-review.md` records customer/user confirmation of the brainstorm output.
+- Brainstorm must challenge product scope before spec: real user, pain, outcome, smallest useful slice, rejected scope, alternatives, and open questions.
 - Every requirement must have at least one `#### Scenario:` header.
 - Specs describe observable behavior only.
 - Specs must be independently verifiable from a real user-facing, API-facing, job-facing, or system-facing entry point.
@@ -210,6 +212,9 @@ This workflow requires `design.md` for `/sp-tasks`. Include:
 - Test Strategy
 - Standalone Verification Plan
 - Real E2E Test Design
+- Multi-Lens Planning Review
+- Browser / UI QA Plan
+- Project Learning Candidates
 - Backend Logic Confirmation
 - API Path / Parameter Confirmation
 - UI Mockup / Functional Description
@@ -227,6 +232,8 @@ Mandatory implementation-standard design decisions:
 - Define requirement scope and whether compatibility or fallback behavior is required. If specs do not require it, explicitly prohibit fallback and compatibility branches.
 - Define method/function parameter plans. No method/function may exceed 5 input parameters; if more inputs are needed, use a named data object with explicit fields, not a vague map/dict/object/key-value bag.
 - Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
+- Apply product, design, engineering, developer-experience, security, and QA review lenses when relevant.
+- For UI changes, define real browser QA or the project-approved UI runner when a runnable target exists.
 - Identify all backend logic decisions, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
 - If UI changes exist, generate a mockup artifact and functional description, stop to confirm both with the customer/user, and record confirmation before tasks are finalized.
 - If APIs exist, list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
@@ -267,12 +274,14 @@ Task format:
   - Requirement scope / fallback: `<exact requirement behavior + no fallback/compatibility unless required>`
   - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
   - File size guardrail: each generated/modified code file must stay <= 1000 lines; split plan: `<none/path split>`
+  - Multi-lens review: `<product/design/engineering/devex/security/QA applicable + evidence>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
   - Backend logic confirmation: `<confirmed/not-applicable + evidence>`
   - API contract/layers: `<none/OpenAPI operation + Controller path + Service path>`
   - API path/parameters confirmation: `<confirmed/not-applicable + method/path/path params/query params/body params evidence>`
   - API IO / async: `<none/IO profile/async required>`
   - UI mockup/function confirmation: `<confirmed/not-applicable + mockup path + behavior description evidence>`
+  - Browser/UI QA: `<not-applicable/real browser or project UI runner + target + evidence>`
   - Config parameter confirmation: `<confirmed/not-applicable + parameter names/values evidence>`
   - Change: <specific implementation work>
   - Standalone verification: `<entry point + command/test + request/input + expected response/output + side effects>`
@@ -282,7 +291,7 @@ Task format:
   - Coverage target: at least 85% code coverage for changed/affected code
   - Required reviews after implementation:
     - Alignment review against spec, design, task, rules, and changed code
-    - Security review against security-sensitive behavior and project-defined security rules
+    - Security review against concrete authentication, authorization, tenant/user isolation, validation, data exposure, logging, dependency, configuration, database/API IO, async, and external-service risks when relevant
   - Review gate: all findings must be fixed and re-reviewed before the next task starts
 ```
 
@@ -297,6 +306,8 @@ Rules:
 - Every task must state method/function parameter constraints and any named data object required for more than 5 inputs.
 - Every task must include the file-size guardrail and split plan when needed.
 - Every task must identify database, API contract/layering, and API IO/async impact when relevant.
+- Every task must include applicable product, design, engineering, developer-experience, security, and QA review lens requirements.
+- UI tasks must include real browser QA or the project-approved UI runner when a runnable target exists.
 - Every task must include applicable customer/user confirmation evidence for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, and E2E decisions, or a clear not-applicable reason.
 - Every task must include validation.
 - Every task must include standalone full verification from the relevant entry point.
@@ -316,7 +327,7 @@ Rules:
 During `/sp-impl`, every task must pass two review rounds before the next task starts:
 
 1. Alignment Review: verify the completed task against specs, design, task text, project-defined rules, and changed code.
-2. Security Review: verify security-sensitive behavior, authorization, data handling, validation, logging, dependencies, configuration, and project-defined security rules.
+2. Security Review: verify concrete authentication, authorization, tenant/user isolation, input validation, output encoding, sensitive data exposure, logging, dependencies, configuration, database/API IO, async/job behavior, external-service calls, and project-defined security rules when relevant.
 
 Testing rules:
 
@@ -404,8 +415,10 @@ The wiki page must include:
 - Customer / User Confirmations
 - API / Data / UI Impact, when relevant
 - Security and Permissions
-- Operational Notes
 - Validation Evidence
+- Browser / UI QA Evidence, when relevant
+- Review Evidence
+- Lessons Learned
 - Source Mapping
 
 Wiki filename rules:
@@ -420,6 +433,7 @@ Wiki filename rules:
 
 - Do not start implementation until proposal, specs, design, and tasks exist.
 - Do not start implementation until required customer/user confirmations are recorded for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions when applicable.
+- Do not start implementation until the required QA plan is recorded.
 - Implement only unchecked tasks in `tasks.md`.
 - Complete tasks one at a time.
 - Do not add behavior outside specs.
@@ -429,6 +443,7 @@ Wiki filename rules:
 - Follow applicable default Java, Python, configuration, and testing rules before editing related files.
 - Run relevant verification.
 - Mark tasks complete only after standalone verification, user-confirmed required real E2E evidence, validation, coverage, file length checks, independent test parameters, implementation-standard evidence, and both per-task reviews have no open findings.
+- Mark UI tasks complete only after real browser QA or the project-approved UI runner verifies the changed behavior when a runnable target exists.
 - After all tasks are complete, run at least two final code review passes on the complete implementation diff before finalizing `review.md`.
 
 ## Review Rules
@@ -444,11 +459,15 @@ After implementation, create or update `review.md` with:
 - Per-Task Review Completion
 - Out-of-Spec Behavior
 - Architecture Compliance
+- Multi-Lens Review Evidence
 - Implementation Standards Compliance
 - Rules Compliance
 - Test Coverage
+- Browser / UI QA Evidence
+- Security Review Evidence
 - Test Quality
 - Documentation Consistency
+- QA Evidence
 - Final Code Review Pass 1
 - Final Code Review Pass 2
 - Blocking Issues
@@ -457,7 +476,7 @@ After implementation, create or update `review.md` with:
 
 If review finds missing behavior not covered by specs, stop and update OpenSpec before coding more.
 
-Final implementation review must include at least two complete-diff code review passes after all tasks are complete. Pass 1 checks the full implementation against specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file-size limits. Pass 2 runs after Pass 1 fixes and checks for regressions, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations. All findings from both passes must be fixed and re-reviewed before `/sp-complete`.
+Final implementation review must include at least two complete-diff code review passes after all tasks are complete. Pass 1 checks the full implementation against specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, browser/UI QA evidence, and file-size limits. Pass 2 runs after Pass 1 fixes and checks for regressions, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations. All findings from both passes must be fixed and re-reviewed before `/sp-complete`.
 
 ## No CLI Requirement
 
@@ -473,6 +492,8 @@ For validation, inspect:
 - `task-reviews.md` and final `review.md` show zero unresolved findings before completion.
 - Final `review.md` records at least two complete-diff code review passes after all tasks are complete, with zero open findings.
 - Required customer/user confirmations are recorded and followed for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.
+- Product/design/engineering/developer-experience/security/QA review lens evidence is present when applicable.
+- Real browser QA or project-approved UI runner evidence is present for UI changes when a runnable target exists.
 - Test coverage is at least 85% for changed/affected code.
 - Standalone verification evidence is present for changed behavior, including real API calls, UI tests, bug-entry regression checks, and external service checks when relevant.
 - User-confirmed required real E2E tests are designed and executed with command, runtime target, test data, assertions, and evidence; unit/mock/initialization/isolated method checks are not accepted as E2E substitutes.
@@ -484,9 +505,10 @@ For validation, inspect:
 - Database decisions and connection pool constraints are satisfied when relevant.
 - Backend APIs follow OpenAPI and separate Controller and Service responsibilities when relevant.
 - API IO and async decisions are implemented when relevant.
-- `completion.md` records completion gates and archive target.
+- `completion.md` records completion gates, project learning evidence, and archive target.
 - A local git commit is created after all completion artifacts, wiki documentation, and archive movement are finished, or a git skip reason is recorded when no git worktree exists.
 - `docs/wiki/<feature-or-story-title>.md` documents the completed feature/story from specs, design, customer/user confirmations, and code.
+- `docs/ai-context/project-learnings.md` is updated when the completed change creates reusable patterns, pitfalls, preferences, or verification notes, or completion evidence records that no reusable learning was found.
 
 ## Source Priority
 

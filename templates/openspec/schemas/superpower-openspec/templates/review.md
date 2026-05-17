@@ -29,6 +29,17 @@
 
 ## Architecture Compliance
 
+## Multi-Lens Review Evidence
+
+| Lens | Status | Evidence | Gap |
+|---|---|---|---|
+| Product |  |  |  |
+| Design |  |  |  |
+| Engineering |  |  |  |
+| Developer Experience |  |  |  |
+| Security |  |  |  |
+| QA |  |  |  |
+
 ## Customer Confirmation Compliance
 
 | Confirmation Area | Required | Evidence Followed In Implementation | Gap |
@@ -85,6 +96,22 @@
 | Capability / Scenario | User Confirmation | Command / Tool | Runtime Target | Test Data | Assertions | Evidence / Skip Reason | Gap |
 |---|---|---|---|---|---|---|---|
 
+## Browser / UI QA Evidence
+
+| UI Area | Runner / Tool | Route / URL | Actions | Assertions | Evidence / Skip Reason | Gap |
+|---|---|---|---|---|---|---|
+
+## Security Review Evidence
+
+| Area | Status | Evidence | Gap |
+|---|---|---|---|
+| Authentication / authorization |  |  |  |
+| Tenant or user isolation |  |  |  |
+| Input validation / output encoding |  |  |  |
+| Sensitive data exposure / logging |  |  |  |
+| Dependencies / configuration |  |  |  |
+| Database / API IO / async / external calls |  |  |  |
+
 ## Test Quality
 
 | Requirement | Status | Evidence | Gap |
@@ -97,6 +124,26 @@
 | Unit, mock-only, initialization, isolated method, or static screenshot checks are not used as E2E substitutes |  |  |  |
 
 ## Documentation Consistency
+
+## Final Code Review Pass 1
+
+| Area | Status | Evidence | Finding / Fix |
+|---|---|---|---|
+| Specs/design/tasks/rules alignment |  |  |  |
+| Architecture and code paths |  |  |  |
+| Tests, coverage, standalone verification, and real E2E |  |  |  |
+| Browser/UI QA when relevant |  |  |  |
+| Reuse/common logic and no unrequested fallback |  |  |  |
+| Parameter/data-object and file-size constraints |  |  |  |
+
+## Final Code Review Pass 2
+
+| Area | Status | Evidence | Finding / Fix |
+|---|---|---|---|
+| Regressions introduced by fixes |  |  |  |
+| Security, data handling, and authorization |  |  |  |
+| API IO, async behavior, configuration, and dependencies |  |  |  |
+| Test quality and remaining rule violations |  |  |  |
 
 ## Blocking Issues
 
