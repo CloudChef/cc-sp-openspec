@@ -27,6 +27,7 @@ Read:
 
 - `docs/rules/project-implementation-standards.md`, when present
 - `docs/rules/ai-workflow-quality-standards.md`, when present
+- `docs/rules/logging-standards.md`, when comments, logs, traceability, `trace_id`, observability, or sensitive-data logging risk is involved
 - `docs/rules/java-code-standards.md`, when Java code is involved
 - `docs/rules/python-code-standards.md`, when Python code is involved
 - `docs/rules/configuration-standards.md`, when configuration, packaging, database, OpenAPI, async, queue, or migration files are involved

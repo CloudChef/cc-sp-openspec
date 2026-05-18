@@ -21,6 +21,7 @@
 | Existing-code changes stay inside approved requirements |  |  |  |
 | No unrequested fallback or compatibility behavior |  |  |  |
 | Method/function parameter count and data-object rules satisfied |  |  |  |
+| Comment/logging/traceability rule satisfied |  |  |  |
 | Standalone full verification completed |  |  |  |
 | User-confirmed required real E2E tests designed and executed |  |  |  |
 | Browser/UI QA completed when relevant |  |  |  |
@@ -66,6 +67,7 @@
 | Reuse/common logic rule satisfied |  |  |  |
 | Requirement-scope/fallback rule satisfied |  |  |  |
 | Parameter-count/data-object rule satisfied |  |  |  |
+| Comment/logging/traceability rule satisfied |  |  |  |
 | Standalone verification evidence |  |  |  |
 | Real E2E evidence |  |  |  |
 | Browser/UI QA evidence |  |  |  |
@@ -83,6 +85,17 @@
 | Methods/functions have <= 5 inputs |  |  |  |
 | Named data objects are used when more than 5 inputs are required |  |  |  |
 | Vague maps/dicts/objects are not used as unclear data objects |  |  |  |
+
+## Comment / Logging / Traceability Evidence
+
+| Check | Status | Evidence | Gap |
+|---|---|---|---|
+| Useful comments cover non-obvious behavior |  |  |  |
+| Key behavior logs are present |  |  |  |
+| `trace_id` is generated/read/propagated/emitted when context exists |  |  |  |
+| Log levels and structured fields are appropriate |  |  |  |
+| Exception logs include stack traces |  |  |  |
+| Logs exclude secrets, credentials, tokens, session identifiers, raw personal data, and sensitive request/response bodies |  |  |  |
 
 ## Project Learning Notes
 

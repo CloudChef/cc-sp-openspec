@@ -6,9 +6,10 @@ Superpower-style skills are the workflow layer. OpenSpec is the source of truth 
 
 Always open `openspec/AGENTS.md` when a request mentions planning, proposals, specs, changes, design, tasks, implementation of an OpenSpec change, or `/sp-*` workflow commands.
 
-The default baseline project implementation rules live in `docs/rules/project-implementation-standards.md` when present. This template also includes default AI workflow quality, Java, Python, configuration, and testing rule files:
+The default baseline project implementation rules live in `docs/rules/project-implementation-standards.md` when present. This template also includes default AI workflow quality, logging, Java, Python, configuration, and testing rule files:
 
 - `docs/rules/ai-workflow-quality-standards.md`
+- `docs/rules/logging-standards.md`
 - `docs/rules/java-code-standards.md`
 - `docs/rules/python-code-standards.md`
 - `docs/rules/configuration-standards.md`
@@ -154,6 +155,7 @@ Rules:
 - `design.md` must identify same or equivalent existing logic and define reuse, extraction, extension, or justified isolation decisions.
 - `design.md` must state requirement scope and whether compatibility/fallback behavior is required. If not explicitly required, generated tasks must prohibit fallback or compatibility branches.
 - `design.md` must identify methods/functions that would need more than 5 inputs and require a named data object instead of vague map-like parameters.
+- `design.md` must define code comment needs, logging events, `trace_id` propagation, structured fields, log levels, sensitive-data masking, and log performance considerations for changed behavior.
 - `design.md` must define standalone full verification for every changed behavior.
 - `design.md` must identify all backend logic decisions, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
 - If UI changes exist, `design.md` must include a mockup artifact path and functional description, stop to confirm both with the customer/user, and record confirmation before tasks are finalized.
@@ -168,6 +170,7 @@ Rules:
 - Every API must document IO behavior; very time-consuming work must be async.
 - Every task must reference a requirement, applicable rules, target code paths, reuse/common logic impact, implementation-standard impact, and validation.
 - Every task must include requirement-scope/fallback instructions and method/function parameter constraints.
+- Every task must include code comment and logging requirements, including `trace_id`, log levels, structured fields, and sensitive-data exclusion when relevant.
 - Every task must include standalone full verification from the relevant entry point.
 - Every task must include applicable customer/user confirmation evidence for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, and E2E decisions, or a clear not-applicable reason.
 - Every task must include the user-confirmed real E2E requirement or a design-confirmed not-applicable reason.
@@ -221,13 +224,15 @@ Rules:
 - Same or equivalent logic must be reused or generalized; avoidable duplicate logic must be fixed before task completion.
 - Existing-code changes must implement only approved requirements. Do not add fallback, compatibility, degraded-mode, dual-path, or silent default behavior unless specs/design/tasks explicitly require it.
 - Methods/functions must have no more than 5 input parameters, or use explicit named data objects instead of vague maps/dicts/objects/key-value bags.
+- Code implementation must include useful comments for non-obvious behavior and logs that trace key behavior with `trace_id` when context exists.
+- Logs must not include secrets, credentials, tokens, session identifiers, raw personal data, or sensitive request/response bodies.
 - Generated/modified code files must stay <= 1000 lines.
 - Database, OpenAPI, Controller/Service, API IO, and async rules must be implemented and evidenced when relevant.
 - Do not write tests for empty/no-op code.
 - Do not count tests that only verify class or method initialization.
 - After each task, run Alignment Review against spec, design, task, rules, and changed code.
 - After each task, run Security Review against concrete authentication, authorization, tenant/user isolation, validation, data exposure, logging, dependency, configuration, database/API IO, async, and external-service risks when relevant.
-- Security Review must check concrete authentication, authorization, validation, data exposure, logging, dependency, configuration, API IO, async, and external-service risks when relevant.
+- Security Review must check concrete authentication, authorization, validation, data exposure, logging, `trace_id`, sensitive-data exposure, dependency, configuration, API IO, async, and external-service risks when relevant.
 - Fix every finding from both reviews and re-review before starting the next task.
 - Record all per-task review rounds and closure evidence in `task-reviews.md`.
 - Do not add behavior outside specs.

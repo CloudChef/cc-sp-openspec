@@ -13,6 +13,7 @@
   - Reuse/common logic impact: `<reuse existing/extract shared abstraction/extend shared abstraction/isolated with justification>`
   - Requirement scope / fallback: `<exact requirement behavior + no fallback/compatibility unless required>`
   - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
+  - Comments/logging/traceability: `<comment targets + log events + trace_id propagation + sensitive-data masking>`
   - File size guardrail: each generated/modified code file must stay <= 1000 lines; split plan: `<none/path split>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
   - Backend logic confirmation: `<confirmed/not-applicable + evidence>`
@@ -43,6 +44,7 @@ Validation must include:
 - Reuse/common logic check showing no avoidable duplicate logic was introduced.
 - Requirement-scope/fallback check showing no unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior was added.
 - Parameter-count/data-object check showing no method/function has more than 5 inputs unless it uses an explicit named data object.
+- Comment/logging/traceability check showing useful comments, key behavior logs, `trace_id` propagation/output, exception stack traces, correct log levels, and no sensitive data in logs.
 - File length check showing every generated/modified code file is at or below 1000 lines.
 - Database configuration check when database access is required: SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, connection pool configured, maximum pool size <= 100.
 - Customer/user confirmation check for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.

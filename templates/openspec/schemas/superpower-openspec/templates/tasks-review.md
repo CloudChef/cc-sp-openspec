@@ -24,6 +24,7 @@
 | Reuse/common logic plan is explicit and avoids duplicate logic |  |  |  |
 | Requirement scope and fallback/compatibility decisions are explicit |  |  |  |
 | Method/function parameter plans satisfy <= 5 inputs or use named data objects |  |  |  |
+| Code comments, logging events, trace_id propagation, and sensitive-data masking are planned |  |  |  |
 | Generated/modified code files have a <= 1000 line split plan |  |  |  |
 | Standalone verification plan covers API, UI, bug-entry, and external-service behavior when relevant |  |  |  |
 | User-confirmed E2E required/not-required decision is recorded in design |  |  |  |
@@ -66,6 +67,17 @@
 | No unrequested fallback or compatibility behavior is planned |  |  |  |
 | Methods/functions have <= 5 inputs or named data objects |  |  |  |
 | Vague maps/dicts/objects are not used as unclear data objects |  |  |  |
+
+## Comment / Logging / Traceability Review
+
+| Area | Status | Evidence | Gap |
+|---|---|---|---|
+| Useful comments are planned for non-obvious behavior |  |  |  |
+| Key behavior logs are planned |  |  |  |
+| `trace_id` is generated/read/propagated/emitted when context exists |  |  |  |
+| Log levels and structured fields are defined |  |  |  |
+| Exception logs preserve stack traces |  |  |  |
+| Sensitive data is excluded or masked before logging |  |  |  |
 
 ## Validation Coverage
 

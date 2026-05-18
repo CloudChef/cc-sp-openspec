@@ -61,6 +61,11 @@
 | No unrequested fallback or compatibility behavior was added |  |  |  |
 | Methods/functions have <= 5 inputs or named data objects |  |  |  |
 | Vague maps/dicts/objects are not used as unclear data objects |  |  |  |
+| Useful comments exist for non-obvious behavior |  |  |  |
+| Logs cover key behavior and use correct levels |  |  |  |
+| `trace_id` is propagated and emitted when context exists |  |  |  |
+| Exception logs include stack traces |  |  |  |
+| Logs exclude sensitive information |  |  |  |
 | Standalone full verification is completed for changed behavior |  |  |  |
 | User-confirmed required real E2E tests are designed and executed |  |  |  |
 | Generated/modified code files are <= 1000 lines |  |  |  |
@@ -76,6 +81,17 @@
 
 | Rule | Status | Evidence | Gap |
 |---|---|---|---|
+
+## Comment / Logging / Traceability Evidence
+
+| Check | Status | Evidence | Gap |
+|---|---|---|---|
+| Useful comments cover non-obvious behavior |  |  |  |
+| Key behavior logs are present |  |  |  |
+| `trace_id` is generated/read/propagated/emitted when context exists |  |  |  |
+| Log levels and structured fields are appropriate |  |  |  |
+| Exception logs include stack traces |  |  |  |
+| Logs exclude secrets, credentials, tokens, session identifiers, raw personal data, and sensitive request/response bodies |  |  |  |
 
 ## Test Coverage
 
@@ -111,6 +127,7 @@
 | Sensitive data exposure / logging |  |  |  |
 | Dependencies / configuration |  |  |  |
 | Database / API IO / async / external calls |  |  |  |
+| Logging / `trace_id` / sensitive-data exposure |  |  |  |
 
 ## Test Quality
 
@@ -133,6 +150,7 @@
 | Architecture and code paths |  |  |  |
 | Tests, coverage, standalone verification, and real E2E |  |  |  |
 | Browser/UI QA when relevant |  |  |  |
+| Comments, logs, `trace_id`, and sensitive-data exclusion |  |  |  |
 | Reuse/common logic and no unrequested fallback |  |  |  |
 | Parameter/data-object and file-size constraints |  |  |  |
 
@@ -142,6 +160,7 @@
 |---|---|---|---|
 | Regressions introduced by fixes |  |  |  |
 | Security, data handling, and authorization |  |  |  |
+| Logging, `trace_id`, and sensitive-data exposure |  |  |  |
 | API IO, async behavior, configuration, and dependencies |  |  |  |
 | Test quality and remaining rule violations |  |  |  |
 

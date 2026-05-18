@@ -7,6 +7,7 @@ context: |
   Rules under docs/rules are mandatory inputs.
   docs/rules/project-implementation-standards.md is the baseline implementation rule file when present.
   docs/rules/ai-workflow-quality-standards.md is the baseline AI workflow quality rule file when present.
+  docs/rules/logging-standards.md is the baseline logging, trace_id, and sensitive-data logging rule file when present.
   docs/rules/java-code-standards.md, docs/rules/python-code-standards.md, docs/rules/configuration-standards.md, and docs/rules/testing-standards.md are default language/configuration/testing standards when present and applicable.
   Wiki and standards under docs/ are design inputs.
   Specs must reflect relevant behavior-affecting rules.
@@ -75,6 +76,7 @@ rules:
     - Identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
     - Define requirement scope and whether compatibility/fallback behavior is required; if specs do not require it, explicitly prohibit fallback and compatibility branches.
     - Define method/function parameter plans; no method/function may exceed 5 input parameters unless a named data object with explicit fields is used.
+    - Define useful code comments, logging events, trace_id propagation, structured fields, log levels, exception stack-trace behavior, sensitive-data masking, and logging performance considerations.
     - Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
     - Apply product, design, engineering, developer-experience, security, and QA review lenses when relevant.
     - Identify all backend logic decisions, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
@@ -101,6 +103,7 @@ rules:
     - Each task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
     - Each task must state requirement-scope/fallback rules and prohibit unrequested fallback or compatibility behavior.
     - Each task must state method/function parameter constraints and any required named data object.
+    - Each task must state code comment and logging requirements, including trace_id, log levels, structured fields, exception stack traces, and sensitive-data exclusion when relevant.
     - Each task must include the <= 1000 line file-size guardrail and split plan when needed.
     - Each task must include applicable product, design, engineering, developer-experience, security, and QA review lens requirements.
     - Each task must identify database, OpenAPI/Controller/Service, API IO, and async impact when relevant.
@@ -135,6 +138,7 @@ rules:
     - Check same/equivalent logic reuse and reject avoidable duplicate logic.
     - Check existing-code changes implement only approved requirements and reject unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior.
     - Check methods/functions have no more than 5 input parameters, or use explicit named data objects instead of vague map-like structures.
+    - Check useful code comments, behavior-log coverage, trace_id propagation/output, log levels, exception stack traces, and sensitive-data exclusion.
     - Check generated/modified code files are at or below 1000 lines.
     - Check database runtime and connection pool rules when database access is required.
     - Check backend APIs follow OpenAPI and separate Controller and Service responsibilities when APIs changed.
@@ -144,8 +148,8 @@ rules:
     - Check implementation against applicable project-defined rules.
     - Check Java, Python, configuration, and testing rule compliance when those areas changed.
     - Run at least two final code review passes on the complete implementation diff after all tasks are complete.
-    - Final code review pass 1 must check specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes.
-    - Final code review pass 2 must run after pass 1 fixes and check regressions, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations.
+    - Final code review pass 1 must check specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes.
+    - Final code review pass 2 must run after pass 1 fixes and check regressions, security, data handling, authorization, logging/trace_id/sensitive-data exposure, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations.
     - Fix every finding from both final code review passes and re-review until both passes have zero open findings.
     - Mark out-of-spec behavior explicitly.
     - Do not silently add new requirements.
@@ -159,7 +163,7 @@ rules:
     - Require independent test parameter files.
     - Require standalone full verification evidence for changed behavior.
     - Require real E2E test evidence when user-confirmed as required in design.
-    - Require implementation-standard evidence for code paths, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, file length, database runtime/pool, OpenAPI/layers, API IO, and async handling when relevant.
+    - Require implementation-standard evidence for code paths, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, comment/logging/traceability control, file length, database runtime/pool, OpenAPI/layers, API IO, and async handling when relevant.
     - Require project learning notes to be updated when the completed change reveals reusable patterns, pitfalls, preferences, or verification procedures, or require completion evidence that no reusable learning was found.
     - Generate docs/wiki/<feature-or-story-title>.md from specs, design, customer/user confirmations, implemented code, rules, and review evidence.
     - Derive the wiki filename from the completed feature/story, not from the raw change ID.

@@ -94,9 +94,13 @@ External service integrations SHOULD separate connection/session setup, client o
 
 Python code MUST not hide important failures.
 
+- Follow `docs/rules/logging-standards.md` when present.
 - Use module-level loggers.
-- Log integration name, operation, endpoint or safe resource identifier, and exception message.
-- Do not log secrets, decrypted passwords, tokens, access keys, or signed URLs.
+- Use `contextvars`, request context, or the project's trace context mechanism to include `trace_id` in every request, job, async, and external-call log when context exists.
+- Log enough context to trace important system behavior and diagnose failures.
+- Log request/job boundaries, state transitions, major decisions, external calls, retries, failures, async handoff/completion, and permission/security denials when relevant.
+- Log integration name, operation, endpoint or safe resource identifier, correlation ID, and exception message when available.
+- Do not log secrets, decrypted passwords, tokens, access keys, private keys, cookies, session identifiers, signed URLs, raw credentials, full personal data, or sensitive request/response bodies.
 - Return empty collections only when the calling contract treats missing external data as non-fatal.
 - Raise or map exceptions when the caller must distinguish failure from empty data.
 - Use explicit fallback values for missing metrics or labels only when the approved requirement or design defines that fallback behavior.
@@ -154,3 +158,12 @@ Python functions and methods MUST keep inputs explicit and readable.
 - Use context managers for files, sockets, clients, and other stateful resources when available.
 - Keep top-level executable behavior behind `main()` and `if __name__ == '__main__':`.
 - Document side effects, raised exceptions, and non-obvious arguments in docstrings for public functions.
+
+## PY-013: Comments and Docstrings
+
+Python code MUST include useful comments and docstrings for non-obvious behavior.
+
+- Use docstrings for public modules, classes, functions, reusable helpers, data objects, complex parsers, and non-obvious integration behavior.
+- Add short comments for complex business rules, domain invariants, security-sensitive decisions, async/concurrency behavior, integration mappings, error handling, and side effects.
+- Comments SHOULD explain why the code exists or why a decision is made, not repeat obvious statements.
+- Do not leave stale, misleading, TODO-only, or commented-out code.

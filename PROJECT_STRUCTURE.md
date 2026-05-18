@@ -55,6 +55,7 @@ project-root/
         project-learnings.md
       rules/
         ai-workflow-quality-standards.md
+        logging-standards.md
         project-implementation-standards.md
         java-code-standards.md
         python-code-standards.md
@@ -132,6 +133,7 @@ project-root/
       project-learnings.md
     rules/
       ai-workflow-quality-standards.md
+      logging-standards.md
       project-implementation-standards.md
       java-code-standards.md
       python-code-standards.md

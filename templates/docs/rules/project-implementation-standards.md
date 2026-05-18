@@ -113,7 +113,23 @@ Code changes MUST stay inside the approved requirement and design scope.
 - Design and task artifacts MUST call out compatibility/fallback decisions and parameter-object needs before implementation.
 - Implementation review MUST reject unrequested fallback behavior, over-broad compatibility behavior, avoidable duplicate one-off logic, methods/functions with more than 5 inputs, and vague map-like parameter objects.
 
-## PIR-011: Documentation Language Default
+## PIR-011: Code Comments and Behavior Logging
+
+Implementation MUST include meaningful code comments and behavior logs for changed system behavior.
+
+- When `docs/rules/logging-standards.md` exists, implementation MUST follow it.
+- Code comments MUST explain non-obvious business rules, domain invariants, security-sensitive decisions, complex algorithms, async/concurrency behavior, integration mappings, error handling, and side effects.
+- Comments SHOULD explain why the code behaves a certain way, not restate obvious syntax.
+- Public APIs, public classes/functions, reusable helpers, data objects, and complex test fixtures SHOULD include docstrings/Javadoc or the target language's equivalent when the project convention supports it.
+- Implementation MUST add or maintain logs that make important system behavior traceable, including request/job start and finish, state transitions, major decision points, external service calls, retries, failures, async job handoff/completion, and permission/security denials when relevant.
+- Logs MUST use the project's logging framework and appropriate log levels.
+- Logs MUST include safe correlation context such as request IDs, job IDs, tenant-safe IDs, operation names, or resource IDs when available.
+- Logs MUST NOT include secrets, passwords, tokens, access keys, private keys, cookies, session identifiers, signed URLs, raw credentials, decrypted values, full personal data, full request/response bodies containing sensitive information, or sensitive business data.
+- Sensitive values MUST be omitted, masked, hashed, or replaced with safe identifiers before logging.
+- `design.md` and `tasks.md` MUST identify comment/logging needs for new or changed behavior.
+- Implementation review MUST check comment usefulness, behavior-log coverage, log level choice, and sensitive-data exclusion.
+
+## PIR-012: Documentation Language Default
 
 Generated workflow documentation MUST be written in Chinese by default unless the user explicitly requests English.
 

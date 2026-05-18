@@ -42,6 +42,15 @@ filename_basis: spec-design-code-rules-review
 
 ## Security and Permissions
 
+## Logging and Traceability
+
+| Area | Evidence |
+|---|---|
+| `trace_id` behavior |  |
+| Key logs |  |
+| Sensitive-data protection |  |
+| Exception stack trace handling |  |
+
 ## Validation Evidence
 
 ### Test Parameters

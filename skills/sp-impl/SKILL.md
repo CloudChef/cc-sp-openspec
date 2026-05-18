@@ -42,32 +42,34 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 7. Reuse existing same/equivalent logic or implement the approved extraction/extension plan before adding new isolated logic.
 8. Implement exactly the behavior required by specs, design, and tasks. Do not add compatibility, fallback, degraded-mode, dual-path, or silent default behavior unless the approved artifacts explicitly require it.
 9. Keep method/function signatures at 5 or fewer input parameters. If more inputs are required, use the approved named data object instead of a vague map/dict/object/key-value bag.
-10. Keep every generated or modified code file at or below 1000 lines; split files before marking the task complete if a file would exceed the limit.
-11. For database work, follow the approved database plan: SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, connection pool configured, maximum pool size <= 100.
-12. For backend APIs, implement from the approved OpenAPI contract and keep at least Controller and Service responsibilities separated.
-13. For APIs, implement the documented IO behavior and use async execution for very time-consuming operations.
-14. Reuse existing project patterns and avoid unrelated edits.
-15. Create or update independent test parameter files under `openspec/changes/<change-id>/test-params/`.
-16. Add or update tests that use those explicit parameter files and assert meaningful spec/design behavior.
-17. Run standalone full verification from the task's required entry point.
-18. For UI changes, run real browser QA or the project-approved UI runner when a runnable target exists, and record target, actions, assertions, screenshot path when useful, and observed failures.
-19. Run the task's real E2E test against the designed runtime target when user-confirmed as required in `design.md`.
-20. Run the task validation, coverage check, reuse/common logic check, requirement-scope/fallback check, parameter-count/data-object check, and file length check.
-21. Verify coverage is at least 85% for changed/affected code.
-22. Run Alignment Review for that task against specs, design, task text, customer/user confirmation evidence, rules, target code paths, review lens requirements, reuse/common logic decisions, requirement-scope/fallback decisions, parameter-count/data-object decisions, browser/UI QA evidence, standalone verification evidence, real E2E evidence, file lengths, database/API/IO decisions, test parameter files, tests, coverage evidence, and changed code.
-23. Fix every Alignment Review finding and re-review until there are no open alignment findings.
-24. Run Security Review for that task against concrete authentication, authorization, tenant/user isolation, input validation, output encoding, sensitive data exposure, logging, dependencies, configuration, database/API/IO behavior, async/job behavior, external service calls, project-defined security rules, test parameter files, and changed code.
-25. Fix every Security Review finding and re-review until there are no open security findings.
-26. Record both review rounds, findings, fixes, customer/user confirmation evidence, browser/UI QA evidence, standalone verification evidence, real E2E evidence, coverage evidence, reuse/common logic evidence, requirement-scope/fallback evidence, parameter-count/data-object evidence, file length evidence, test parameter files, database/API/IO evidence, and closure evidence in `task-reviews.md`.
-27. Mark the task complete in `tasks.md` only after applicable customer/user confirmations, browser/UI QA when relevant, standalone verification, user-confirmed required real E2E verification, validation, coverage, reuse/common logic checks, requirement-scope/fallback checks, parameter-count/data-object checks, file length checks, and both reviews have no open findings.
-28. Repeat this loop for the next unchecked task.
-29. Run at least two final code review passes on the complete implementation diff after all tasks are complete and all per-task findings are closed.
-30. Final Code Review Pass 1 must review the complete code change against specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and changed file sizes.
-31. Fix every Pass 1 finding and re-review until there are no open Pass 1 findings.
-32. Final Code Review Pass 2 must review the complete code change again after Pass 1 fixes, with emphasis on regressions introduced by fixes, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations.
-33. Fix every Pass 2 finding and re-review until there are no open Pass 2 findings.
-34. Create or update final `review.md` only after both final code review passes have zero open findings.
-35. Stop and report if implementation requires behavior not covered by specs.
+10. Add useful comments for non-obvious business rules, domain invariants, security decisions, async/concurrency behavior, integration mappings, error handling, and side effects.
+11. Add or maintain behavior logs according to `docs/rules/logging-standards.md` when present: unified format, `trace_id`, correct levels, safe structured fields, exception stack traces, no sensitive data, and no expensive logging behavior.
+12. Keep every generated or modified code file at or below 1000 lines; split files before marking the task complete if a file would exceed the limit.
+13. For database work, follow the approved database plan: SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, connection pool configured, maximum pool size <= 100.
+14. For backend APIs, implement from the approved OpenAPI contract and keep at least Controller and Service responsibilities separated.
+15. For APIs, implement the documented IO behavior and use async execution for very time-consuming operations.
+16. Reuse existing project patterns and avoid unrelated edits.
+17. Create or update independent test parameter files under `openspec/changes/<change-id>/test-params/`.
+18. Add or update tests that use those explicit parameter files and assert meaningful spec/design behavior.
+19. Run standalone full verification from the task's required entry point.
+20. For UI changes, run real browser QA or the project-approved UI runner when a runnable target exists, and record target, actions, assertions, screenshot path when useful, and observed failures.
+21. Run the task's real E2E test against the designed runtime target when user-confirmed as required in `design.md`.
+22. Run the task validation, coverage check, reuse/common logic check, requirement-scope/fallback check, parameter-count/data-object check, comment/logging/traceability check, and file length check.
+23. Verify coverage is at least 85% for changed/affected code.
+24. Run Alignment Review for that task against specs, design, task text, customer/user confirmation evidence, rules, target code paths, review lens requirements, reuse/common logic decisions, requirement-scope/fallback decisions, parameter-count/data-object decisions, comment/logging/traceability evidence, browser/UI QA evidence, standalone verification evidence, real E2E evidence, file lengths, database/API/IO decisions, test parameter files, tests, coverage evidence, and changed code.
+25. Fix every Alignment Review finding and re-review until there are no open alignment findings.
+26. Run Security Review for that task against concrete authentication, authorization, tenant/user isolation, input validation, output encoding, sensitive data exposure, logging, `trace_id` handling, dependencies, configuration, database/API/IO behavior, async/job behavior, external service calls, project-defined security rules, test parameter files, and changed code.
+27. Fix every Security Review finding and re-review until there are no open security findings.
+28. Record both review rounds, findings, fixes, customer/user confirmation evidence, comment/logging/traceability evidence, browser/UI QA evidence, standalone verification evidence, real E2E evidence, coverage evidence, reuse/common logic evidence, requirement-scope/fallback evidence, parameter-count/data-object evidence, file length evidence, test parameter files, database/API/IO evidence, and closure evidence in `task-reviews.md`.
+29. Mark the task complete in `tasks.md` only after applicable customer/user confirmations, comment/logging/traceability evidence, browser/UI QA when relevant, standalone verification, user-confirmed required real E2E verification, validation, coverage, reuse/common logic checks, requirement-scope/fallback checks, parameter-count/data-object checks, file length checks, and both reviews have no open findings.
+30. Repeat this loop for the next unchecked task.
+31. Run at least two final code review passes on the complete implementation diff after all tasks are complete and all per-task findings are closed.
+32. Final Code Review Pass 1 must review the complete code change against specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and changed file sizes.
+33. Fix every Pass 1 finding and re-review until there are no open Pass 1 findings.
+34. Final Code Review Pass 2 must review the complete code change again after Pass 1 fixes, with emphasis on regressions introduced by fixes, security, data handling, authorization, logging/`trace_id`/sensitive-data exposure, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations.
+35. Fix every Pass 2 finding and re-review until there are no open Pass 2 findings.
+36. Create or update final `review.md` only after both final code review passes have zero open findings.
+37. Stop and report if implementation requires behavior not covered by specs.
 
 ## Implementation Rules
 
@@ -80,6 +82,8 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - Do not start implementation if review lens expectations or required QA plan is missing.
 - Implement only the backend logic, UI behavior, API paths/parameters, and configuration parameters confirmed in `design.md` and reflected in `tasks.md`.
 - Implement in the target code paths from `tasks.md`, or record a justified path adjustment in `task-reviews.md`.
+- Implement useful comments and behavior logs required by `design.md`, `tasks.md`, and `docs/rules/logging-standards.md` when present.
+- Logs must include `trace_id` when request/job context exists and must not include secrets, credentials, tokens, session identifiers, raw personal data, or sensitive request/response bodies.
 - Reuse same/equivalent existing logic whenever possible.
 - Extract or extend shared abstractions when the same logic is needed across multiple features or modules.
 - Do not introduce avoidable duplicate logic; isolated implementation requires documented justification.
@@ -123,6 +127,7 @@ Use this skill to implement only approved OpenSpec tasks, verify the result, upd
 - Architecture Compliance
 - Customer Confirmation Compliance
 - QA Evidence
+- Comment / Logging / Traceability Evidence
 - Implementation Standards Compliance
 - Rules Compliance
 - Test Coverage
@@ -177,6 +182,7 @@ Both review passes must also verify:
 - Same/equivalent logic is reused or generalized, with no avoidable duplicate logic.
 - Existing-code changes implement only approved behavior, with no unrequested fallback or compatibility branches.
 - Methods/functions have no more than 5 input parameters, or use explicit named data objects instead of vague map-like structures.
+- Code comments are useful for non-obvious behavior, logs cover key behavior, `trace_id` is propagated and emitted, exception logs include stack traces, and logs exclude sensitive information.
 - Changed/generated code files are at or below 1000 lines.
 - Changed files match the task target paths or have documented justification.
 - Database runtime and connection pool rules are satisfied when database access is required.

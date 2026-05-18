@@ -66,7 +66,7 @@ sp-openspec/
 - `skills/`: 本模板提供的 workflow skills。这里是 staging 区，真实项目中建议同步到用户级 skills 目录。
 - `templates/`: 可以直接复制到目标项目根目录的 OpenSpec/Codex 项目模板。
 - `templates/openspec/`: OpenSpec 风格的项目说明、变更目录、schema 和文档模板。
-- `templates/docs/rules/`: 项目规则目录，包含 AI 工作流质量规则、基础实现规则、Java 规则、Python 规则、配置规则和测试规则。
+- `templates/docs/rules/`: 项目规则目录，包含 AI 工作流质量规则、基础实现规则、日志规则、Java 规则、Python 规则、配置规则和测试规则。
 - `templates/docs/ai-context/source-index.md`: 告诉 Codex 在设计和上下文研究时优先读取哪些文档。
 - `templates/docs/ai-context/project-learnings.md`: 记录完成项目后沉淀出的可复用模式、坑点、偏好和验证经验。
 - `templates/docs/codex-superpower-openspec.png`: 工作流架构图。
@@ -143,6 +143,7 @@ Copy-Item -Path C:\Projects\cmps\sp-openspec\skills\* -Destination $HOME\.agents
 
 - `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、需求边界与 fallback 控制、方法参数/data object、单独完整验证、真实 E2E 测试设计与执行、相同逻辑复用、文档默认中文、单文件 1000 行限制、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
 - `docs/rules/ai-workflow-quality-standards.md`: AI 工作流质量规则，包括 brainstorm 产品挑战、design 多视角规划、UI 浏览器验证、安全审查和 wiki/项目经验沉淀。
+- `docs/rules/logging-standards.md`: 日志规则，包括统一格式、`trace_id`、日志级别、参数完整性、异常堆栈、敏感信息脱敏、异步/性能、结构化检索和监控告警。
 - `docs/rules/java-code-standards.md`: Java/Spring 规范，结合参考项目实践和 Google Java Style。
 - `docs/rules/python-code-standards.md`: Python 规范，结合参考项目实践和 Google Python Style。
 - `docs/rules/configuration-standards.md`: 配置、数据库、迁移、OpenAPI、异步队列、依赖工具配置规范。

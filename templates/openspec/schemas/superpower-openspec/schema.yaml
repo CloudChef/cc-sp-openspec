@@ -105,6 +105,7 @@ artifacts:
       Identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
       Define requirement scope and whether compatibility/fallback behavior is required; if specs do not require it, explicitly prohibit fallback and compatibility branches.
       Define method/function parameter plans; no method/function may exceed 5 input parameters unless a named data object with explicit fields is used.
+      Define useful code comments, logging events, trace_id propagation, structured fields, log levels, exception stack-trace behavior, sensitive-data masking, and logging performance considerations.
       Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
       Apply product, design, engineering, developer-experience, security, and QA review lenses when relevant.
       Identify all backend logic decisions, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
@@ -145,6 +146,7 @@ artifacts:
       Each task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
       Each task must state requirement-scope/fallback rules and prohibit unrequested fallback or compatibility behavior.
       Each task must state method/function parameter constraints and any required named data object.
+      Each task must state code comment and logging requirements, including trace_id, log levels, structured fields, exception stack traces, and sensitive-data exclusion when relevant.
       Each task must include applicable product, design, engineering, developer-experience, security, and QA review lens requirements.
       Each task must include standalone full verification from the relevant entry point.
       Each task must include applicable customer/user confirmation evidence for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, and E2E decisions, or a clear not-applicable reason.
@@ -170,7 +172,7 @@ artifacts:
       Review design.md and tasks.md against specs, spec-review.md, project rules, source mapping, and validation coverage.
       Use Superpower review skills when available: request reviews with superpowers:requesting-code-review and process findings with superpowers:receiving-code-review. If the skills are unavailable, record the reason and use Codex or the current tool/agent's own review capability to perform the same checklist.
       Check that every task maps to requirements, applicable rules, target code paths, implementation standards, standalone verification, and concrete validation.
-      Check code path planning, product/design/engineering/developer-experience/security/QA review lenses, browser/UI QA plans, reuse/common logic plans, requirement-scope/fallback decisions, parameter-count/data-object plans, standalone verification plans, real E2E test designs, <= 1000 line split plans, database runtime/pool decisions, OpenAPI and Controller/Service decisions, API IO, and async handling.
+      Check code path planning, product/design/engineering/developer-experience/security/QA review lenses, browser/UI QA plans, reuse/common logic plans, requirement-scope/fallback decisions, parameter-count/data-object plans, comment/logging/traceability plans, standalone verification plans, real E2E test designs, <= 1000 line split plans, database runtime/pool decisions, OpenAPI and Controller/Service decisions, API IO, and async handling.
       Check customer/user confirmation gates for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.
       Fix in-scope design/task issues before implementation.
       Do not write code.
@@ -185,9 +187,9 @@ artifacts:
     template: task-reviews.md
     instruction: |
       During implementation, record two review rounds for every completed task.
-      Alignment Review checks specs, design, task text, review lens requirements, rules, browser/UI QA evidence when relevant, and changed code.
-      Security Review checks concrete authentication, authorization, tenant/user isolation, input validation, output encoding, sensitive data exposure, logging, dependencies, configuration, database access, API IO, async/job behavior, external service calls, and project-defined security rules when relevant.
-      Both reviews check coverage >= 85%, customer/user confirmation evidence, standalone full verification evidence, user-confirmed required real E2E evidence, reuse/common logic evidence with no avoidable duplicate logic, requirement-scope/fallback evidence with no unrequested fallback or compatibility behavior, parameter-count/data-object evidence, generated/modified code files <= 1000 lines, database runtime/pool evidence when relevant, OpenAPI and Controller/Service evidence when relevant, API IO/async evidence when relevant, independent test parameter files, meaningful assertions, no empty/no-op code tests, and no tests limited to class/method initialization.
+      Alignment Review checks specs, design, task text, review lens requirements, comment/logging/traceability evidence, rules, browser/UI QA evidence when relevant, and changed code.
+      Security Review checks concrete authentication, authorization, tenant/user isolation, input validation, output encoding, sensitive data exposure, logging, trace_id handling, dependencies, configuration, database access, API IO, async/job behavior, external service calls, and project-defined security rules when relevant.
+      Both reviews check coverage >= 85%, customer/user confirmation evidence, standalone full verification evidence, user-confirmed required real E2E evidence, reuse/common logic evidence with no avoidable duplicate logic, requirement-scope/fallback evidence with no unrequested fallback or compatibility behavior, parameter-count/data-object evidence, comment/logging/traceability evidence, generated/modified code files <= 1000 lines, database runtime/pool evidence when relevant, OpenAPI and Controller/Service evidence when relevant, API IO/async evidence when relevant, independent test parameter files, meaningful assertions, no empty/no-op code tests, and no tests limited to class/method initialization.
       Every finding must be fixed and re-reviewed before the next task starts.
       Completion requires zero open findings.
     requires:
@@ -211,9 +213,9 @@ artifacts:
     template: review.md
     instruction: |
       Review implementation against proposal.md, specs, design.md, tasks.md, spec-review.md, tasks-review.md, and task-reviews.md.
-      Check requirement coverage, task completion, per-task review completion, out-of-spec behavior, customer/user confirmation compliance, rule compliance, architecture compliance, implementation standards compliance, standalone verification compliance, real E2E compliance, browser/UI QA compliance when relevant, reuse/common logic compliance, requirement-scope/fallback compliance, parameter-count/data-object compliance, coverage >= 85%, independent test parameter files, meaningful tests, and unresolved findings.
+      Check requirement coverage, task completion, per-task review completion, out-of-spec behavior, customer/user confirmation compliance, rule compliance, architecture compliance, implementation standards compliance, standalone verification compliance, real E2E compliance, browser/UI QA compliance when relevant, comment/logging/traceability compliance, reuse/common logic compliance, requirement-scope/fallback compliance, parameter-count/data-object compliance, coverage >= 85%, independent test parameter files, meaningful tests, and unresolved findings.
       Check Java, Python, configuration, and testing rule compliance when those areas changed.
-      Run at least two final code review passes on the complete implementation diff after all tasks are complete. Pass 1 checks specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes. Pass 2 runs after Pass 1 fixes and checks regressions, security, data handling, authorization, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations. Fix every finding and re-review until both passes have zero open findings.
+      Run at least two final code review passes on the complete implementation diff after all tasks are complete. Pass 1 checks specs, design, tasks, rules, architecture, tests, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes. Pass 2 runs after Pass 1 fixes and checks regressions, security, data handling, authorization, logging/trace_id/sensitive-data exposure, API IO, async behavior, configuration, dependencies, test quality, and remaining rule violations. Fix every finding and re-review until both passes have zero open findings.
       Completion requires zero unresolved findings.
       Do not modify code during review unless explicitly asked.
     requires:
@@ -227,7 +229,7 @@ artifacts:
     instruction: |
       Generate feature/story documentation from specs, design, customer/user confirmations, implemented code paths, database/API/IO decisions, rules, validation evidence, task-reviews.md, and review.md.
       Derive a concise semantic kebab-case filename from the completed feature or story, not from the raw change ID.
-      The wiki page must describe user-facing behavior, workflow, design summary, customer/user confirmations, security and permissions, validation evidence, review evidence, reusable project learnings, and source mapping.
+      The wiki page must describe user-facing behavior, workflow, design summary, customer/user confirmations, security and permissions, logging and traceability, validation evidence, review evidence, reusable project learnings, and source mapping.
     requires:
       - review
 
@@ -238,7 +240,7 @@ artifacts:
     instruction: |
       Verify all tasks are marked complete, task-reviews.md has zero open findings, and review.md has zero unresolved findings.
       Verify coverage evidence is at least 85% and test parameter files are independently saved.
-      Verify implementation-standard evidence: customer/user confirmations are recorded and followed, standalone full verification, user-confirmed required real E2E test execution, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, code files <= 1000 lines, database runtime/pool rules, OpenAPI and Controller/Service rules, API IO, and async handling when relevant.
+      Verify implementation-standard evidence: customer/user confirmations are recorded and followed, standalone full verification, user-confirmed required real E2E test execution, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, comment/logging/traceability control, code files <= 1000 lines, database runtime/pool rules, OpenAPI and Controller/Service rules, API IO, and async handling when relevant.
       Verify the generated wiki page reflects specs, design, customer/user confirmations, implemented code, rules, and validation evidence.
       Update docs/ai-context/project-learnings.md when the completed change reveals reusable patterns, pitfalls, preferences, or verification procedures, or record that no reusable learning was found.
       Record completion gate results, archive target, and local git commit evidence.

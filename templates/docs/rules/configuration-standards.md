@@ -23,6 +23,8 @@ Use the target project's existing format before introducing a new format.
 
 - Java/Spring runtime config commonly uses `application.properties` or profile-specific `application-<profile>.properties`.
 - Java logging config commonly uses `log4j2.xml`.
+- Logging configuration MUST include `trace_id` in the output pattern or structured log encoder when request/job context exists.
+- Logging configuration SHOULD support structured JSON or stable key-value fields when the project logging stack supports it.
 - Java OpenAPI metadata can use a dedicated properties file.
 - Java database migrations use Liquibase YAML under DB changelog folders.
 - Python package config uses `setup.py`, `setup.cfg`, `pyproject.toml`, `requirements*.txt`, or `tox.ini` according to the package.

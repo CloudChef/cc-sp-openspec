@@ -25,6 +25,8 @@ All findings must be fixed and re-reviewed before moving to the next task.
 - Reuse/common logic evidence:
 - Requirement-scope/fallback evidence:
 - Parameter-count/data-object evidence:
+- Comment/logging/traceability evidence:
+- Sensitive-data logging check:
 - Customer/user confirmation evidence:
 - Multi-lens review evidence:
 - Standalone verification evidence:
@@ -64,6 +66,7 @@ All findings must be fixed and re-reviewed before moving to the next task.
 - Reuse/common logic rule satisfied:
 - Requirement-scope/fallback rule satisfied:
 - Parameter-count/data-object rule satisfied:
+- Comment/logging/traceability rule satisfied:
 - Changed code files <= 1000 lines:
 - Database runtime/pool rules satisfied:
 - OpenAPI and Controller/Service rules satisfied:

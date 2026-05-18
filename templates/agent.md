@@ -10,11 +10,12 @@ This project uses Codex, Superpower-style workflow skills, and OpenSpec.
 
 Always open `openspec/AGENTS.md` when a request mentions planning, proposals, specs, changes, design, tasks, implementation of an OpenSpec change, or `/sp-*` workflow commands.
 
-Read `docs/rules/project-implementation-standards.md` when present. It defines baseline design, task, implementation, and review requirements for code paths, requirement scope, fallback control, parameter data objects, standalone verification, logic reuse, file size, database runtime, OpenAPI, backend layering, API IO, and async work.
+Read `docs/rules/project-implementation-standards.md` when present. It defines baseline design, task, implementation, and review requirements for code paths, requirement scope, fallback control, parameter data objects, standalone verification, logic reuse, code comments, logging, file size, database runtime, OpenAPI, backend layering, API IO, and async work.
 
 Also read these default rule files when the change touches the matching area:
 
 - `docs/rules/ai-workflow-quality-standards.md` for product challenge, planning review lenses, browser QA, security threat review, and project learning notes.
+- `docs/rules/logging-standards.md` for unified log format, `trace_id`, log levels, safe parameters, exception stack traces, sensitive-data masking, async logging, structured logs, and monitoring support.
 - `docs/rules/java-code-standards.md` for Java/Spring code.
 - `docs/rules/python-code-standards.md` for Python code.
 - `docs/rules/configuration-standards.md` for config, packaging, database, OpenAPI, async, queues, and migrations.
@@ -130,6 +131,7 @@ Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
 - During design and task planning, declare the browser/API/job QA plan before implementation.
 - During design and implementation, existing-code changes must implement only approved requirements. Do not add fallback, compatibility, degraded-mode, dual-path, or silent default behavior unless specs/design/tasks explicitly require it.
 - During design and implementation, methods/functions must have no more than 5 input parameters, or use explicit named data objects instead of vague maps/dicts/objects/key-value bags.
+- During design and implementation, define and implement useful comments for non-obvious behavior plus behavior logs with `trace_id`, safe structured fields, correct log levels, exception stack traces, and sensitive-data exclusion.
 - During spec, design, task, and implementation work, require standalone full verification from the relevant entry point.
 - Before `/sp-spec`, require customer/user confirmation of brainstorm output recorded in `brainstorm-review.md`.
 - During design, identify all backend logic decisions and confirm them with the customer/user before tasks or implementation.
@@ -154,6 +156,7 @@ Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
 - Do not write tests for empty/no-op code or tests limited to class/method initialization.
 - Resolve and re-review every finding before proceeding.
 - Security review must check concrete authentication, authorization, validation, data exposure, logging, dependency, configuration, API IO, async, and external-service risks when relevant.
+- Review must reject logs without required `trace_id` context, logs missing exception stack traces, unclear log levels, noisy or unstructured behavior logs, and logs that expose sensitive information.
 - Final completion requires zero unresolved findings.
 - Do not start implementation while required customer/user confirmation evidence is missing.
 - Do not archive a change until every task is marked complete and wiki documentation is generated from spec, design, customer/user confirmations, and code with a semantic feature/story filename.

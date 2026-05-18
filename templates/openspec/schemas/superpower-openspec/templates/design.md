@@ -47,6 +47,13 @@
 | API / Method / Function Area | Expected Inputs | Parameter Count Risk | Data Object Needed | Data Object / Schema |
 |---|---|---|---|---|
 
+## Code Comments / Logging / Traceability Plan
+
+Changed behavior must include useful code comments and behavior logs. Logs must include `trace_id` when request/job context exists and must not expose sensitive information.
+
+| Change Area | Comment Targets | Log Events | `trace_id` Propagation | Structured Fields | Log Levels | Sensitive Data Masking | Performance Notes |
+|---|---|---|---|---|---|---|---|
+
 ## File Size / Split Plan
 
 - Generated or modified code files must stay at or below 1000 lines.

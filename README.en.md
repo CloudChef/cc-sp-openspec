@@ -64,7 +64,7 @@ Important directories:
 - `skills/`: Workflow skills provided by this template. This is a staging area; real projects should sync them into the user-level skills directory.
 - `templates/`: The OpenSpec/Codex project template that can be copied directly into a target project root.
 - `templates/openspec/`: Project instructions, change folders, schema, and artifact templates.
-- `templates/docs/rules/`: Project rules, including AI workflow quality, baseline implementation, Java, Python, configuration, and testing rules.
+- `templates/docs/rules/`: Project rules, including AI workflow quality, baseline implementation, logging, Java, Python, configuration, and testing rules.
 - `templates/docs/ai-context/source-index.md`: Tells Codex which sources to read during design and context research.
 - `templates/docs/ai-context/project-learnings.md`: Captures reusable project patterns, pitfalls, preferences, and verification notes learned from completed changes.
 - `templates/docs/codex-superpower-openspec.png`: Workflow architecture diagram.
@@ -141,6 +141,7 @@ The template includes these default rule files:
 
 - `docs/rules/project-implementation-standards.md`: Baseline implementation rules for code paths, requirement scope and fallback control, method parameters/data objects, standalone full verification, real E2E test design and execution, same/equivalent logic reuse, Chinese-by-default generated documentation, file size, database runtime, OpenAPI, layering, API IO, and async work.
 - `docs/rules/ai-workflow-quality-standards.md`: AI workflow quality rules for brainstorm product challenge, multi-lens design planning, browser QA, security review, and wiki/project learning capture.
+- `docs/rules/logging-standards.md`: Logging rules for unified format, `trace_id`, levels, safe parameters, exception stack traces, sensitive-data masking, async/performance, structured search, and monitoring.
 - `docs/rules/java-code-standards.md`: Java/Spring rules with Google Java Style as a default reference.
 - `docs/rules/python-code-standards.md`: Python rules with Google Python Style as a default reference.
 - `docs/rules/configuration-standards.md`: Configuration, database, migration, OpenAPI, async queue, and tool configuration rules.

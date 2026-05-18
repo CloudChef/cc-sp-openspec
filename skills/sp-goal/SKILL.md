@@ -92,7 +92,7 @@ Load and follow the phase skill before executing that phase:
 - Do not complete if user-confirmed required real E2E evidence is missing.
 - Do not complete if browser/UI QA evidence is missing for UI changes when a runnable target exists.
 - Do not complete if required test parameter files are missing.
-- Do not complete if implementation-standard evidence is missing, including code paths, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, file length, database, OpenAPI/layers, API IO, and async handling when relevant.
+- Do not complete if implementation-standard evidence is missing, including code paths, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, comment/logging/traceability evidence, `trace_id`, sensitive-data logging exclusion, file length, database, OpenAPI/layers, API IO, and async handling when relevant.
 - Do not archive until wiki documentation is generated and reviewed against specs, design, code, rules, and review evidence.
 - Do not archive until reusable project learnings are recorded in `docs/ai-context/project-learnings.md` or completion evidence records that no reusable learning was found.
 - When completion runs, require `sp-complete` to create the local git commit only after code changes, tests, reviews, wiki, completion evidence, and archive are finished, or record a git skip reason.

@@ -52,7 +52,7 @@ Then create:
 5. Verify `review.md` has zero unresolved findings.
 6. Verify coverage evidence is at least 85% for changed/affected code.
 7. Verify test parameter files are independently saved under `test-params/`.
-8. Verify implementation-standard evidence: changed code paths match tasks, applicable customer/user confirmations are recorded and followed, same/equivalent logic is reused or generalized without avoidable duplication, existing-code changes stay inside approved requirements with no unrequested fallback/compatibility behavior, methods/functions have <= 5 inputs or use explicit named data objects, standalone full verification is complete, user-confirmed required real E2E tests are designed and executed, browser/UI QA is complete when relevant, generated/modified code files are <= 1000 lines, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
+8. Verify implementation-standard evidence: changed code paths match tasks, applicable customer/user confirmations are recorded and followed, same/equivalent logic is reused or generalized without avoidable duplication, existing-code changes stay inside approved requirements with no unrequested fallback/compatibility behavior, methods/functions have <= 5 inputs or use explicit named data objects, useful comments and behavior logs are present, `trace_id` is propagated/emitted when context exists, logs include exception stack traces when relevant, logs exclude sensitive information, standalone full verification is complete, user-confirmed required real E2E tests are designed and executed, browser/UI QA is complete when relevant, generated/modified code files are <= 1000 lines, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
 9. Inspect relevant implementation files or diffs referenced by the change artifacts.
 10. Derive a human-readable feature/story title from specs, design, code, rules, and review evidence.
 11. Convert that title to a concise kebab-case wiki filename.
@@ -84,6 +84,7 @@ Do not archive if any pre-archive gate fails. Do not mark completion successful 
 - Same/equivalent logic is duplicated without documented justification.
 - Existing-code changes include unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior.
 - Any method/function has more than 5 input parameters without an explicit named data object, or uses vague map-like parameter structures without documented schema.
+- Useful code comment, logging, `trace_id`, exception stack trace, or sensitive-data logging evidence is missing.
 - Standalone full verification evidence is missing for API, UI, bug-entry, or external-service behavior when relevant.
 - User-confirmed required real E2E test design or execution evidence is missing.
 - Browser/UI QA evidence is missing for UI changes when a runnable target exists.
@@ -150,6 +151,7 @@ Workflow:
 - Spec / Design / Code Alignment
 - Implementation Standards Evidence
 - Requirement Scope / Fallback / Parameter Evidence
+- Comment / Logging / Traceability Evidence
 - Project Learning Notes
 - Local Git Commit
 - Final User Report Inputs
@@ -181,6 +183,7 @@ The generated wiki page must include:
 - API / Data / UI Impact, when relevant
 - Database / API IO / Async Notes, when relevant
 - Security and Permissions
+- Logging and Traceability
 - Validation Evidence
 - Test Parameter and Coverage Evidence
 - Standalone Verification Evidence

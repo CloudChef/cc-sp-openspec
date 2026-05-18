@@ -72,6 +72,7 @@ Rules:
 - Read relevant project-defined rules under `docs/rules/*.md` when creating specs, design, tasks, implementation, or review.
 - Treat `docs/rules/project-implementation-standards.md` as the default baseline implementation rule file when present.
 - Treat `docs/rules/ai-workflow-quality-standards.md` as the default AI workflow quality rule file when present.
+- Treat `docs/rules/logging-standards.md` as the default logging, `trace_id`, and sensitive-data logging rule file when present.
 - Treat these rule files as default project standards when present and applicable:
   - `docs/rules/java-code-standards.md` for Java/Spring source.
   - `docs/rules/python-code-standards.md` for Python source.
@@ -110,7 +111,7 @@ Review gates:
 
 - `/sp-brainstorm` creates `brainstorm-review.md` and checks user request, context coverage, source usage, rules, scope risks, missing context, and customer/user confirmation of brainstorm output before `/sp-spec`.
 - `/sp-spec` creates `spec-review.md` and checks alignment with `brainstorm.md`, `context.md`, `brainstorm-review.md`, rules, existing specs, requirement quality, scenario coverage, standalone verifiability, and implementation leakage.
-- `/sp-tasks` creates `tasks-review.md` and checks alignment with specs, `spec-review.md`, design decisions, customer/user confirmations, product/design/engineering/developer-experience/security/QA review lenses, rules, task quality, standalone verification coverage, validation coverage, and implementation readiness.
+- `/sp-tasks` creates `tasks-review.md` and checks alignment with specs, `spec-review.md`, design decisions, customer/user confirmations, product/design/engineering/developer-experience/security/QA review lenses, logging/traceability plans, rules, task quality, standalone verification coverage, validation coverage, and implementation readiness.
 - `/sp-impl` creates `review.md` and checks implementation against all prior artifacts.
 
 Do not proceed to the next phase while the current phase review has unresolved blocking gaps.
@@ -210,6 +211,7 @@ This workflow requires `design.md` for `/sp-tasks`. Include:
 - Error Handling
 - Compatibility / Migration
 - Test Strategy
+- Code Comments / Logging / Traceability Plan
 - Standalone Verification Plan
 - Real E2E Test Design
 - Multi-Lens Planning Review
@@ -231,6 +233,7 @@ Mandatory implementation-standard design decisions:
 - Identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
 - Define requirement scope and whether compatibility or fallback behavior is required. If specs do not require it, explicitly prohibit fallback and compatibility branches.
 - Define method/function parameter plans. No method/function may exceed 5 input parameters; if more inputs are needed, use a named data object with explicit fields, not a vague map/dict/object/key-value bag.
+- Define code comment needs, logging events, `trace_id` propagation, structured fields, log levels, sensitive-data masking, and log performance considerations for changed behavior.
 - Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
 - Apply product, design, engineering, developer-experience, security, and QA review lenses when relevant.
 - For UI changes, define real browser QA or the project-approved UI runner when a runnable target exists.
@@ -273,6 +276,7 @@ Task format:
   - Reuse/common logic impact: `<reuse existing/extract shared abstraction/extend shared abstraction/isolated with justification>`
   - Requirement scope / fallback: `<exact requirement behavior + no fallback/compatibility unless required>`
   - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
+  - Comments/logging/traceability: `<comment targets + log events + trace_id propagation + sensitive-data masking>`
   - File size guardrail: each generated/modified code file must stay <= 1000 lines; split plan: `<none/path split>`
   - Multi-lens review: `<product/design/engineering/devex/security/QA applicable + evidence>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
@@ -304,6 +308,7 @@ Rules:
 - Every task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
 - Every task must state the requirement-scope/fallback decision and prohibit unrequested fallback/compatibility behavior.
 - Every task must state method/function parameter constraints and any named data object required for more than 5 inputs.
+- Every task must state code comment and logging requirements, including `trace_id`, log levels, structured fields, and sensitive-data exclusion when relevant.
 - Every task must include the file-size guardrail and split plan when needed.
 - Every task must identify database, API contract/layering, and API IO/async impact when relevant.
 - Every task must include applicable product, design, engineering, developer-experience, security, and QA review lens requirements.
@@ -415,6 +420,7 @@ The wiki page must include:
 - Customer / User Confirmations
 - API / Data / UI Impact, when relevant
 - Security and Permissions
+- Logging and Traceability
 - Validation Evidence
 - Browser / UI QA Evidence, when relevant
 - Review Evidence
@@ -468,6 +474,7 @@ After implementation, create or update `review.md` with:
 - Test Quality
 - Documentation Consistency
 - QA Evidence
+- Comment / Logging / Traceability Evidence
 - Final Code Review Pass 1
 - Final Code Review Pass 2
 - Blocking Issues
@@ -502,6 +509,7 @@ For validation, inspect:
 - Same or equivalent logic is reused or generalized without avoidable duplication.
 - Existing-code changes implement only approved requirements, with no unrequested fallback or compatibility branches.
 - Methods/functions have no more than 5 input parameters, or use explicit named data objects instead of vague map-like structures.
+- Code comments are useful for non-obvious behavior, logs cover key behavior, `trace_id` is propagated and emitted, and logs exclude sensitive information.
 - Database decisions and connection pool constraints are satisfied when relevant.
 - Backend APIs follow OpenAPI and separate Controller and Service responsibilities when relevant.
 - API IO and async decisions are implemented when relevant.
