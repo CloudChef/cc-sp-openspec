@@ -10,6 +10,7 @@
 | Gate | Status | Evidence | Gap |
 |---|---|---|---|
 | Design review has zero unresolved blocking gaps |  |  |  |
+| Brainstorm/context draft confirmed before file write |  |  |  |
 | Brainstorm independent review thread closed |  |  |  |
 | Spec/design independent review thread closed |  |  |  |
 | All tasks marked complete |  |  |  |

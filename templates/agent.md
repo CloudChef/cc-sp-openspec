@@ -69,6 +69,8 @@ Required skills:
 
 If `/sp-goal` finds an existing `brainstorm-review.md` without customer/user confirmation of brainstorm output, treat brainstorm as incomplete. Confirm the output inside the goal workflow, then update `brainstorm.md`, `context.md`, and `brainstorm-review.md` before spec work.
 
+During `/sp-brainstorm` or `/sp-goal` brainstorm recovery, draft the proposed `brainstorm.md` and `context.md` content in the conversation first. Do not create or update `brainstorm.md`, `context.md`, or `brainstorm-review.md` until the customer/user confirms the drafted content.
+
 If `/sp-goal` finds an existing `design.md` without customer/user confirmation for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E required/not-required decision, treat spec/design as incomplete. Confirm the missing decision inside the goal workflow, then update `design.md` and `design-review.md` through `/sp-spec` before task creation.
 
 If `/sp-goal` finds missing or blocked `design-review.md`, treat spec/design as incomplete and return to `/sp-spec`.
@@ -132,6 +134,7 @@ Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
 
 - Do not implement directly from brainstorm output.
 - During brainstorm, challenge product scope before spec: real user, pain, outcome, smallest useful slice, rejected scope, alternatives, and open questions.
+- During brainstorm, present the drafted brainstorm/context content to the customer/user and wait for confirmation before writing it to files.
 - Do not skip OpenSpec artifacts for feature work.
 - Do not skip phase review artifacts.
 - Do not skip required independent review threads. `/sp-brainstorm` and `/sp-spec` each require one independent review thread; `/sp-impl` requires one main-thread full review and two independent final review threads.
@@ -146,6 +149,7 @@ Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
 - During design and implementation, prevent mojibake in generated or modified comments, code, configuration, test data, and workflow artifacts.
 - During spec, design, task, and implementation work, require standalone full verification from the relevant entry point.
 - Before `/sp-spec`, require customer/user confirmation of brainstorm output recorded in `brainstorm-review.md`.
+- Before `/sp-spec`, require evidence that `brainstorm.md` and `context.md` were created from customer/user-confirmed draft content.
 - Before `/sp-spec`, require independent brainstorm/context review thread evidence, main-thread responses and fixes, and zero unresolved findings in `brainstorm-review.md`.
 - During `/sp-spec`, generate `design.md` and `design-review.md` after proposal/spec/spec-review; do not leave design for `/sp-tasks`.
 - During `/sp-spec`, after proposal/spec/design/design-review are complete, start one independent spec/design review thread and record findings, main-thread responses, fixes, and closure in `spec-review.md` and/or `design-review.md`.

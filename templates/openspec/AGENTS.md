@@ -63,6 +63,7 @@ Rules:
 - Never skip phase review, per-task Alignment Review, per-task Security Review, coverage, test parameter files, wiki generation, or archive gates.
 - Never skip required independent review threads. `/sp-brainstorm` and `/sp-spec` require one independent review thread; `/sp-impl` requires one main-thread full review and two independent final review threads.
 - Never skip brainstorm output confirmation or design-phase customer/user confirmations for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E decisions, including for older changes created before these rules existed.
+- Never create or update `brainstorm.md`, `context.md`, or `brainstorm-review.md` from unconfirmed brainstorm/context content. Draft the content in the conversation first and wait for customer/user confirmation.
 - Never treat tasks as ready when `design-review.md` is missing or has unresolved blocking gaps.
 - Stop and ask for user input when multiple active changes exist and no change ID is provided.
 
@@ -115,7 +116,7 @@ If the Superpower review skills are unavailable in the current runtime, record t
 
 Review gates:
 
-- `/sp-brainstorm` creates `brainstorm-review.md` and checks user request, context coverage, source usage, rules, scope risks, missing context, and customer/user confirmation of brainstorm output before `/sp-spec`.
+- `/sp-brainstorm` first drafts brainstorm/context content in the conversation and waits for customer/user confirmation before creating files. It then creates `brainstorm-review.md` and checks user request, context coverage, source usage, rules, scope risks, missing context, and customer/user confirmation of brainstorm output before `/sp-spec`.
 - `/sp-spec` creates `spec-review.md`, then `design.md`, then `design-review.md`. It checks alignment with `brainstorm.md`, `context.md`, `brainstorm-review.md`, rules, existing specs, requirement quality, scenario coverage, standalone verifiability, implementation leakage, design decisions, customer/user confirmations, E2E decisions, logging/traceability plans, encoding plans, source mapping, and implementation readiness before tasks.
 - `/sp-tasks` creates `tasks-review.md` and checks task alignment with specs, `spec-review.md`, approved `design.md`, `design-review.md`, customer/user confirmations, product/design/engineering/developer-experience/security/QA review lenses, logging/traceability plans, rules, standalone verification coverage, validation coverage, and implementation readiness.
 - `/sp-impl` creates `review.md` and checks implementation against all prior artifacts.
@@ -187,6 +188,8 @@ The system SHALL <observable behavior>.
 Rules:
 
 - Do not start `/sp-spec` until `brainstorm-review.md` records customer/user confirmation of the brainstorm output.
+- Do not create or update `brainstorm.md`, `context.md`, or `brainstorm-review.md` until the customer/user confirms the drafted brainstorm/context content in the conversation.
+- If brainstorm review findings require changing confirmed brainstorm/context content, draft the revised content in the conversation and get customer/user confirmation before writing it back to files.
 - Do not start `/sp-spec` until `brainstorm-review.md` records the independent brainstorm/context review thread findings, main-thread responses, fixes, and zero unresolved blocking findings.
 - Brainstorm must challenge product scope before spec: real user, pain, outcome, smallest useful slice, rejected scope, alternatives, and open questions.
 - Every requirement must have at least one `#### Scenario:` header.

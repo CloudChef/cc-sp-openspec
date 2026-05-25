@@ -71,6 +71,7 @@ Rules:
 - If exactly one active change exists and no change ID is provided, continue that change.
 - If multiple active changes exist and no change ID is provided, ask which change to finish.
 - If `brainstorm.md`, `context.md`, or `brainstorm-review.md` is missing, blocked, or lacks customer/user confirmation of brainstorm output, start at `/sp-brainstorm`.
+- During `/sp-goal` brainstorm recovery, draft brainstorm/context content in the conversation and wait for customer/user confirmation before creating or updating brainstorm files.
 - If proposal/spec/design artifacts, `spec-review.md`, or `design-review.md` are missing or blocked, start at `/sp-spec`.
 - If `tasks.md` or `tasks-review.md` is missing or blocked, start at `/sp-tasks`.
 - If `design.md` exists but lacks customer/user confirmation for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E required/not-required decision, treat spec/design as incomplete; confirm the missing decision inside `/sp-goal`, then update `design.md` and `design-review.md` through `/sp-spec` before task creation.
@@ -85,7 +86,7 @@ Rules:
 
 Use `sp-brainstorm`.
 
-Create or update:
+Create or update only after customer/user confirmation of the drafted brainstorm/context content:
 
 - `openspec/changes/<change-id>/brainstorm.md`
 - `openspec/changes/<change-id>/context.md`
@@ -93,6 +94,7 @@ Create or update:
 
 Rules:
 
+- Draft the proposed `brainstorm.md` and `context.md` content in the conversation first. Do not create or update those files until the customer/user confirms the drafted content.
 - Read `docs/ai-context/source-index.md` first when it exists.
 - Read relevant project-defined rules under `docs/rules/*.md`, standards, wiki snapshots, existing specs, and similar code.
 - Read the default language, configuration, and testing rules when they match the requested technology or artifact type.
@@ -103,6 +105,7 @@ Rules:
 - Review brainstorm/context alignment before `/sp-spec`.
 - Start one independent review thread for brainstorm/context. Findings return to the main thread; the main thread fixes, replies, and records closure in `brainstorm-review.md`.
 - Confirm brainstorm output with the customer/user before `/sp-spec` and record the confirmation in `brainstorm-review.md`.
+- If review findings require changing confirmed brainstorm/context content, draft the revised content in the conversation and get customer/user confirmation before writing it back to files.
 - Do not proceed to `/sp-spec` with unresolved blocking gaps in `brainstorm-review.md`.
 - Do not proceed to `/sp-spec` without customer/user confirmation of brainstorm output.
 

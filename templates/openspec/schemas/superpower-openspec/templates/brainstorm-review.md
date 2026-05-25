@@ -5,6 +5,16 @@
 
 ## Summary
 
+## Draft Confirmation Before File Write
+
+The brainstorm/context draft must be confirmed with the customer/user in the conversation before `brainstorm.md`, `context.md`, or this review file is created or updated.
+
+| Draft Item | Confirmation Status | Evidence | Follow-Up |
+|---|---|---|---|
+| `brainstorm.md` draft confirmed before file write |  |  |  |
+| `context.md` draft confirmed before file write |  |  |  |
+| Review-driven revisions confirmed before file write |  |  |  |
+
 ## Requirement Alignment
 
 | Item | Status | Evidence | Gap |

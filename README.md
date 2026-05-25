@@ -174,7 +174,7 @@ docs/rules/data-retention.md
 1. 需求探索：执行 `/sp-brainstorm <requirement>`。
    - 产物：`brainstorm.md`、`context.md`、`brainstorm-review.md`。
    - 目的：澄清需求、收集上下文、读取规则、识别范围风险。
-   - 确认：输出必须先完成主线程 review，再启动一个独立 review thread 检查 brainstorm/context；finding 返回主线程修复和回复，直到 `brainstorm-review.md` 记录零 unresolved finding。随后和客户/使用人确认，并把确认、修改意见或拒绝记录在 `brainstorm-review.md` 后，才能进入 `/sp-spec`。
+   - 确认：先在对话中生成 `brainstorm.md` 和 `context.md` 的草稿内容，并和客户/使用人确认；确认前不得创建或更新对应文件。确认后再写入 `brainstorm.md`、`context.md` 和 `brainstorm-review.md`，随后完成主线程 review，并启动一个独立 review thread 检查 brainstorm/context；finding 返回主线程修复和回复。如果修复会改变已确认的 brainstorm/context 内容，必须先在对话中确认修订内容，再写回文件。直到 `brainstorm-review.md` 记录零 unresolved finding 后，才能进入 `/sp-spec`。
    - 限制：不写正式 spec、design、tasks，也不写代码。
 
 2. 规格和设计生成：执行 `/sp-spec <change-id>`。

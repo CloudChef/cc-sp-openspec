@@ -11,6 +11,7 @@ artifacts:
       Explore the requirement before creating formal OpenSpec artifacts.
       Read applicable default Java, Python, configuration, and testing rule files when they match the requested work.
       Challenge product scope before spec work by identifying the real user, pain point, expected outcome, success signal, smallest useful slice, rejected/deferred scope, alternatives, and open product questions.
+      Draft the proposed brainstorm.md and context.md content in the conversation first; do not create or update brainstorm.md, context.md, or brainstorm-review.md until the customer/user confirms the drafted content.
       Use this as input to proposal.md, not as an implementation source.
       The final brainstorm output must be confirmed with the customer/user before proposal/spec work.
       Do not write code.
@@ -41,6 +42,7 @@ artifacts:
       Start one independent review thread for brainstorm/context review when supported. The independent thread must not edit files; it returns findings to the main thread. The main thread fixes and records responses, then re-runs independent review until zero unresolved blocking findings.
       Check alignment with the user request, project rules, source coverage, existing specs, context gaps, and scope risks.
       Fix in-scope brainstorm/context issues before continuing.
+      If review findings require changing confirmed brainstorm/context content, draft the revised content in the conversation and get customer/user confirmation before writing it back to files.
       Record customer/user confirmation, requested changes, or rejection before proposal/spec work.
       Do not write code.
     requires:
@@ -271,6 +273,7 @@ artifacts:
     template: completion.md
     instruction: |
       Verify all tasks are marked complete, design-review.md has zero unresolved blocking gaps, task-reviews.md has zero open findings, and review.md has zero unresolved findings.
+      Verify brainstorm-review.md records that brainstorm/context draft content was confirmed by the customer/user before brainstorm.md, context.md, or brainstorm-review.md was created or updated.
       Verify brainstorm-review.md, spec-review.md, design-review.md, and review.md contain required independent review thread evidence, main-thread responses, and zero unresolved independent review findings.
       Verify review.md records one main-thread full implementation review and two independent final review threads.
       Verify coverage evidence is at least 85%, scenario-to-test mapping is complete, coverage is not used as a substitute for requirement coverage, Requirement Counterexample Matrix exists for broad requirements, Masked-Test Analysis proves tests are not hidden behind earlier gates, Broad-Qualifier Audit checks spec qualifiers against code qualifiers, and test parameter files are independently saved.

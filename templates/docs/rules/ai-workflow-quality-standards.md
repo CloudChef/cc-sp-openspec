@@ -11,6 +11,8 @@ Brainstorm output MUST challenge the requirement before it becomes scope.
 - List rejected or deferred scope explicitly.
 - Compare at least one alternative approach when the solution is not obvious.
 - Record open product questions before `/sp-spec`.
+- Draft brainstorm/context content in the conversation and get customer/user confirmation before creating or updating `brainstorm.md`, `context.md`, or `brainstorm-review.md`.
+- If brainstorm review findings change confirmed brainstorm/context content, get customer/user confirmation for the revised content before writing it back to files.
 
 ## AIQ-002: Multi-Lens Planning Review
 

@@ -26,16 +26,20 @@ rules:
     - If tasks artifacts are missing or blocked, start at tasks.
     - If design.md exists but lacks customer/user confirmation for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E required/not-required decision, treat specs/design as incomplete.
     - When required confirmation is missing during goal mode, confirm the decision with the customer/user and update the affected brainstorm or design artifacts through the owning workflow before continuing.
+    - For brainstorm, confirm the drafted brainstorm/context content in the conversation before creating or updating brainstorm.md, context.md, or brainstorm-review.md.
     - If tasks, tests, task reviews, coverage, or final review are incomplete, start at implementation.
     - If completion, wiki, or archive output is missing, start at complete.
     - Do not skip phase reviews, per-task reviews, coverage, test parameter files, wiki generation, or archive gates.
     - Do not mark tasks complete without implementation and review evidence.
     - Stop and ask for user input when the active change cannot be resolved.
   brainstorm:
-    - Produce brainstorm.md and context.md only.
+    - Draft the proposed brainstorm.md and context.md content in the conversation first.
+    - Do not create or update brainstorm.md, context.md, or brainstorm-review.md until the customer/user confirms the drafted brainstorm/context content.
+    - After confirmation, produce brainstorm.md and context.md only.
     - Challenge product scope before spec work by identifying the real user, pain point, expected outcome, success signal, smallest useful slice, rejected/deferred scope, alternatives, and open product questions.
     - Produce brainstorm-review.md before moving to proposal/spec work.
     - Start one independent review thread for brainstorm/context review; findings return to the main thread, and the main thread fixes/responds until zero unresolved blocking findings.
+    - If review findings require changing confirmed brainstorm/context content, draft the revised content in the conversation and get customer/user confirmation before writing it back to files.
     - Ask the customer/user to confirm the final brainstorm output before moving to proposal/spec work.
     - Record customer/user confirmation, requested changes, or rejection in brainstorm-review.md.
     - Use Superpower review skills when available; request reviews with superpowers:requesting-code-review, process findings with superpowers:receiving-code-review, and record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if the skills are unavailable.

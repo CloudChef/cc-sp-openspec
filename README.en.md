@@ -172,7 +172,7 @@ You can also run phases manually:
 1. Explore the requirement: run `/sp-brainstorm <requirement>`.
    - Outputs: `brainstorm.md`, `context.md`, `brainstorm-review.md`.
    - Purpose: clarify the requirement, collect context, read rules, and identify scope risks.
-   - Confirmation: the main thread must review the output, then start one independent review thread for brainstorm/context. Findings return to the main thread for fixes and replies until `brainstorm-review.md` records zero unresolved findings. After that, the output must be confirmed with the customer/user, and the confirmation, requested changes, or rejection must be recorded in `brainstorm-review.md` before `/sp-spec`.
+   - Confirmation: draft the proposed `brainstorm.md` and `context.md` content in the conversation first and confirm it with the customer/user; do not create or update those files before confirmation. After confirmation, write `brainstorm.md`, `context.md`, and `brainstorm-review.md`, then run the main-thread review and one independent brainstorm/context review thread. Findings return to the main thread for fixes and replies. If a fix changes confirmed brainstorm/context content, confirm the revised content in the conversation before writing it back. Continue until `brainstorm-review.md` records zero unresolved findings before `/sp-spec`.
    - Limit: do not create formal specs, design, tasks, or code.
 
 2. Generate specs and design: run `/sp-spec <change-id>`.

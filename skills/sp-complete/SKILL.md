@@ -48,30 +48,31 @@ Then create:
 
 1. Read all inputs before editing.
 2. Verify `design-review.md` exists and has zero unresolved blocking gaps.
-3. Verify `brainstorm-review.md`, `spec-review.md`, `design-review.md`, and `review.md` record required independent review thread evidence, main-thread responses, and zero unresolved independent review findings.
-4. Verify `review.md` records one main-thread full implementation review and two independent final review threads.
-5. Verify every task in `tasks.md` is marked complete with `[x]`.
-6. Verify `task-reviews.md` shows every task passed Alignment Review and Security Review.
-7. Verify `task-reviews.md` has zero open findings.
-8. Verify `review.md` has zero unresolved findings.
-9. Verify coverage evidence is at least 85% for changed/affected code.
-10. Verify requirement-to-test mapping, Requirement Counterexample Matrix, Masked-Test Analysis, and Broad-Qualifier Audit exist in `task-reviews.md` and `review.md` when broad requirements or decision chains exist.
-11. Verify coverage percentage is not used as a substitute for scenario coverage or requirement-to-test mapping.
-12. Verify test parameter files are independently saved under `test-params/`.
-13. Verify implementation-standard evidence: changed code paths match tasks, applicable customer/user confirmations are recorded and followed, same/equivalent logic is reused or generalized without avoidable duplication, existing-code changes stay inside approved requirements with no unrequested fallback/compatibility behavior, methods/functions have <= 5 inputs or use explicit named data objects, useful comments and behavior logs are present, `trace_id` is propagated/emitted when context exists, logs include exception stack traces when relevant, logs exclude sensitive information, generated/modified comments/code/config/test data/workflow artifacts contain no mojibake or unreadable text, standalone full verification is complete, user-confirmed required real E2E tests are designed and executed, browser/UI QA is complete when relevant, generated/modified code files are <= 1000 lines, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
-14. Inspect relevant implementation files or diffs referenced by the change artifacts.
-15. Derive a human-readable feature/story title from specs, design, design-review, code, rules, and review evidence.
-16. Convert that title to a concise kebab-case wiki filename.
-17. Generate or update `docs/wiki/<semantic-feature-or-story-title>.md` from specs, design, design-review, customer/user confirmations, code paths, database/API/IO decisions, rules, test evidence, review evidence, and reusable lessons.
-18. Update `docs/ai-context/project-learnings.md` when the completed change reveals reusable patterns, pitfalls, preferences, or verification notes; otherwise record in `completion.md` that no reusable learning was found.
-19. Create `completion.md` with completion evidence, wiki output path, title derivation basis, project learning evidence, and archive target.
-20. Run a final consistency review of `completion.md`, the wiki page, tasks, reviews, specs, design, design-review, code evidence, and test evidence.
-21. Fix any completion findings and re-run the consistency review until there are no open findings.
-22. Stop and report if any pre-archive completion gate fails.
-23. Move the change folder to `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`.
-24. Build a local git commit message from the final completed artifacts after code changes, tests, reviews, `completion.md`, wiki, and archive are finished.
-25. Create a local git commit for the completed change as the final workflow step.
-26. If the project is not a git worktree, record the skip reason in `completion.md`; otherwise stop and report if the commit cannot be created.
+3. Verify `brainstorm-review.md` records that `brainstorm.md`, `context.md`, and `brainstorm-review.md` were created from customer/user-confirmed brainstorm/context draft content.
+4. Verify `brainstorm-review.md`, `spec-review.md`, `design-review.md`, and `review.md` record required independent review thread evidence, main-thread responses, and zero unresolved independent review findings.
+5. Verify `review.md` records one main-thread full implementation review and two independent final review threads.
+6. Verify every task in `tasks.md` is marked complete with `[x]`.
+7. Verify `task-reviews.md` shows every task passed Alignment Review and Security Review.
+8. Verify `task-reviews.md` has zero open findings.
+9. Verify `review.md` has zero unresolved findings.
+10. Verify coverage evidence is at least 85% for changed/affected code.
+11. Verify requirement-to-test mapping, Requirement Counterexample Matrix, Masked-Test Analysis, and Broad-Qualifier Audit exist in `task-reviews.md` and `review.md` when broad requirements or decision chains exist.
+12. Verify coverage percentage is not used as a substitute for scenario coverage or requirement-to-test mapping.
+13. Verify test parameter files are independently saved under `test-params/`.
+14. Verify implementation-standard evidence: changed code paths match tasks, applicable customer/user confirmations are recorded and followed, same/equivalent logic is reused or generalized without avoidable duplication, existing-code changes stay inside approved requirements with no unrequested fallback/compatibility behavior, methods/functions have <= 5 inputs or use explicit named data objects, useful comments and behavior logs are present, `trace_id` is propagated/emitted when context exists, logs include exception stack traces when relevant, logs exclude sensitive information, generated/modified comments/code/config/test data/workflow artifacts contain no mojibake or unreadable text, standalone full verification is complete, user-confirmed required real E2E tests are designed and executed, browser/UI QA is complete when relevant, generated/modified code files are <= 1000 lines, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
+15. Inspect relevant implementation files or diffs referenced by the change artifacts.
+16. Derive a human-readable feature/story title from specs, design, design-review, code, rules, and review evidence.
+17. Convert that title to a concise kebab-case wiki filename.
+18. Generate or update `docs/wiki/<semantic-feature-or-story-title>.md` from specs, design, design-review, customer/user confirmations, code paths, database/API/IO decisions, rules, test evidence, review evidence, and reusable lessons.
+19. Update `docs/ai-context/project-learnings.md` when the completed change reveals reusable patterns, pitfalls, preferences, or verification notes; otherwise record in `completion.md` that no reusable learning was found.
+20. Create `completion.md` with completion evidence, wiki output path, title derivation basis, project learning evidence, and archive target.
+21. Run a final consistency review of `completion.md`, the wiki page, tasks, reviews, specs, design, design-review, code evidence, and test evidence.
+22. Fix any completion findings and re-run the consistency review until there are no open findings.
+23. Stop and report if any pre-archive completion gate fails.
+24. Move the change folder to `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`.
+25. Build a local git commit message from the final completed artifacts after code changes, tests, reviews, `completion.md`, wiki, and archive are finished.
+26. Create a local git commit for the completed change as the final workflow step.
+27. If the project is not a git worktree, record the skip reason in `completion.md`; otherwise stop and report if the commit cannot be created.
 
 ## Completion Gates
 
@@ -79,6 +80,7 @@ Do not archive if any pre-archive gate fails. Do not mark completion successful 
 
 - Generated completion, wiki, and final report documentation must be written in Chinese by default unless the user explicitly requests English.
 - `design-review.md` is missing or has unresolved blocking gaps.
+- `brainstorm-review.md` is missing evidence that brainstorm/context draft content was confirmed by the customer/user before `brainstorm.md`, `context.md`, or `brainstorm-review.md` was created or updated.
 - Required independent review thread evidence, main-thread responses, or closure is missing from `brainstorm-review.md`, `spec-review.md`, `design-review.md`, or `review.md`.
 - `review.md` is missing the main-thread full implementation review or either independent final review thread.
 - Any task in `tasks.md` is unchecked.
