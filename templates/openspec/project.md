@@ -41,4 +41,4 @@ This project uses:
 4. `/sp-impl`
 5. `/sp-complete`
 
-Feature work should move through these artifacts from discovery through implementation, documentation, and archive.
+Feature work should move through these artifacts from discovery through implementation, documentation, and archive. `/sp-spec` owns proposal, specs, design, and design review; `/sp-tasks` owns task breakdown only.

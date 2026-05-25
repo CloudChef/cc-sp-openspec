@@ -45,6 +45,7 @@ project-root/
             proposal.md
             spec.md
             design.md
+            design-review.md
             mockup.md
             tasks.md
             review.md
@@ -56,6 +57,7 @@ project-root/
       rules/
         ai-workflow-quality-standards.md
         logging-standards.md
+        encoding-standards.md
         project-implementation-standards.md
         java-code-standards.md
         python-code-standards.md
@@ -98,6 +100,7 @@ project-root/
             spec.md
         spec-review.md
         design.md
+        design-review.md
         mockups/
           <ui-area>.md
         tasks.md
@@ -117,6 +120,7 @@ project-root/
             proposal.md
             spec.md
             design.md
+            design-review.md
             mockup.md
             tasks.md
             spec-review.md
@@ -134,6 +138,7 @@ project-root/
     rules/
       ai-workflow-quality-standards.md
       logging-standards.md
+      encoding-standards.md
       project-implementation-standards.md
       java-code-standards.md
       python-code-standards.md
@@ -177,12 +182,13 @@ project-root/
   -> proposal.md
   -> specs/<capability>/spec.md
   -> spec-review.md
+  -> design.md
+  -> design-review.md
+  -> mockups/<ui-area>.md (when UI changes require mockups)
 
 /sp-tasks
-  -> design.md
-  -> mockups/<ui-area>.md (when UI changes require mockups)
   -> tasks.md
-  -> tasks-review.md (checks backend/UI/API/config/E2E confirmations)
+  -> tasks-review.md (checks tasks against specs/design/design-review and backend/UI/API/config/E2E confirmations)
 
 /sp-impl
   -> code changes

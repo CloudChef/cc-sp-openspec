@@ -48,3 +48,31 @@ Completed changes SHOULD update project learning notes when they reveal reusable
 - Keep learnings concise and reusable.
 - Do not store secrets, credentials, customer data, or private incident details.
 - If there is nothing reusable to record, completion evidence SHOULD say so.
+
+## AIQ-006: Spec-Phase Design Ownership
+
+Technical design belongs to `/sp-spec`, not `/sp-tasks`.
+
+- `/sp-spec` MUST generate `design.md` after `proposal.md`, specs, and `spec-review.md` are complete.
+- `/sp-spec` MUST generate `design-review.md` and resolve all blocking design findings before `/sp-tasks`.
+- `/sp-tasks` MUST only create or update `tasks.md` and `tasks-review.md`.
+- If task planning finds a missing design decision, missing customer/user confirmation, missing E2E decision, missing mockup/API/config detail, or spec gap, return to `/sp-spec` before continuing.
+
+## AIQ-007: Adversarial Review Evidence
+
+Implementation review MUST try to break the implementation, not only confirm the happy path.
+
+- Broad requirements MUST be tested with non-default and adversarial variants.
+- Gate and decision-chain tests MUST prove the behavior under review is not masked by an earlier gate.
+- Review evidence MUST include requirement-to-test mapping; coverage percentage alone is not enough.
+- Narrower code qualifiers than the spec are findings unless explicitly approved in specs/design/tasks.
+
+## AIQ-008: Independent Review Threads
+
+Phase reviews MUST include independent review evidence when the runtime supports independent threads or subagents.
+
+- `/sp-brainstorm` MUST start one independent review thread for `brainstorm.md` and `context.md`; findings return to the main thread.
+- `/sp-spec` MUST start one independent review thread after proposal, specs, design, and design review are complete; findings return to the main thread.
+- `/sp-impl` MUST run one main-thread full implementation review, then two independent final review threads: one for requirement/spec/design/code alignment, and one for security/implementation standards/regression risks.
+- Independent review threads MUST NOT edit files. The main thread owns fixes, replies, verification, and closure records.
+- If independent threads are unavailable, record the blocker and get explicit user approval before using a fallback review path.

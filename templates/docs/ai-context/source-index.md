@@ -28,6 +28,7 @@ Read:
 - `docs/rules/project-implementation-standards.md`, when present
 - `docs/rules/ai-workflow-quality-standards.md`, when present
 - `docs/rules/logging-standards.md`, when comments, logs, traceability, `trace_id`, observability, or sensitive-data logging risk is involved
+- `docs/rules/encoding-standards.md`, when generated or modified comments, code, configuration, test data, non-ASCII text, file import/export, serialization, logs, API payloads, database text, or UI text are involved
 - `docs/rules/java-code-standards.md`, when Java code is involved
 - `docs/rules/python-code-standards.md`, when Python code is involved
 - `docs/rules/configuration-standards.md`, when configuration, packaging, database, OpenAPI, async, queue, or migration files are involved
@@ -85,10 +86,10 @@ Read:
 
 ## Design Requirement
 
-Before writing `design.md`, create or update:
+Before writing `design.md` and `design-review.md`, create or update:
 
 ```text
 openspec/changes/<change-id>/context.md
 ```
 
-The design must reference `context.md`.
+The design must reference `context.md`. Task creation must wait until `design-review.md` has no unresolved blocking gaps.

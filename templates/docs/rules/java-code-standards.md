@@ -47,6 +47,8 @@ Common suffixes:
 Java code MUST follow the reference Checkstyle rules.
 
 - Use UTF-8.
+- Follow `docs/rules/encoding-standards.md` when present.
+- Java comments, string constants, resource text, properties, SQL, XML, YAML, and test data MUST NOT contain mojibake or unreadable text.
 - Use 4 spaces for indentation.
 - Use the target project's formatter indentation. Google Java Style uses 2-space block indentation; the reference project Checkstyle uses 4 spaces, so project Checkstyle wins for this template.
 - Do not use tabs.

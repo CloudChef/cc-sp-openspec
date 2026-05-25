@@ -2,6 +2,8 @@
 
 > 默认语言：除非用户明确要求英文，本文档的标题、章节内容和说明均使用中文；OpenSpec 关键字、代码标识符、API 路径、配置键和命令保持原文。
 
+> 阶段归属：本文档由 `/sp-spec` 生成和维护。`/sp-tasks` 不得补写设计；如果任务拆分发现缺少设计决策或确认，必须回到 `/sp-spec`。
+
 
 ## Current Behavior
 
@@ -53,6 +55,13 @@ Changed behavior must include useful code comments and behavior logs. Logs must 
 
 | Change Area | Comment Targets | Log Events | `trace_id` Propagation | Structured Fields | Log Levels | Sensitive Data Masking | Performance Notes |
 |---|---|---|---|---|---|---|---|
+
+## Encoding / No-Mojibake Plan
+
+Generated or modified comments, code, configuration, test data, logs, API payloads, database text, and UI text must remain readable and correctly encoded.
+
+| Change Area | Encoding Risk | Affected Text / Config | Expected Encoding | Escaping / Parser Requirement | Validation Method | Not Applicable Reason |
+|---|---|---|---|---|---|---|
 
 ## File Size / Split Plan
 

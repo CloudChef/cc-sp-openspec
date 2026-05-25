@@ -21,6 +21,7 @@ Configuration files MUST have a clear owner and runtime scope.
 
 Use the target project's existing format before introducing a new format.
 
+- Follow `docs/rules/encoding-standards.md` when present.
 - Java/Spring runtime config commonly uses `application.properties` or profile-specific `application-<profile>.properties`.
 - Java logging config commonly uses `log4j2.xml`.
 - Logging configuration MUST include `trace_id` in the output pattern or structured log encoder when request/job context exists.
@@ -30,6 +31,7 @@ Use the target project's existing format before introducing a new format.
 - Python package config uses `setup.py`, `setup.cfg`, `pyproject.toml`, `requirements*.txt`, or `tox.ini` according to the package.
 - Cloud component and blueprint config commonly uses YAML.
 - JSON is acceptable for static seed data, test fixtures, and catalog metadata.
+- Configuration files MUST NOT contain mojibake, broken escaping, unreadable non-ASCII text, or parser-incompatible character encoding.
 
 ## CFG-003: Naming
 

@@ -2,11 +2,15 @@
 
 > 默认语言：除非用户明确要求英文，本文档的标题、章节内容和说明均使用中文；OpenSpec 关键字、代码标识符、API 路径、配置键和命令保持原文。
 
+> 阶段归属：本文档由 `/sp-tasks` 基于已关闭的 `design-review.md` 生成。不得在本阶段补写或修改 `design.md` / `design-review.md`。
+
 
 ## 1. Implementation
 
 - [ ] 1.1 <task title>
   - Related requirement: `<requirement name>`
+  - Design reference: `<design section / decision>`
+  - Design review reference: `<closed design-review finding or readiness evidence>`
   - Applicable rules: `<rule id>`, `<rule id>`
   - Target code paths: `<path>`, `<path>`
   - Multi-lens review: `<product/design/engineering/devex/security/QA applicable + evidence>`
@@ -14,6 +18,7 @@
   - Requirement scope / fallback: `<exact requirement behavior + no fallback/compatibility unless required>`
   - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
   - Comments/logging/traceability: `<comment targets + log events + trace_id propagation + sensitive-data masking>`
+  - Encoding/no-mojibake: `<encoding risk + validation + no garbled comments/code/config>`
   - File size guardrail: each generated/modified code file must stay <= 1000 lines; split plan: `<none/path split>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
   - Backend logic confirmation: `<confirmed/not-applicable + evidence>`
@@ -26,6 +31,10 @@
   - Change: <specific implementation work>
   - Standalone verification: `<entry point + command/test + request/input + expected response/output + side effects>`
   - Real E2E test: `<required/not-applicable with reason + command/tool + runtime target + test data + assertions + evidence>`
+  - Requirement-to-test mapping: `<requirement/scenario -> tests/verification>`
+  - Counterexample matrix: `<broad qualifier variants + adversarial case>`
+  - Masked-test analysis: `<why evidence is not hidden by an earlier gate>`
+  - Broad-qualifier audit: `<spec qualifier vs code qualifier>`
   - Validation: <how to verify>
   - Test parameters: `openspec/changes/<change-id>/test-params/<scenario-name>.md`
   - Coverage target: at least 85% code coverage for changed/affected code
@@ -45,6 +54,7 @@ Validation must include:
 - Requirement-scope/fallback check showing no unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior was added.
 - Parameter-count/data-object check showing no method/function has more than 5 inputs unless it uses an explicit named data object.
 - Comment/logging/traceability check showing useful comments, key behavior logs, `trace_id` propagation/output, exception stack traces, correct log levels, and no sensitive data in logs.
+- Encoding/no-mojibake check showing generated or modified comments, code strings, configuration, test parameters, non-ASCII text, and workflow artifacts are readable and parser-compatible.
 - File length check showing every generated/modified code file is at or below 1000 lines.
 - Database configuration check when database access is required: SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, connection pool configured, maximum pool size <= 100.
 - Customer/user confirmation check for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.

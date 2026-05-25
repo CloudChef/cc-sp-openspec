@@ -6,10 +6,11 @@ Superpower-style skills are the workflow layer. OpenSpec is the source of truth 
 
 Always open `openspec/AGENTS.md` when a request mentions planning, proposals, specs, changes, design, tasks, implementation of an OpenSpec change, or `/sp-*` workflow commands.
 
-The default baseline project implementation rules live in `docs/rules/project-implementation-standards.md` when present. This template also includes default AI workflow quality, logging, Java, Python, configuration, and testing rule files:
+The default baseline project implementation rules live in `docs/rules/project-implementation-standards.md` when present. This template also includes default AI workflow quality, logging, encoding, Java, Python, configuration, and testing rule files:
 
 - `docs/rules/ai-workflow-quality-standards.md`
 - `docs/rules/logging-standards.md`
+- `docs/rules/encoding-standards.md`
 - `docs/rules/java-code-standards.md`
 - `docs/rules/python-code-standards.md`
 - `docs/rules/configuration-standards.md`
@@ -62,6 +63,7 @@ Purpose:
 - Detect the earliest incomplete phase for the requested or active change.
 - Start from that phase and run all remaining phases through `/sp-complete`.
 - Never skip phase artifacts, tests, coverage, reviews, finding closure, wiki generation, or archive gates.
+- Never skip required independent review threads. `/sp-brainstorm` and `/sp-spec` require one independent review thread; `/sp-impl` requires one main-thread full review and two independent final review threads.
 
 Rules:
 
@@ -69,14 +71,14 @@ Rules:
 - If exactly one active change exists and no change ID is provided, continue that change.
 - If multiple active changes exist and no change ID is provided, ask which change to finish.
 - If `brainstorm.md`, `context.md`, or `brainstorm-review.md` is missing, blocked, or lacks customer/user confirmation of brainstorm output, start at `/sp-brainstorm`.
-- If proposal/spec artifacts or `spec-review.md` are missing or blocked, start at `/sp-spec`.
-- If `design.md`, `tasks.md`, or `tasks-review.md` is missing or blocked, start at `/sp-tasks`.
-- If `design.md` exists but lacks customer/user confirmation for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E required/not-required decision, treat design/tasks as incomplete; confirm the missing decision inside `/sp-goal`, then update `design.md`, `tasks.md`, and `tasks-review.md` before implementation.
+- If proposal/spec/design artifacts, `spec-review.md`, or `design-review.md` are missing or blocked, start at `/sp-spec`.
+- If `tasks.md` or `tasks-review.md` is missing or blocked, start at `/sp-tasks`.
+- If `design.md` exists but lacks customer/user confirmation for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E required/not-required decision, treat spec/design as incomplete; confirm the missing decision inside `/sp-goal`, then update `design.md` and `design-review.md` through `/sp-spec` before task creation.
 - If tasks, tests, per-task reviews, coverage, or final `review.md` are incomplete, start at `/sp-impl`.
 - If implementation review is complete but completion/wiki/archive is missing, start at `/sp-complete`.
 - Do not mark tasks complete without implementation and review evidence.
 - Do not mark tasks complete without standalone full verification evidence when relevant.
-- Do not mark design/tasks complete without required customer/user confirmation evidence in `design.md`.
+- Do not mark spec/design complete without required customer/user confirmation evidence in `design.md` and zero unresolved blocking gaps in `design-review.md`.
 - Stop when progress requires user input or approved OpenSpec scope changes.
 
 ## /sp-brainstorm
@@ -99,6 +101,7 @@ Rules:
 - Do not create proposal, specs, design, or tasks.
 - Record conflicts and context gaps instead of guessing.
 - Review brainstorm/context alignment before `/sp-spec`.
+- Start one independent review thread for brainstorm/context. Findings return to the main thread; the main thread fixes, replies, and records closure in `brainstorm-review.md`.
 - Confirm brainstorm output with the customer/user before `/sp-spec` and record the confirmation in `brainstorm-review.md`.
 - Do not proceed to `/sp-spec` with unresolved blocking gaps in `brainstorm-review.md`.
 - Do not proceed to `/sp-spec` without customer/user confirmation of brainstorm output.
@@ -112,10 +115,14 @@ Create or update:
 - `openspec/changes/<change-id>/proposal.md`
 - `openspec/changes/<change-id>/specs/<capability>/spec.md`
 - `openspec/changes/<change-id>/spec-review.md`
+- `openspec/changes/<change-id>/design.md`
+- `openspec/changes/<change-id>/design-review.md`
+- `openspec/changes/<change-id>/mockups/` when UI changes require mockups
 
 Rules:
 
 - Base output on `brainstorm.md`, `context.md`, `openspec/project.md`, and relevant existing specs.
+- Read relevant docs, rules, and similar implementation before writing design.
 - Do not start proposal/spec work until `brainstorm-review.md` records customer/user confirmation of brainstorm output.
 - Read relevant project-defined rules under `docs/rules/*.md` and encode behavior-affecting rules as observable requirements or scenarios.
 - Read the default language, configuration, and testing rules when they affect observable behavior, validation, security, or delivery constraints.
@@ -126,10 +133,21 @@ Rules:
 - Unit tests, mock-only tests, class initialization tests, and isolated method tests must not be accepted as E2E evidence when E2E is required.
 - Backend behavior must allow later real API request/response verification; UI behavior must allow UI test verification; bug fixes must identify the bug entry point; external service behavior must identify observable effects when relevant.
 - Use OpenSpec Requirement and Scenario format.
-- Do not create design or tasks.
+- Review proposal/spec alignment before design.
+- Do not create design until `spec-review.md` has zero unresolved blocking gaps.
+- `design.md` must include Source Mapping, Rules Compliance, Spec Gaps, code path planning, reuse/common logic planning, requirement-scope/fallback decisions, parameter/data-object planning, comments/logging/traceability planning, encoding/no-mojibake planning, standalone verification, E2E design, and customer/user confirmation evidence.
+- `design.md` must identify backend logic decisions and confirm them with the customer/user.
+- If UI changes exist, `design.md` must include a mockup artifact path and functional description, then confirm both with the customer/user.
+- If APIs exist, `design.md` must list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter, then confirm them with the customer/user.
+- If configuration parameters exist, `design.md` must list every parameter name, proposed value, environment/scope, and reason, then confirm names and values with the customer/user.
+- `design.md` must assess whether each changed capability requires real E2E, stop to confirm the decision with the user, and record that confirmation.
+- If E2E is confirmed as required, `design.md` must define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence.
+- If the confirmed design decision reveals missing or incorrect spec behavior, update specs and `spec-review.md` before task creation.
+- Create `design-review.md` and resolve all design review blocking gaps before `/sp-tasks`.
+- Start one independent review thread for completed proposal/spec/design artifacts. Findings return to the main thread; the main thread fixes, replies, and records closure in `spec-review.md` and/or `design-review.md`.
+- Do not create tasks.
 - Do not write code.
-- Review proposal/spec alignment before `/sp-tasks`.
-- Do not proceed to `/sp-tasks` with unresolved blocking gaps in `spec-review.md`.
+- Do not proceed to `/sp-tasks` with unresolved blocking gaps in `spec-review.md` or `design-review.md`.
 
 ## /sp-tasks
 
@@ -137,40 +155,18 @@ Use `sp-tasks`.
 
 Create or update:
 
-- `openspec/changes/<change-id>/design.md`
 - `openspec/changes/<change-id>/tasks.md`
 - `openspec/changes/<change-id>/tasks-review.md`
-- `openspec/changes/<change-id>/mockups/` when UI changes require mockups
 
 Rules:
 
-- Read `context.md`, `proposal.md`, `specs/`, relevant project-defined rules under `docs/rules/*.md`, relevant docs, and similar implementation before writing design.
-- Apply the default Java, Python, configuration, and testing rules when the change touches those areas.
-- Include Source Mapping in `design.md`.
-- Include Rules Compliance in `design.md`.
-- Include product, design, engineering, developer-experience, security, and QA review lenses when applicable.
-- Include the browser/API/job QA plan before implementation.
-- Include Spec Gaps when behavior is needed but not covered by specs.
-- `design.md` must recommend generated/modified code paths by feature point.
-- `design.md` must identify same or equivalent existing logic and define reuse, extraction, extension, or justified isolation decisions.
-- `design.md` must state requirement scope and whether compatibility/fallback behavior is required. If not explicitly required, generated tasks must prohibit fallback or compatibility branches.
-- `design.md` must identify methods/functions that would need more than 5 inputs and require a named data object instead of vague map-like parameters.
-- `design.md` must define code comment needs, logging events, `trace_id` propagation, structured fields, log levels, sensitive-data masking, and log performance considerations for changed behavior.
-- `design.md` must define standalone full verification for every changed behavior.
-- `design.md` must identify all backend logic decisions, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
-- If UI changes exist, `design.md` must include a mockup artifact path and functional description, stop to confirm both with the customer/user, and record confirmation before tasks are finalized.
-- If APIs exist, `design.md` must list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
-- If configuration parameters exist, `design.md` must list every parameter name, proposed value, environment/scope, and reason, stop to confirm names and values with the customer/user, and record confirmation before tasks are finalized.
-- `design.md` must assess whether each changed capability requires real E2E, stop to confirm the decision with the user, and record that confirmation.
-- If E2E is confirmed as required, `design.md` must define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence.
-- If the confirmed E2E decision reveals missing or incorrect spec behavior, stop and update specs before creating tasks or implementing.
-- `design.md` and `tasks.md` must keep generated/modified code files <= 1000 lines or split them before implementation.
-- `design.md` must explicitly decide whether a database is required. If required, use SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
-- Backend API design must use OpenAPI and separate at least Controller and Service.
-- Every API must document IO behavior; very time-consuming work must be async.
-- Every task must reference a requirement, applicable rules, target code paths, reuse/common logic impact, implementation-standard impact, and validation.
+- Read `proposal.md`, `specs/`, `spec-review.md`, `design.md`, `design-review.md`, applicable mockups, relevant project-defined rules, and source references from the approved design.
+- Do not create or modify `design.md`, `design-review.md`, `proposal.md`, or `specs/`.
+- If a design decision, customer/user confirmation, API/config detail, E2E decision, mockup, or spec update is missing, return to `/sp-spec` instead of inventing it in tasks.
+- Every task must reference a requirement, approved design decision, closed design-review evidence, applicable rules, target code paths, reuse/common logic impact, implementation-standard impact, and validation.
 - Every task must include requirement-scope/fallback instructions and method/function parameter constraints.
 - Every task must include code comment and logging requirements, including `trace_id`, log levels, structured fields, and sensitive-data exclusion when relevant.
+- Every task must include encoding/mojibake validation requirements when it changes comments, code, configuration, test data, or text-bearing behavior.
 - Every task must include standalone full verification from the relevant entry point.
 - Every task must include applicable customer/user confirmation evidence for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, and E2E decisions, or a clear not-applicable reason.
 - Every task must include the user-confirmed real E2E requirement or a design-confirmed not-applicable reason.
@@ -181,10 +177,12 @@ Rules:
 - Database, Redis, Elasticsearch, queue, cache, or integration tasks must verify against project-provided connections/test environments when available; otherwise record skip reasons.
 - Every task must specify independent test parameter files under `openspec/changes/<change-id>/test-params/`.
 - Every task must require at least 85% coverage for changed/affected code.
+- Every task must require requirement-to-test mapping, a Requirement Counterexample Matrix for broad requirements, Masked-Test Analysis for gate/decision chains, and Broad-Qualifier Audit for spec-vs-code qualifier mismatches.
+- Coverage percentage must not substitute scenario coverage or requirement-to-test mapping.
 - Every task must include two implementation review gates: Alignment Review and Security Review.
 - `tasks-review.md` must confirm each task has those gates and finding closure requirements.
 - Do not write code.
-- Review design/task alignment before `/sp-impl`.
+- Review task alignment with specs, approved design, and design-review before `/sp-impl`.
 - Do not proceed to `/sp-impl` with unresolved blocking gaps in `tasks-review.md`.
 - Do not proceed to `/sp-impl` when required customer/user confirmations are missing.
 
@@ -199,6 +197,7 @@ Before implementation, read:
 - `openspec/changes/<change-id>/proposal.md`
 - `openspec/changes/<change-id>/specs/`
 - `openspec/changes/<change-id>/design.md`
+- `openspec/changes/<change-id>/design-review.md`
 - `openspec/changes/<change-id>/mockups/` when UI changes require mockups
 - `openspec/changes/<change-id>/tasks.md`
 - `openspec/changes/<change-id>/spec-review.md`
@@ -211,6 +210,7 @@ Rules:
 
 - Implement only unchecked tasks in `tasks.md`.
 - Stop before coding if prior phase reviews contain unresolved blocking gaps.
+- Stop before coding if `design-review.md` is missing or has unresolved blocking gaps.
 - Stop before coding if required customer/user confirmation evidence is missing in `brainstorm-review.md`, `design.md`, or `tasks.md`.
 - Stop before coding if the task's required QA plan is missing.
 - Load applicable Java, Python, configuration, and testing rules before editing code, config, or tests.
@@ -218,6 +218,11 @@ Rules:
 - Create or update explicit test parameter files under `openspec/changes/<change-id>/test-params/`.
 - Tests must use explicit parameters and assert meaningful behavior from specs/design.
 - Changed/affected code must reach at least 85% coverage.
+- Coverage cannot substitute requirement coverage, scenario coverage, or requirement-to-test mapping.
+- Build and record a Requirement Counterexample Matrix before marking each task complete.
+- Alignment Review must actively try to disprove each broad requirement with non-default and adversarial variants.
+- Masked tests do not prove later gate semantics; review evidence must explain why each proving test is not masked by an earlier condition.
+- If code uses a narrower qualifier than the spec, record a finding unless specs/design/tasks explicitly approve the exception.
 - Standalone full verification must be completed for backend API, UI, bug-entry, and external-service behavior when relevant.
 - User-confirmed required real E2E tests must be run against the designed runtime target and recorded with command, test data, assertions, and evidence.
 - Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not count as real E2E evidence.
@@ -226,11 +231,12 @@ Rules:
 - Methods/functions must have no more than 5 input parameters, or use explicit named data objects instead of vague maps/dicts/objects/key-value bags.
 - Code implementation must include useful comments for non-obvious behavior and logs that trace key behavior with `trace_id` when context exists.
 - Logs must not include secrets, credentials, tokens, session identifiers, raw personal data, or sensitive request/response bodies.
+- Generated or modified comments, code, configuration, test parameters, and workflow artifacts must not contain mojibake, wrong transcoding, or unreadable characters.
 - Generated/modified code files must stay <= 1000 lines.
 - Database, OpenAPI, Controller/Service, API IO, and async rules must be implemented and evidenced when relevant.
 - Do not write tests for empty/no-op code.
 - Do not count tests that only verify class or method initialization.
-- After each task, run Alignment Review against spec, design, task, rules, and changed code.
+- After each task, run Alignment Review against spec, design, design-review, task, rules, requirement-to-test mapping, counterexample evidence, masked-test analysis, broad-qualifier audit, and changed code.
 - After each task, run Security Review against concrete authentication, authorization, tenant/user isolation, validation, data exposure, logging, dependency, configuration, database/API IO, async, and external-service risks when relevant.
 - Security Review must check concrete authentication, authorization, validation, data exposure, logging, `trace_id`, sensitive-data exposure, dependency, configuration, API IO, async, and external-service risks when relevant.
 - Fix every finding from both reviews and re-review before starting the next task.
@@ -243,6 +249,9 @@ Rules:
 - Update `tasks.md` after completing and verifying tasks.
 - Run relevant tests and coverage checks.
 - Create or update `review.md`, including Rules Compliance.
+- After all tasks are complete, run one main-thread full implementation review against every requirement, spec, design decision, changed code path, test, verification result, and rule.
+- Start two independent final review threads: Thread 1 for requirement/spec/design/code alignment, and Thread 2 for security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates.
+- Independent review threads must not edit files. Findings return to the main thread; the main thread fixes, replies, verifies, and re-runs the relevant thread until zero unresolved findings remain.
 - Final completion requires `task-reviews.md` and `review.md` to show zero unresolved findings.
 
 Final response must include:
@@ -265,6 +274,7 @@ Before completion, read:
 - `openspec/changes/<change-id>/proposal.md`
 - `openspec/changes/<change-id>/specs/`
 - `openspec/changes/<change-id>/design.md`
+- `openspec/changes/<change-id>/design-review.md`
 - `openspec/changes/<change-id>/mockups/` when UI changes require mockups
 - `openspec/changes/<change-id>/tasks.md`
 - `openspec/changes/<change-id>/task-reviews.md`
@@ -274,11 +284,19 @@ Before completion, read:
 
 Rules:
 
+- Do not complete if `design-review.md` is missing or has unresolved blocking gaps.
+- Do not complete if required independent review thread evidence, main-thread responses, or closure is missing from `brainstorm-review.md`, `spec-review.md`, `design-review.md`, or `review.md`.
+- Do not complete if `review.md` lacks one main-thread full implementation review and two independent final review threads.
 - Do not complete if any task in `tasks.md` is unchecked.
 - Confirm applicable Java, Python, configuration, and testing rules were considered in review evidence.
 - Do not complete if `task-reviews.md` has any open Alignment Review or Security Review finding.
 - Do not complete if `review.md` has unresolved findings.
 - Do not complete if coverage evidence is below 85% for changed/affected code.
+- Do not complete if review evidence relies on coverage percentage without scenario-to-test mapping.
+- Do not complete if `task-reviews.md` or `review.md` lacks a Requirement Counterexample Matrix for broad requirements.
+- Do not complete if tests can be masked by earlier gates and no unmasked adversarial test is recorded.
+- Do not complete if implementation has a narrower code qualifier than the spec qualifier unless explicitly approved in specs/design/tasks.
+- Do not complete if any implementation-standard violation is merely explained but not fixed or explicitly approved as an exception.
 - Do not complete if required customer/user confirmation evidence is missing or not followed.
 - Do not complete if standalone full verification evidence is missing for relevant changed behavior.
 - Do not complete if user-confirmed required real E2E test evidence is missing.
@@ -286,11 +304,11 @@ Rules:
 - Do not complete if unrequested fallback/compatibility behavior was added.
 - Do not complete if methods/functions exceed 5 input parameters without explicit named data objects.
 - Do not complete if required test parameter files are missing.
-- Generate or update a semantic `docs/wiki/<feature-or-story-title>.md` file from specs, design, customer/user confirmations, code, rules, and review evidence.
+- Generate or update a semantic `docs/wiki/<feature-or-story-title>.md` file from specs, design, design-review, customer/user confirmations, code, rules, and review evidence.
 - Update `docs/ai-context/project-learnings.md` when the completed change reveals reusable patterns, pitfalls, preferences, or verification notes; otherwise record that no reusable learning was found.
 - Derive the wiki title and filename from the completed feature/story, not from the raw change ID.
 - Create `completion.md` with completion gate results and archive target.
-- Review the generated wiki against specs, design, and implemented code before archiving.
+- Review the generated wiki against specs, design, design-review, and implemented code before archiving.
 - Archive the change by moving `openspec/changes/<change-id>/` to `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`.
 - Create a local git commit only after the completed change, tests, reviews, completion artifact, wiki, and archive are finished.
 - Do not overwrite an existing archive folder.

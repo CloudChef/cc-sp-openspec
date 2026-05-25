@@ -48,4 +48,20 @@
 
 ## Out-of-Scope or Implementation Leakage
 
-## Required Fixes Before /sp-tasks
+## Independent Review Thread
+
+| Review Thread | Scope | Findings | Main Thread Response | Re-Review Status |
+|---|---|---|---|---|
+| Independent Spec Review | `proposal.md`, specs, brainstorm/context alignment, rule alignment, scenario quality |  |  |  |
+
+## Main Thread Finding Response
+
+| Finding ID | Source Thread | Finding | Main Decision | Fix / Reply | Evidence |
+|---|---|---|---|---|---|
+
+## Finding Closure
+
+| Finding ID | Status | Re-Review Evidence | Remaining Gap |
+|---|---|---|---|
+
+## Required Fixes Before Design

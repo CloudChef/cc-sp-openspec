@@ -9,10 +9,21 @@
 
 | Gate | Status | Evidence | Gap |
 |---|---|---|---|
+| Design review has zero unresolved blocking gaps |  |  |  |
+| Brainstorm independent review thread closed |  |  |  |
+| Spec/design independent review thread closed |  |  |  |
 | All tasks marked complete |  |  |  |
 | Alignment reviews closed |  |  |  |
 | Security reviews closed |  |  |  |
+| Main full implementation review completed |  |  |  |
+| Independent implementation review thread 1 closed |  |  |  |
+| Independent implementation review thread 2 closed |  |  |  |
 | Test coverage >= 85% |  |  |  |
+| Requirement-to-test mapping complete |  |  |  |
+| Requirement Counterexample Matrix complete |  |  |  |
+| Masked-test analysis complete |  |  |  |
+| Broad-qualifier audit complete |  |  |  |
+| Coverage is not used as a substitute for scenario coverage |  |  |  |
 | Test parameters independently saved |  |  |  |
 | Tests assert meaningful behavior |  |  |  |
 | No empty/no-op or initialization-only tests |  |  |  |
@@ -22,6 +33,7 @@
 | No unrequested fallback or compatibility behavior |  |  |  |
 | Method/function parameter count and data-object rules satisfied |  |  |  |
 | Comment/logging/traceability rule satisfied |  |  |  |
+| Encoding/no-mojibake rule satisfied |  |  |  |
 | Standalone full verification completed |  |  |  |
 | User-confirmed required real E2E tests designed and executed |  |  |  |
 | Browser/UI QA completed when relevant |  |  |  |
@@ -40,12 +52,38 @@
 | Task | Status | Evidence |
 |---|---|---|
 
+## Independent Review Thread Closure
+
+| Phase | Review Thread | Scope | Main Thread Response Evidence | Open Findings |
+|---|---|---|---|---|
+| Brainstorm | Independent Brainstorm Review | `brainstorm.md`, `context.md`, rules, scope risks |  |  |
+| Spec / Design | Independent Spec/Design Review | proposal, specs, `design.md`, confirmations, rules |  |  |
+| Implementation | Independent Review Thread 1 | requirements/spec/design/code alignment and adversarial evidence |  |  |
+| Implementation | Independent Review Thread 2 | security, implementation standards, regression, logging, API/data/config, tests, file size |  |  |
+
+## Design Review Closure
+
+| Finding / Readiness Check | Status | Evidence | Gap |
+|---|---|---|---|
+
 ## Per-Task Review Closure
 
 | Task | Alignment Review | Security Review | Open Findings |
 |---|---|---|---|
 
 ## Final Review Closure
+
+| Review Evidence | Status | Evidence | Gap |
+|---|---|---|---|
+| Requirement-to-test mapping |  |  |  |
+| Requirement Counterexample Matrix |  |  |  |
+| Masked-Test Analysis |  |  |  |
+| Broad-Qualifier Audit |  |  |  |
+| Narrower qualifier scan |  |  |  |
+| Main full implementation review |  |  |  |
+| Independent implementation review thread 1 |  |  |  |
+| Independent implementation review thread 2 |  |  |  |
+| Main-thread responses to independent findings |  |  |  |
 
 ## Wiki Documentation
 
@@ -62,12 +100,13 @@
 
 | Standard | Status | Evidence | Gap |
 |---|---|---|---|
-| Code paths match design/tasks |  |  |  |
+| Code paths match design/design-review/tasks |  |  |  |
 | Customer/user confirmations are recorded and followed |  |  |  |
 | Reuse/common logic rule satisfied |  |  |  |
 | Requirement-scope/fallback rule satisfied |  |  |  |
 | Parameter-count/data-object rule satisfied |  |  |  |
 | Comment/logging/traceability rule satisfied |  |  |  |
+| Encoding/no-mojibake rule satisfied |  |  |  |
 | Standalone verification evidence |  |  |  |
 | Real E2E evidence |  |  |  |
 | Browser/UI QA evidence |  |  |  |
@@ -96,6 +135,17 @@
 | Log levels and structured fields are appropriate |  |  |  |
 | Exception logs include stack traces |  |  |  |
 | Logs exclude secrets, credentials, tokens, session identifiers, raw personal data, and sensitive request/response bodies |  |  |  |
+
+## Encoding / No-Mojibake Evidence
+
+| Check | Status | Evidence | Gap |
+|---|---|---|---|
+| Generated or modified comments are readable |  |  |  |
+| Code strings, error messages, and log messages are readable |  |  |  |
+| Configuration files use parser-compatible encoding and escaping |  |  |  |
+| Test parameters, fixtures, and generated docs contain no garbled text |  |  |  |
+| Non-ASCII API/UI/database/import-export paths are validated when relevant |  |  |  |
+| Existing garbled source text, if any, is documented and contained |  |  |  |
 
 ## Project Learning Notes
 

@@ -24,6 +24,22 @@
 
 ## Missing Context
 
+## Independent Review Thread
+
+| Review Thread | Scope | Findings | Main Thread Response | Re-Review Status |
+|---|---|---|---|---|
+| Independent Brainstorm Review | `brainstorm.md`, `context.md`, source/rule alignment, scope risks |  |  |  |
+
+## Main Thread Finding Response
+
+| Finding ID | Source Thread | Finding | Main Decision | Fix / Reply | Evidence |
+|---|---|---|---|---|---|
+
+## Finding Closure
+
+| Finding ID | Status | Re-Review Evidence | Remaining Gap |
+|---|---|---|---|
+
 ## Customer Confirmation
 
 The brainstorm output must be confirmed with the customer/user before `/sp-spec`.

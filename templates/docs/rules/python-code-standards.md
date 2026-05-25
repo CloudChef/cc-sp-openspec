@@ -45,6 +45,8 @@ Python code MUST be compatible with the target package's lint settings.
 - Avoid wildcard imports in new code.
 - Remove unused imports.
 - Keep files UTF-8 encoded.
+- Follow `docs/rules/encoding-standards.md` when present.
+- Python comments, docstrings, string constants, config templates, fixtures, and test data MUST NOT contain mojibake or unreadable text.
 - Use 4 spaces for indentation.
 - Do not use tabs.
 - Do not use semicolons to put multiple statements on one line.

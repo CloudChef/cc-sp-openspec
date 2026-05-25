@@ -129,10 +129,53 @@ Implementation MUST include meaningful code comments and behavior logs for chang
 - `design.md` and `tasks.md` MUST identify comment/logging needs for new or changed behavior.
 - Implementation review MUST check comment usefulness, behavior-log coverage, log level choice, and sensitive-data exclusion.
 
-## PIR-012: Documentation Language Default
+## PIR-012: Encoding and Mojibake Prevention
+
+Generated or modified code, comments, configuration, tests, and workflow artifacts MUST NOT contain mojibake, garbled text, wrong transcoding, or unreadable characters.
+
+- When `docs/rules/encoding-standards.md` exists, implementation MUST follow it.
+- New text files SHOULD use UTF-8 unless the target project explicitly requires another encoding.
+- Comments, string constants, configuration values, log messages, error messages, test parameters, and documentation MUST be readable in the intended language.
+- Configuration files MUST use encoding and escaping rules accepted by their parser and project toolchain.
+- Existing files with a different project-approved encoding MUST preserve that encoding unless the change explicitly migrates it.
+- If source material is already garbled, record the source and handling decision in `context.md`, `design.md`, or review evidence; do not propagate the broken text as normal content.
+- Design, task, review, and completion artifacts MUST record encoding/mojibake risk and validation evidence when the change touches comments, code text, config, non-ASCII data, file import/export, serialization, API payloads, database text, logs, or UI text.
+
+## PIR-013: Documentation Language Default
 
 Generated workflow documentation MUST be written in Chinese by default unless the user explicitly requests English.
 
 - This applies to OpenSpec artifacts, review artifacts, task review logs, test parameter files, mockup descriptions, completion evidence, generated wiki pages, and final user-facing completion reports.
 - If English is requested, the request MUST be recorded in the relevant artifact.
 - Required technical keywords, code identifiers, API paths, configuration keys, commands, and standard requirement keywords such as `SHALL`, `SHOULD`, and `MAY` may remain in their required literal form.
+
+## PIR-014: Workflow Phase Ownership
+
+Design ownership MUST stay in the spec phase.
+
+- `/sp-spec` MUST generate `proposal.md`, specs, `spec-review.md`, `design.md`, and `design-review.md`.
+- `/sp-spec` MUST resolve all blocking `spec-review.md` and `design-review.md` findings before `/sp-tasks`.
+- `/sp-tasks` MUST only generate `tasks.md` and `tasks-review.md`.
+- `/sp-tasks` MUST NOT create or modify `design.md`, `design-review.md`, proposal, or spec files.
+- If task planning requires a missing design decision, customer/user confirmation, E2E decision, mockup, API/config detail, or spec update, the workflow MUST return to `/sp-spec` before continuing.
+
+## PIR-015: Requirement Counterexample Review
+
+Implementation review MUST actively try to disprove broad requirements before marking work complete.
+
+- `task-reviews.md` and `review.md` MUST include requirement-to-test mapping for every implemented requirement and scenario.
+- Broad requirements using terms such as `all`, `any`, `same`, `unified`, `source-agnostic`, `every`, `不得按来源`, and `统一` MUST have a Requirement Counterexample Matrix with at least two non-default variants and one adversarial variant.
+- Gate or decision-chain behavior MUST include Masked-Test Analysis. A test blocked by an earlier condition does not prove later semantics.
+- Coverage percentage MUST NOT substitute requirement coverage or scenario-to-test mapping.
+- If implementation has a narrower code qualifier than the spec qualifier, review MUST record a finding unless specs/design/tasks explicitly approve the exception.
+- Implementation-standard violations cannot be closed by explanation alone; they must be fixed or explicitly approved as exceptions in the current OpenSpec artifacts.
+
+## PIR-016: Independent Review Thread Closure
+
+The main thread MUST use independent review threads for phase and final implementation review when supported.
+
+- `brainstorm-review.md` MUST record one independent brainstorm/context review thread, main-thread responses, and zero unresolved blocking findings before `/sp-spec`.
+- `spec-review.md` and `design-review.md` MUST record one independent spec/design review thread, main-thread responses, and zero unresolved blocking findings before `/sp-tasks`.
+- `review.md` MUST record one main-thread full implementation review against all requirements, specs, design, code, tests, and rules.
+- `review.md` MUST record two independent final implementation review threads. Thread 1 checks requirement/spec/design/code alignment. Thread 2 checks security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates.
+- Independent review threads MUST NOT edit files. Findings return to the main thread, and the main thread must fix, reply, verify, and re-run review until zero unresolved findings remain.

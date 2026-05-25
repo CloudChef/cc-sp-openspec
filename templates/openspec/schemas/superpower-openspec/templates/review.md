@@ -15,6 +15,21 @@
 | Scenario | Status | Evidence | Gap |
 |---|---|---|---|
 
+## Requirement Counterexample Matrix
+
+| Requirement / Scenario | Dimensions | Positive Test | Negative Test | Non-Default Variants | Adversarial Variant | Masked-Test Risk | Proving Evidence | Finding |
+|---|---|---|---|---|---|---|---|---|
+
+## Masked-Test Analysis
+
+| Claimed Behavior | Test / Evidence | Earlier Gate That Could Mask It | Why Not Masked | Gap |
+|---|---|---|---|---|
+
+## Broad-Qualifier Audit
+
+| Spec Qualifier | Requirement / Scenario | Code Qualifier / Branch | Match Status | Evidence | Finding |
+|---|---|---|---|---|---|
+
 ## Task Completion
 
 | Task | Status | Evidence | Gap |
@@ -24,6 +39,11 @@
 
 | Task | Alignment Review | Security Review | Open Findings | Evidence |
 |---|---|---|---|---|
+
+## Design Review Closure
+
+| Finding / Readiness Check | Status | Evidence | Gap |
+|---|---|---|---|
 
 ## Out-of-Spec Behavior
 
@@ -55,6 +75,7 @@
 
 | Standard | Status | Evidence | Gap |
 |---|---|---|---|
+| `design-review.md` has zero unresolved blocking gaps |  |  |  |
 | Generated/modified code paths match design and tasks |  |  |  |
 | Same or equivalent logic is reused or generalized without avoidable duplication |  |  |  |
 | Existing-code changes are limited to approved requirements |  |  |  |
@@ -66,6 +87,7 @@
 | `trace_id` is propagated and emitted when context exists |  |  |  |
 | Exception logs include stack traces |  |  |  |
 | Logs exclude sensitive information |  |  |  |
+| Comments, code strings, configuration, test data, and workflow artifacts contain no mojibake |  |  |  |
 | Standalone full verification is completed for changed behavior |  |  |  |
 | User-confirmed required real E2E tests are designed and executed |  |  |  |
 | Generated/modified code files are <= 1000 lines |  |  |  |
@@ -93,10 +115,26 @@
 | Exception logs include stack traces |  |  |  |
 | Logs exclude secrets, credentials, tokens, session identifiers, raw personal data, and sensitive request/response bodies |  |  |  |
 
+## Encoding / No-Mojibake Evidence
+
+| Check | Status | Evidence | Gap |
+|---|---|---|---|
+| Comments and docstrings are readable |  |  |  |
+| Code strings, error messages, and log messages are readable |  |  |  |
+| Configuration files use parser-compatible encoding and escaping |  |  |  |
+| Test parameters, fixtures, and generated docs contain no garbled text |  |  |  |
+| Non-ASCII API/UI/database/import-export paths are validated when relevant |  |  |  |
+| Existing garbled source text, if any, is documented and contained |  |  |  |
+
 ## Test Coverage
 
 | Area | Coverage | Evidence | Gap |
 |---|---|---|---|
+
+## Scenario-to-Test Mapping
+
+| Requirement / Scenario | Test / Verification | Positive / Negative / Adversarial | Coverage Evidence | Gap |
+|---|---|---|---|---|
 
 ## Standalone Verification
 
@@ -134,6 +172,11 @@
 | Requirement | Status | Evidence | Gap |
 |---|---|---|---|
 | Coverage is at least 85% for changed/affected code |  |  |  |
+| Coverage is not used as a substitute for scenario coverage |  |  |  |
+| Requirement-to-test mapping is complete |  |  |  |
+| Counterexample matrix covers broad requirements |  |  |  |
+| Masked-test analysis proves behavior is not hidden by earlier gates |  |  |  |
+| Broad-qualifier audit checks spec qualifiers against code qualifiers |  |  |  |
 | Tests use explicit parameter files |  |  |  |
 | Tests do not target empty/no-op code |  |  |  |
 | Tests are not limited to class/method initialization |  |  |  |
@@ -142,15 +185,46 @@
 
 ## Documentation Consistency
 
+## Main Full Requirements / Spec / Design / Code Review
+
+| Area | Status | Evidence | Finding / Fix |
+|---|---|---|---|
+| All requirements and scenarios |  |  |  |
+| Design decisions and confirmations |  |  |  |
+| Changed code paths |  |  |  |
+| Tests and verification evidence |  |  |  |
+| Rule compliance |  |  |  |
+
+## Independent Review Thread 1
+
+Requirement/spec/design/code alignment and adversarial evidence review. This thread must not edit files.
+
+| Finding ID | Severity | Finding | Evidence | Main Thread Response | Re-Review Status |
+|---|---|---|---|---|---|
+
+## Independent Review Thread 2
+
+Security, implementation standards, regression, logging, data/API/async/config, test quality, and file-size review. This thread must not edit files.
+
+| Finding ID | Severity | Finding | Evidence | Main Thread Response | Re-Review Status |
+|---|---|---|---|---|---|
+
+## Main Thread Finding Response
+
+| Finding ID | Source Thread | Main Decision | Fix / Reply | Verification | Closure Evidence |
+|---|---|---|---|---|---|
+
 ## Final Code Review Pass 1
 
 | Area | Status | Evidence | Finding / Fix |
 |---|---|---|---|
-| Specs/design/tasks/rules alignment |  |  |  |
+| Specs/design/design-review/tasks/rules alignment |  |  |  |
 | Architecture and code paths |  |  |  |
-| Tests, coverage, standalone verification, and real E2E |  |  |  |
+| Tests, scenario mapping, coverage, standalone verification, and real E2E |  |  |  |
+| Counterexample matrix, masked-test analysis, and broad-qualifier audit |  |  |  |
 | Browser/UI QA when relevant |  |  |  |
 | Comments, logs, `trace_id`, and sensitive-data exclusion |  |  |  |
+| Encoding and no-mojibake checks |  |  |  |
 | Reuse/common logic and no unrequested fallback |  |  |  |
 | Parameter/data-object and file-size constraints |  |  |  |
 
@@ -161,7 +235,9 @@
 | Regressions introduced by fixes |  |  |  |
 | Security, data handling, and authorization |  |  |  |
 | Logging, `trace_id`, and sensitive-data exposure |  |  |  |
+| Encoding/no-mojibake regressions |  |  |  |
 | API IO, async behavior, configuration, and dependencies |  |  |  |
+| Masked-test risks and narrower code qualifiers |  |  |  |
 | Test quality and remaining rule violations |  |  |  |
 
 ## Blocking Issues

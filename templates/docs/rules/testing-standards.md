@@ -10,6 +10,7 @@ Changed or affected code MUST reach at least 85% code coverage.
 - Python projects SHOULD use coverage.py, pytest-cov, or the target project's existing coverage tool.
 - Coverage evidence MUST be recorded in implementation review artifacts.
 - Coverage from disabled tests, empty tests, or initialization-only tests does not count.
+- Coverage percentage MUST NOT substitute requirement coverage, scenario coverage, or requirement-to-test mapping.
 
 ## TEST-002: Explicit Test Parameters
 
@@ -98,11 +99,25 @@ Task review evidence MUST include test proof.
 
 - Commands run.
 - Coverage output.
+- Requirement-to-test mapping.
+- Requirement Counterexample Matrix for broad requirements.
+- Masked-Test Analysis for gate or decision-chain behavior.
+- Broad-Qualifier Audit comparing spec qualifiers to code qualifiers.
 - Test parameter file paths.
 - Fixture file paths.
 - Mocked external dependencies.
 - Integration test gates, if any.
 - Open findings and fixes.
+
+## TEST-010A: Requirement Counterexample Matrix
+
+Implementation review MUST actively try to disprove broad requirements.
+
+- For every `SHALL`, `MUST`, and scenario, extract behavior dimensions such as source, type, status, profile, state, time, data-readiness, error, fallback, permission, tenant/user, and API/UI output when relevant.
+- For broad qualifier words such as `all`, `any`, `same`, `unified`, `source-agnostic`, `every`, `不得按来源`, and `统一`, include at least two non-default variants and one adversarial variant.
+- Positive-path and negative-path tests MUST both exist when the requirement affects admission, scoring, persistence, API output, UI output, authorization, validation, or external side effects.
+- A test blocked by an earlier gate does not prove later gate semantics. Review evidence MUST state why each proving test is not masked by another condition.
+- If code implements a narrower qualifier than the spec, record a finding unless specs/design/tasks explicitly approve the exception.
 
 ## TEST-011: Standalone Full Verification
 

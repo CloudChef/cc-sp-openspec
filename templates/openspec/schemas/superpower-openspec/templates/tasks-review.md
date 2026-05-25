@@ -2,6 +2,8 @@
 
 > 默认语言：除非用户明确要求英文，本文档的标题、章节内容和说明均使用中文；OpenSpec 关键字、代码标识符、API 路径、配置键和命令保持原文。
 
+> 阶段归属：本 review 只评审任务是否忠实落地已批准的 specs、`design.md` 和 `design-review.md`。如果发现设计缺口，返回 `/sp-spec`。
+
 
 ## Summary
 
@@ -15,6 +17,11 @@
 | Design Decision | Status | Evidence | Gap |
 |---|---|---|---|
 
+## Design Review Closure
+
+| Design Review Finding / Readiness Check | Closed | Evidence | Gap |
+|---|---|---|---|
+
 ## Mandatory Implementation Standards
 
 | Standard | Status | Evidence | Gap |
@@ -25,6 +32,7 @@
 | Requirement scope and fallback/compatibility decisions are explicit |  |  |  |
 | Method/function parameter plans satisfy <= 5 inputs or use named data objects |  |  |  |
 | Code comments, logging events, trace_id propagation, and sensitive-data masking are planned |  |  |  |
+| Encoding/no-mojibake risks and validation are planned |  |  |  |
 | Generated/modified code files have a <= 1000 line split plan |  |  |  |
 | Standalone verification plan covers API, UI, bug-entry, and external-service behavior when relevant |  |  |  |
 | User-confirmed E2E required/not-required decision is recorded in design |  |  |  |
@@ -79,10 +87,26 @@
 | Exception logs preserve stack traces |  |  |  |
 | Sensitive data is excluded or masked before logging |  |  |  |
 
+## Encoding / No-Mojibake Review
+
+| Area | Status | Evidence | Gap |
+|---|---|---|---|
+| Generated or modified comments are readable |  |  |  |
+| Code strings and error/log messages are readable |  |  |  |
+| Configuration encoding and escaping are parser-compatible |  |  |  |
+| Test parameters and fixtures contain no garbled text |  |  |  |
+| Non-ASCII text paths are validated when relevant |  |  |  |
+| Existing garbled source text, if any, is recorded with handling strategy |  |  |  |
+
 ## Validation Coverage
 
 | Validation Area | Status | Evidence | Gap |
 |---|---|---|---|
+| Requirement-to-test mapping |  |  |  |
+| Coverage percentage is not used as a substitute for scenario coverage |  |  |  |
+| Requirement Counterexample Matrix planned for broad requirements |  |  |  |
+| Masked-Test Analysis planned for gate or decision-chain behavior |  |  |  |
+| Broad-Qualifier Audit planned for spec-vs-code qualifier mismatches |  |  |  |
 | Standalone full verification |  |  |  |
 | User-confirmed E2E decision is reflected in tasks |  |  |  |
 | User-confirmed required real E2E tests are designed |  |  |  |

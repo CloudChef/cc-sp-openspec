@@ -24,8 +24,9 @@ OpenSpec CLI is not required. The AI coding agent works directly with files unde
 The template makes AI-assisted development more controlled and auditable:
 
 - `brainstorm.md`, `context.md`, and `brainstorm-review.md` capture discovery, source research, and customer/user confirmation.
-- `proposal.md` and `specs/<capability>/spec.md` capture formal behavior requirements.
-- `design.md`, `mockups/`, and `tasks.md` capture technical design, UI mockups, target code paths, database/API/async/test decisions, and implementation tasks.
+- `proposal.md`, `specs/<capability>/spec.md`, and `spec-review.md` capture formal behavior requirements and spec review.
+- `design.md`, `design-review.md`, and `mockups/` capture technical design, design review, UI mockups, target code paths, database/API/async/E2E decisions.
+- `tasks.md` and `tasks-review.md` capture implementation task breakdown and task review.
 - `task-reviews.md` and `review.md` capture per-task alignment review, security review, and final implementation review.
 - `docs/wiki/<feature-or-story-title>.md` captures the completed feature or story documentation.
 - `docs/rules/*.md` captures project-specific business, code, configuration, and testing rules.
@@ -64,7 +65,7 @@ Important directories:
 - `skills/`: Workflow skills provided by this template. This is a staging area; real projects should sync them into the user-level skills directory.
 - `templates/`: The OpenSpec/Codex project template that can be copied directly into a target project root.
 - `templates/openspec/`: Project instructions, change folders, schema, and artifact templates.
-- `templates/docs/rules/`: Project rules, including AI workflow quality, baseline implementation, logging, Java, Python, configuration, and testing rules.
+- `templates/docs/rules/`: Project rules, including AI workflow quality, baseline implementation, logging, encoding/no-mojibake, Java, Python, configuration, and testing rules.
 - `templates/docs/ai-context/source-index.md`: Tells Codex which sources to read during design and context research.
 - `templates/docs/ai-context/project-learnings.md`: Captures reusable project patterns, pitfalls, preferences, and verification notes learned from completed changes.
 - `templates/docs/codex-superpower-openspec.png`: Workflow architecture diagram.
@@ -142,10 +143,11 @@ The template includes these default rule files:
 - `docs/rules/project-implementation-standards.md`: Baseline implementation rules for code paths, requirement scope and fallback control, method parameters/data objects, standalone full verification, real E2E test design and execution, same/equivalent logic reuse, Chinese-by-default generated documentation, file size, database runtime, OpenAPI, layering, API IO, and async work.
 - `docs/rules/ai-workflow-quality-standards.md`: AI workflow quality rules for brainstorm product challenge, multi-lens design planning, browser QA, security review, and wiki/project learning capture.
 - `docs/rules/logging-standards.md`: Logging rules for unified format, `trace_id`, levels, safe parameters, exception stack traces, sensitive-data masking, async/performance, structured search, and monitoring.
+- `docs/rules/encoding-standards.md`: Encoding and no-mojibake rules requiring generated or modified comments, code, config, test data, and documentation text to stay readable and correctly encoded.
 - `docs/rules/java-code-standards.md`: Java/Spring rules with Google Java Style as a default reference.
 - `docs/rules/python-code-standards.md`: Python rules with Google Python Style as a default reference.
 - `docs/rules/configuration-standards.md`: Configuration, database, migration, OpenAPI, async queue, and tool configuration rules.
-- `docs/rules/testing-standards.md`: Testing, coverage, test parameters, standalone full verification, real E2E tests, mocks, and integration test safety rules.
+- `docs/rules/testing-standards.md`: Testing, coverage, test parameters, requirement-to-test mapping, counterexample matrix, masked-test analysis, broad-qualifier audit, standalone full verification, real E2E tests, mocks, and integration test safety rules.
 
 Each target project can add its own rule files, for example:
 
@@ -163,35 +165,35 @@ Run the automatic goal command to finish the remaining workflow:
 /sp-goal <requirement-or-change-id>
 ```
 
-`/sp-goal` detects the current change status and starts from the earliest incomplete phase. If brainstorm is not complete or lacks customer/user confirmation, it starts at brainstorm. If brainstorm is confirmed but spec is not complete, it starts at spec. It continues through the remaining phases until `/sp-complete`. If an existing `design.md` lacks any required confirmation for backend logic, UI mockup/function description, API paths and parameters, configuration parameter names and values, or E2E required/not-required decisions, `/sp-goal` treats design/tasks as incomplete, confirms the missing decision inside the goal workflow, then updates design, tasks, and tasks-review. It does not skip reviews, tests, coverage, finding closure, wiki generation, or archive gates.
+`/sp-goal` detects the current change status and starts from the earliest incomplete phase. If brainstorm is not complete or lacks customer/user confirmation, it starts at brainstorm. If brainstorm is confirmed but spec/design is not complete, it starts at spec. It continues through the remaining phases until `/sp-complete`. If an existing `design.md` lacks any required confirmation for backend logic, UI mockup/function description, API paths and parameters, configuration parameter names and values, or E2E required/not-required decisions, or if `design-review.md` is missing, `/sp-goal` treats spec/design as incomplete, confirms the missing decision inside the goal workflow, then updates design and design-review through `/sp-spec`. It does not skip reviews, independent review threads, tests, coverage, finding closure, wiki generation, or archive gates.
 
 You can also run phases manually:
 
 1. Explore the requirement: run `/sp-brainstorm <requirement>`.
    - Outputs: `brainstorm.md`, `context.md`, `brainstorm-review.md`.
    - Purpose: clarify the requirement, collect context, read rules, and identify scope risks.
-   - Confirmation: the output must be confirmed with the customer/user, and the confirmation, requested changes, or rejection must be recorded in `brainstorm-review.md` before `/sp-spec`.
+   - Confirmation: the main thread must review the output, then start one independent review thread for brainstorm/context. Findings return to the main thread for fixes and replies until `brainstorm-review.md` records zero unresolved findings. After that, the output must be confirmed with the customer/user, and the confirmation, requested changes, or rejection must be recorded in `brainstorm-review.md` before `/sp-spec`.
    - Limit: do not create formal specs, design, tasks, or code.
 
-2. Generate specs: run `/sp-spec <change-id>`.
-   - Outputs: `proposal.md`, `specs/<capability>/spec.md`, `spec-review.md`.
-   - Purpose: turn the requirement into a formal proposal and observable behavior specs.
-   - Requirement: specs must be based on confirmed brainstorm output; specs use Requirement + Scenario format; rules that affect external behavior must be encoded in requirements or scenarios; scenarios must provide enough external-entry and expected-result detail for design to decide whether real E2E is required.
+2. Generate specs and design: run `/sp-spec <change-id>`.
+   - Outputs: `proposal.md`, `specs/<capability>/spec.md`, `spec-review.md`, `design.md`, `design-review.md`, and `mockups/` when UI changes require mockups.
+   - Purpose: turn the requirement into a formal proposal, observable behavior specs, technical design, and design review.
+   - Requirement: specs must be based on confirmed brainstorm output; specs use Requirement + Scenario format; rules that affect external behavior must be encoded in requirements or scenarios; scenarios must provide enough external-entry and expected-result detail for design to decide whether real E2E is required. Backend logic, UI mockups/function descriptions, API paths and parameters, configuration names and values, and E2E required/not-required decisions must be confirmed with the customer/user when applicable. If any design confirmation exposes a spec gap, update specs and spec-review before design-review is closed. After proposal/spec/design/design-review are complete, start one independent review thread for spec/design alignment, customer confirmations, E2E design, implementation readiness, and rules compliance. Findings return to the main thread for fixes and replies until `spec-review.md` or `design-review.md` records zero unresolved findings.
 
-3. Create design and tasks: run `/sp-tasks <change-id>`.
-   - Outputs: `design.md`, `tasks.md`, `tasks-review.md`.
-   - Purpose: define technical design, code paths, task boundaries, test strategy, and review gates.
-   - Requirement: all backend logic must be confirmed with the customer/user. If UI changes exist, design must generate a mockup and functional description and confirm both. If APIs exist, design must list every API method, path, path/query/body parameter, and response-relevant parameter and confirm them. If configuration parameters exist, design must list parameter names, proposed values, environments/scopes, and reasons and confirm them. Design must also decide whether the current requirement needs real E2E and confirm that decision with the user. When E2E is confirmed as required, design must specify command, runtime target, test data, assertions, and evidence. Design and tasks must also cover product, design, engineering, developer-experience, security, and QA review lenses; UI changes must define real browser QA or the project-approved UI runner when a runnable target exists. If any confirmation exposes a spec gap, update specs before continuing to tasks and implementation. Tasks must include code paths, customer confirmation evidence, requirement-scope/fallback decisions, method-parameter/data-object plans, file split plan, database/API/IO/async impact, the confirmed E2E requirement, test parameter files, 85% coverage target, Alignment Review, and Security Review.
+3. Create tasks: run `/sp-tasks <change-id>`.
+   - Outputs: `tasks.md`, `tasks-review.md`.
+   - Purpose: turn reviewed design into implementation tasks, verification entries, and review gates.
+   - Requirement: `/sp-tasks` must not create or modify `design.md` or `design-review.md`. Tasks must include code paths, customer confirmation evidence, requirement-scope/fallback decisions, method-parameter/data-object plans, file split plan, database/API/IO/async impact, the confirmed E2E requirement, test parameter files, 85% coverage target, Alignment Review, and Security Review. If task planning finds a missing design decision or customer confirmation, return to `/sp-spec`.
 
 4. Implement tasks: run `/sp-impl <change-id>`.
    - Outputs: code changes, updated `tasks.md`, `test-params/`, `task-reviews.md`, and `review.md`.
    - Purpose: implement tasks one by one with validation and two review rounds after each task.
-   - Requirement: every Alignment Review and Security Review finding must be fixed and re-reviewed before starting the next task; after all tasks are complete, the full code diff must receive at least two final code review passes, and all findings must be fixed and re-reviewed before impl can finish.
+   - Requirement: every task must complete requirement-to-test mapping, Requirement Counterexample Matrix, Masked-Test Analysis, and Broad-Qualifier Audit before task completion; coverage cannot substitute requirement coverage. Every Alignment Review and Security Review finding must be fixed and re-reviewed before starting the next task. After all tasks are complete, the main thread must first run one full implementation review across all requirements, specs, design, code, tests, verification, and rules. Then start two independent final review threads: Thread 1 checks requirement/spec/design/code alignment and adversarial evidence; Thread 2 checks security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates. All findings return to the main thread for fixes, replies, verification, and re-review until no open findings remain.
 
 5. Complete and archive: run `/sp-complete <change-id>`.
    - Outputs: `completion.md`, `docs/wiki/<feature-or-story-title>.md`, `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`, and a local git commit.
    - Purpose: close the loop across tasks, tests, reviews, rules, and documentation, then generate the wiki, capture project learnings, archive the change, and create the local commit.
-   - Requirement: the wiki filename must be semantic and derived from specs, design, actual code, rules, and review evidence. It should not simply use `<change-id>.md`.
+   - Requirement: the wiki filename must be semantic and derived from specs, design, design-review, actual code, rules, and review evidence. It should not simply use `<change-id>.md`.
    - Learning capture: update `docs/ai-context/project-learnings.md` when the change produces reusable patterns, pitfalls, project preferences, or verification notes; otherwise record in completion evidence that no reusable learning was found.
    - Commit requirement: create the local commit only after code changes, tests, reviews, `completion.md`, wiki, and archive are finished. Commit only the completed change files and do not push automatically. The commit message must summarize the complete requirement, completed changes, solution/design approach, workflow and completion evidence, and frontend/backend completion content when relevant, without excessive implementation detail.
    - Reporting requirement: after completion, provide a user-facing report of what was done, focused on solution, code changes, tests/verification, documentation updates, review status, and local commit. OpenSpec archive paths and internal artifacts can be brief supporting evidence.
