@@ -41,4 +41,4 @@ This project uses:
 4. `/sp-impl`
 5. `/sp-complete`
 
-Feature work should move through these artifacts from discovery through implementation, documentation, and archive. `/sp-spec` owns proposal, specs, design, and design review; `/sp-tasks` owns task breakdown only.
+Feature work should move through these artifacts from discovery through implementation, documentation, and archive. Durable OpenSpec contracts are limited to proposal, specs, design, and tasks under `openspec/changes/<change-id>/`; process evidence belongs under `.agent/workdir/sp-openspec/<change-id>/`. `/sp-spec` owns proposal, specs, design, and design review; `/sp-tasks` owns task breakdown only.

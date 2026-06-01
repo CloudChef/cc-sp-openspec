@@ -101,7 +101,7 @@ Test configuration MUST be isolated from production config.
 - Python test config belongs under `tests/` or ignored local files.
 - Integration tests that require real services MUST be disabled by default or gated by explicit environment variables.
 - Test fixtures SHOULD use JSON or YAML files when inputs are non-trivial.
-- Test parameters required by the OpenSpec workflow MUST be saved under `openspec/changes/<change-id>/test-params/`.
+- Test parameters required by the OpenSpec workflow MUST be saved as reusable JSON files under `.agent/workdir/sp-openspec/<change-id>/test-params/`; committed tests that need reusable files MUST use the project's normal test resource or fixture directories instead of depending on ignored workdir files. Same-module tests MUST reuse or extend existing JSON parameter files or project fixtures when practical.
 
 ## CFG-010: Dependency and Tool Config
 

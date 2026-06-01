@@ -1,293 +1,86 @@
 name: superpower-openspec
-version: 1
-description: Superpower-extended OpenSpec workflow for Codex. Generated documentation defaults to Chinese unless the user explicitly asks for English.
+version: 2
+description: Minimal durable OpenSpec contracts for the Superpower-style workflow. Generated documentation defaults to Chinese unless the user explicitly asks for English.
 
-artifacts:
-  - id: brainstorm
-    generates: brainstorm.md
-    description: Superpower brainstorm output before formal OpenSpec artifacts
-    template: brainstorm.md
-    instruction: |
-      Explore the requirement before creating formal OpenSpec artifacts.
-      Read applicable default Java, Python, configuration, and testing rule files when they match the requested work.
-      Challenge product scope before spec work by identifying the real user, pain point, expected outcome, success signal, smallest useful slice, rejected/deferred scope, alternatives, and open product questions.
-      Draft the proposed brainstorm.md and context.md content in the conversation first; do not create or update brainstorm.md, context.md, or brainstorm-review.md until the customer/user confirms the drafted content.
-      Use this as input to proposal.md, not as an implementation source.
-      The final brainstorm output must be confirmed with the customer/user before proposal/spec work.
-      Do not write code.
-    requires: []
+storage:
+  durable_change_dir: openspec/changes/<change-id>
+  process_workdir: .agent/workdir/sp-openspec/<change-id>
+  durable_policy: |
+    Keep only long-term contracts in openspec/changes/<change-id>: proposal.md,
+    design.md, tasks.md, and specs/<capability>/spec.md.
+    Write brainstorm, context, review logs, mockups, workflow test-parameter
+    records, completion evidence, and other process evidence to process_workdir.
 
-  - id: context
-    generates: context.md
-    description: Context research from rules, wiki, standards, existing specs, and code
-    template: context.md
-    instruction: |
-      Read docs/ai-context/source-index.md.
-      Read relevant project-defined docs/rules/*.md files.
-      Read docs/rules/java-code-standards.md, docs/rules/python-code-standards.md, docs/rules/configuration-standards.md, and docs/rules/testing-standards.md when applicable.
-      Read relevant docs/standards and docs/wiki files.
-      Inspect existing specs and similar implementation.
-      Capture sources, existing patterns, conflicts, gaps, and design implications.
-      Do not write code.
-    requires:
-      - brainstorm
-
-  - id: brainstorm-review
-    generates: brainstorm-review.md
-    description: Phase review for brainstorm and context alignment before proposal/spec work
-    template: brainstorm-review.md
-    instruction: |
-      Review brainstorm.md and context.md before formal OpenSpec artifacts are created.
-      Use Superpower review skills when available: request reviews with superpowers:requesting-code-review and process findings with superpowers:receiving-code-review. If the skills are unavailable, record the reason and use Codex or the current tool/agent's own review capability to perform the same checklist.
-      Start one independent review thread for brainstorm/context review when supported. The independent thread must not edit files; it returns findings to the main thread. The main thread fixes and records responses, then re-runs independent review until zero unresolved blocking findings.
-      Check alignment with the user request, project rules, source coverage, existing specs, context gaps, and scope risks.
-      Fix in-scope brainstorm/context issues before continuing.
-      If review findings require changing confirmed brainstorm/context content, draft the revised content in the conversation and get customer/user confirmation before writing it back to files.
-      Record customer/user confirmation, requested changes, or rejection before proposal/spec work.
-      Do not write code.
-    requires:
-      - brainstorm
-      - context
-
+durable_artifacts:
   - id: proposal
     generates: proposal.md
-    description: OpenSpec change proposal
     template: proposal.md
+    description: Durable OpenSpec change proposal.
     instruction: |
-      Create a formal OpenSpec proposal based on brainstorm.md and context.md.
-      Do not start proposal/spec work until brainstorm-review.md records customer/user confirmation of the brainstorm output.
-      Identify project-defined rules that affect scope.
+      Create a formal proposal from confirmed brainstorm/context workdir evidence.
       Focus on problem, goal, scope, value, risks, and open questions.
       Do not include low-level implementation details.
-    requires:
-      - brainstorm
-      - context
-      - brainstorm-review
 
   - id: specs
-    generates: specs/**/*.md
-    description: OpenSpec capability requirements and scenarios
+    generates: specs/<capability>/spec.md
     template: spec.md
+    description: Durable capability requirements and scenarios.
     instruction: |
       Create capability specs using Requirement and Scenario format.
-      Encode relevant behavior-affecting rules as observable requirements or scenarios.
-      Requirements must describe observable behavior.
-      Requirements and scenarios must be independently verifiable from a real user-facing, API-facing, job-facing, or system-facing entry point.
-      Specs must describe enough external behavior for design to decide whether real E2E is required, including external entry point, actor/client, trigger, expected observable result, and side effects.
-      Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not satisfy E2E evidence when E2E is required.
-      Backend behavior must support later real API request/response verification, UI behavior must support later UI test verification, bug fixes must identify the bug entry point, and external service behavior must identify observable database, Redis, Elasticsearch, queue, cache, or integration effects when relevant.
-      Use SHALL, SHOULD, and MAY correctly.
-      Do not include implementation tasks.
-    requires:
-      - proposal
-
-  - id: spec-review
-    generates: spec-review.md
-    description: Phase review for proposal and specs before design work inside /sp-spec
-    template: spec-review.md
-    instruction: |
-      Review proposal.md and specs against brainstorm.md, context.md, brainstorm-review.md, project rules, existing specs, and OpenSpec formatting.
-      Use Superpower review skills when available: request reviews with superpowers:requesting-code-review and process findings with superpowers:receiving-code-review. If the skills are unavailable, record the reason and use Codex or the current tool/agent's own review capability to perform the same checklist.
-      Start one independent review thread for completed spec/design work before tasks. The independent thread must not edit files; it returns findings to the main thread. The main thread fixes and records responses, then re-runs independent review until zero unresolved blocking findings.
-      Check customer/user confirmation of brainstorm output, requirement quality, scenario coverage, standalone verifiability, E2E-verifiable external behavior, missing behavior, out-of-scope behavior, and implementation leakage before design work begins.
-      Fix in-scope proposal/spec issues before continuing.
-      Do not write code.
-    requires:
-      - proposal
-      - specs
+      Requirements must describe observable behavior and must be independently
+      verifiable from a real user-facing, API-facing, job-facing, or system-facing
+      entry point. Specs must provide enough external behavior for design to decide
+      whether real E2E is required.
 
   - id: design
     generates: design.md
-    description: Technical design based on specs and context research, generated by /sp-spec before tasks
     template: design.md
+    description: Durable technical design.
     instruction: |
-      Create the technical design based on proposal.md, specs, and context.md.
-      The design must reference rules, wiki, standards, and existing implementation patterns.
-      Apply default Java, Python, configuration, and testing standards when target files or validation touch those areas.
-      Include Rules Compliance, Source Mapping, and Spec Gaps.
-      Recommend generated/modified code paths and keep planned code files <= 1000 lines by splitting when needed.
-      Identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
-      Define requirement scope and whether compatibility/fallback behavior is required; if specs do not require it, explicitly prohibit fallback and compatibility branches.
-      Define method/function parameter plans; no method/function may exceed 5 input parameters unless a named data object with explicit fields is used.
-      Define useful code comments, logging events, trace_id propagation, structured fields, log levels, exception stack-trace behavior, sensitive-data masking, and logging performance considerations.
-      Define encoding/no-mojibake risks and validation for generated or modified comments, code text, configuration, test data, non-ASCII text, import/export, serialization, logs, API payloads, database text, and UI text.
-      Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
-      Apply product, design, engineering, developer-experience, security, and QA review lenses when relevant.
-      Identify all backend logic decisions, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
-      If UI changes exist, generate a mockup artifact and functional description, define real browser QA or the project-approved UI runner when a runnable target exists, stop to confirm both with the customer/user, and record confirmation before tasks are finalized.
-      If APIs exist, list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter, stop to confirm them with the customer/user, and record confirmation before tasks are finalized.
-      If configuration parameters exist, list every parameter name, proposed value, environment/scope, and reason, stop to confirm names and values with the customer/user, and record confirmation before tasks are finalized.
-      Assess whether each changed capability requires real E2E, stop to confirm the required/not-required decision with the user, and record that confirmation in design.md.
-      For confirmed required E2E paths, define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, evidence, and fallback/skip reason when no runnable target exists.
-      If the confirmed E2E decision reveals missing or incorrect spec behavior, stop and update specs before creating tasks or implementing.
-      Explicitly decide whether a database is required; if required, use SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
-      Design backend APIs from OpenAPI contracts, separate at least Controller and Service responsibilities, document API IO, and require async handling for very time-consuming operations.
-      Do not add behavior not covered by specs.
-    requires:
-      - proposal
-      - specs
-      - spec-review
-      - context
-
-  - id: mockups
-    generates: mockups/**/*.md
-    description: UI mockup artifacts required when a change includes UI behavior
-    template: mockup.md
-    instruction: |
-      When UI changes exist, create a mockup artifact and functional description under the change folder.
-      Confirm the mockup and functional description with the customer/user before implementation tasks are finalized.
-      If there are no UI changes, record the not-applicable reason in design.md instead of creating mockup files.
-    requires:
-      - design
-
-  - id: design-review
-    generates: design-review.md
-    description: Phase review for technical design before implementation tasks
-    template: design-review.md
-    instruction: |
-      Review design.md against proposal.md, specs, spec-review.md, project rules, source mapping, customer/user confirmations, and implementation readiness before tasks are created.
-      Use Superpower review skills when available: request reviews with superpowers:requesting-code-review and process findings with superpowers:receiving-code-review. If the skills are unavailable, record the reason and use Codex or the current tool/agent's own review capability to perform the same checklist.
-      Record the independent spec/design review thread findings, main-thread responses, fixes, and closure when that independent review touches design readiness.
-      Check that design stays inside approved specs, has no unreviewed behavior, and includes source-backed decisions.
-      Check code path planning, product/design/engineering/developer-experience/security/QA review lenses, browser/UI QA plans, reuse/common logic plans, requirement-scope/fallback decisions, parameter-count/data-object plans, comment/logging/traceability plans, encoding/no-mojibake plans, standalone verification plans, real E2E test designs, <= 1000 line split plans, database runtime/pool decisions, OpenAPI and Controller/Service decisions, API IO, and async handling.
-      Check customer/user confirmation gates for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.
-      If design review exposes missing or incorrect spec behavior, update specs and spec-review before continuing to tasks.
-      Fix in-scope design issues before tasks.
-      Do not write code or create implementation tasks.
-    requires:
-      - proposal
-      - specs
-      - spec-review
-      - design
+      Create technical design based on proposal, specs, project rules, source
+      mapping, and workdir context/review evidence. Include target code paths,
+      reuse/common logic plan, database/API/IO/async decisions, confirmation
+      evidence, E2E decisions, validation plan, logging/traceability, encoding,
+      and implementation constraints.
 
   - id: tasks
     generates: tasks.md
-    description: Implementation task checklist
     template: tasks.md
+    description: Durable implementation task checklist.
     instruction: |
-      Create implementation tasks from specs, approved design, and design-review closure. Do not create or redesign design.md in this phase.
-      Each task must reference a specific requirement, applicable rules, target code paths, implementation-standard impact, and validation.
-      Each task must reference the approved design decision and design-review readiness evidence it implements.
-      Tasks touching Java, Python, configuration, or tests must cite the matching default rule IDs.
-      Each task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
-      Each task must state requirement-scope/fallback rules and prohibit unrequested fallback or compatibility behavior.
-      Each task must state method/function parameter constraints and any required named data object.
-      Each task must state code comment and logging requirements, including trace_id, log levels, structured fields, exception stack traces, and sensitive-data exclusion when relevant.
-      Each task must state encoding/no-mojibake validation when it changes comments, code text, configuration, test data, non-ASCII text, or text-bearing behavior.
-      Each task must include applicable product, design, engineering, developer-experience, security, and QA review lens requirements.
-      Each task must include standalone full verification from the relevant entry point.
-      Each task must include requirement-to-test mapping and must state when a Requirement Counterexample Matrix, Masked-Test Analysis, and Broad-Qualifier Audit are required.
-      Coverage percentage must not substitute requirement coverage or scenario-to-test mapping.
-      Each task must include applicable customer/user confirmation evidence for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, and E2E decisions, or a clear not-applicable reason.
-      Each task must include the user-confirmed real E2E requirement or a design-confirmed not-applicable reason.
-      Specs, tasks, and implementation must follow the user-confirmed E2E decision recorded in design.md.
-      Backend service tasks must require real API request/response verification, UI tasks must require UI behavior tests plus real browser QA or the project-approved UI runner when a runnable target exists, bug fix tasks must verify through the bug entry point, and external service tasks must verify project-provided database/Redis/Elasticsearch/queue/cache/integration connections when available.
-      Each task must include the <= 1000 line file-size guardrail and split plan when needed.
-      Each task must identify database, OpenAPI/Controller/Service, API IO, and async impact when relevant.
-      Each task must specify independent test parameter files under openspec/changes/<change-id>/test-params/.
-      Each task must require at least 85% coverage for changed/affected code.
-      Each task must require two post-implementation reviews: Alignment Review and Security Review.
-      Findings from either review must be fixed and re-reviewed before the next task starts.
-      Do not write code.
-    requires:
-      - specs
-      - design
-      - design-review
+      Create implementation tasks from specs, approved design, and closed workdir
+      design review evidence. Every task must map to requirements and design
+      decisions, name target code paths, define validation, identify reusable
+      JSON test parameters, identify stable project fixture paths when committed
+      tests need reusable files, and require per-task alignment and security reviews.
 
-  - id: tasks-review
-    generates: tasks-review.md
-    description: Phase review for tasks before implementation
-    template: tasks-review.md
-    instruction: |
-      Review tasks.md against specs, spec-review.md, design.md, design-review.md, project rules, source mapping, customer/user confirmations, and validation coverage.
-      Use Superpower review skills when available: request reviews with superpowers:requesting-code-review and process findings with superpowers:receiving-code-review. If the skills are unavailable, record the reason and use Codex or the current tool/agent's own review capability to perform the same checklist.
-      Check that every task maps to requirements, approved design decisions, closed design-review evidence, applicable rules, target code paths, implementation standards, standalone verification, and concrete validation.
-      Check code path planning, product/design/engineering/developer-experience/security/QA review lenses, browser/UI QA plans, reuse/common logic plans, requirement-scope/fallback decisions, parameter-count/data-object plans, comment/logging/traceability plans, encoding/no-mojibake plans, standalone verification plans, real E2E test designs, <= 1000 line split plans, database runtime/pool decisions, OpenAPI and Controller/Service decisions, API IO, and async handling.
-      Check customer/user confirmation gates for brainstorm output, backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.
-      Fix in-scope task issues before implementation. If a design issue is found, return to /sp-spec instead of changing design inside /sp-tasks.
-      Do not write code.
-    requires:
-      - specs
-      - design
-      - design-review
-      - tasks
+process_evidence:
+  path: .agent/workdir/sp-openspec/<change-id>
+  files:
+    - brainstorm.md
+    - context.md
+    - brainstorm-review.md
+    - spec-review.md
+    - design-review.md
+    - mockups/
+    - tasks-review.md
+    - test-params/
+    - task-reviews.md
+    - review.md
+    - completion.md
+  policy: |
+    Process evidence is required by the workflow but is not a durable OpenSpec
+    contract. It should be generated under the process workdir and may be ignored
+    by Git unless the project explicitly decides to retain it.
 
-  - id: task-reviews
-    generates: task-reviews.md
-    description: Per-task implementation review log with alignment and security review findings
-    template: task-reviews.md
-    instruction: |
-      During implementation, record two review rounds for every completed task.
-      Alignment Review checks specs, design, task text, review lens requirements, requirement-to-test mapping, counterexample evidence, masked-test analysis, broad-qualifier audit, comment/logging/traceability evidence, encoding/no-mojibake evidence, rules, browser/UI QA evidence when relevant, and changed code.
-      Security Review checks concrete authentication, authorization, tenant/user isolation, input validation, output encoding, sensitive data exposure, logging, trace_id handling, dependencies, configuration, database access, API IO, async/job behavior, external service calls, and project-defined security rules when relevant.
-      Both reviews check coverage >= 85%, requirement-to-test mapping, Requirement Counterexample Matrix, Masked-Test Analysis, Broad-Qualifier Audit, customer/user confirmation evidence, standalone full verification evidence, user-confirmed required real E2E evidence, reuse/common logic evidence with no avoidable duplicate logic, requirement-scope/fallback evidence with no unrequested fallback or compatibility behavior, parameter-count/data-object evidence, comment/logging/traceability evidence, encoding/no-mojibake evidence, generated/modified code files <= 1000 lines, database runtime/pool evidence when relevant, OpenAPI and Controller/Service evidence when relevant, API IO/async evidence when relevant, independent test parameter files, meaningful assertions, no empty/no-op code tests, and no tests limited to class/method initialization.
-      Coverage percentage cannot substitute scenario coverage. Reviews must actively try to disprove every broad requirement with non-default and adversarial variants, and must record findings for narrower code qualifiers unless explicitly approved by specs/design/tasks.
-      Every finding must be fixed and re-reviewed before the next task starts.
-      Completion requires zero open findings.
-    requires:
-      - tasks-review
-
-  - id: test-params
-    generates: test-params/**/*.md
-    description: Independent test parameter files used by implementation tests
-    template: test-params.md
-    instruction: |
-      Save explicit test parameters independently from test code.
-      Each parameter file must reference the related task, requirement, and scenario.
-      Tests must use these parameters to assert meaningful behavior.
-      Do not use parameter files to justify empty/no-op tests or initialization-only tests.
-    requires:
-      - tasks
-
-  - id: review
-    generates: review.md
-    description: Final implementation review against OpenSpec and per-task review findings
-    template: review.md
-    instruction: |
-      Review implementation against proposal.md, specs, design.md, design-review.md, tasks.md, spec-review.md, tasks-review.md, and task-reviews.md.
-      Check requirement coverage, task completion, per-task review completion, out-of-spec behavior, customer/user confirmation compliance, rule compliance, architecture compliance, implementation standards compliance, standalone verification compliance, real E2E compliance, browser/UI QA compliance when relevant, comment/logging/traceability compliance, encoding/no-mojibake compliance, reuse/common logic compliance, requirement-scope/fallback compliance, parameter-count/data-object compliance, requirement-to-test mapping, Requirement Counterexample Matrix, Masked-Test Analysis, Broad-Qualifier Audit, coverage >= 85%, independent test parameter files, meaningful tests, and unresolved findings.
-      Check Java, Python, configuration, and testing rule compliance when those areas changed.
-      After all tasks are complete, run one main-thread full implementation review against every requirement, spec scenario, design decision, changed code path, test, verification result, and rule.
-      Then run two independent final review threads: Thread 1 reviews requirement/spec/design/code alignment and adversarial evidence; Thread 2 reviews security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates. Independent threads must not edit files. Findings return to the main thread; the main thread fixes, replies, verifies, and re-runs the relevant independent thread until zero unresolved findings.
-      Independent Review Thread 1 satisfies final code review pass 1 and checks specs, design, tasks, rules, architecture, tests, requirement-to-test mapping, counterexample matrices, masked-test analyses, broad-qualifier audits, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, encoding/no-mojibake evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes. Independent Review Thread 2 satisfies final code review pass 2 after Thread 1 fixes and checks regressions, security, data handling, authorization, logging/trace_id/sensitive-data exposure, encoding/no-mojibake regressions, API IO, async behavior, configuration, dependencies, test quality, masked-test risks, narrower code qualifiers, and remaining rule violations. Fix every finding and re-review until both independent final review threads have zero open findings.
-      Completion requires zero unresolved findings.
-      Independent review threads must not modify code. The main thread owns implementation fixes after findings return.
-    requires:
-      - task-reviews
-      - test-params
-
-  - id: wiki
-    generates: docs/wiki/<feature-or-story-title>.md
-    description: Feature or story wiki documentation generated from completed OpenSpec artifacts and implementation
-    template: wiki.md
-    instruction: |
-      Generate feature/story documentation from specs, design, design-review, customer/user confirmations, implemented code paths, database/API/IO decisions, rules, validation evidence, task-reviews.md, and review.md.
-      Derive a concise semantic kebab-case filename from the completed feature or story, not from the raw change ID.
-      The wiki page must describe user-facing behavior, workflow, design summary, customer/user confirmations, security and permissions, logging and traceability, validation evidence, review evidence, reusable project learnings, and source mapping.
-    requires:
-      - review
-
-  - id: completion
-    generates: completion.md
-    description: Completion gate evidence before archiving an implemented change
-    template: completion.md
-    instruction: |
-      Verify all tasks are marked complete, design-review.md has zero unresolved blocking gaps, task-reviews.md has zero open findings, and review.md has zero unresolved findings.
-      Verify brainstorm-review.md records that brainstorm/context draft content was confirmed by the customer/user before brainstorm.md, context.md, or brainstorm-review.md was created or updated.
-      Verify brainstorm-review.md, spec-review.md, design-review.md, and review.md contain required independent review thread evidence, main-thread responses, and zero unresolved independent review findings.
-      Verify review.md records one main-thread full implementation review and two independent final review threads.
-      Verify coverage evidence is at least 85%, scenario-to-test mapping is complete, coverage is not used as a substitute for requirement coverage, Requirement Counterexample Matrix exists for broad requirements, Masked-Test Analysis proves tests are not hidden behind earlier gates, Broad-Qualifier Audit checks spec qualifiers against code qualifiers, and test parameter files are independently saved.
-      Verify implementation-standard evidence: customer/user confirmations are recorded and followed, standalone full verification, user-confirmed required real E2E test execution, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, comment/logging/traceability control, encoding/no-mojibake control, code files <= 1000 lines, database runtime/pool rules, OpenAPI and Controller/Service rules, API IO, and async handling when relevant.
-      Verify the generated wiki page reflects specs, design, design-review, customer/user confirmations, implemented code, rules, and validation evidence.
-      Update docs/ai-context/project-learnings.md when the completed change reveals reusable patterns, pitfalls, preferences, or verification procedures, or record that no reusable learning was found.
-      Record completion gate results, archive target, and local git commit evidence.
-      Create a local git commit only after code changes, tests, reviews, completion evidence, wiki, and archive are finished when the project is a git worktree.
-      The commit message must include the complete requirement, completed changes, solution/design approach, customer/user confirmation evidence when required, workflow/completion evidence, and frontend/backend completion content when relevant.
-      Final response must be user-facing and concrete: summarize the requirement/outcome, solution, code changes, tests/verification, documentation, review status, and local commit. Keep OpenSpec archive paths and internal artifacts as brief supporting evidence only.
-    requires:
-      - wiki
+final_outputs:
+  - docs/wiki/<feature-or-story-title>.md
+  - openspec/changes/archive/<YYYY-MM-DD>-<change-id>/
 
 apply:
   requires:
-    - completion
+    - proposal
+    - specs
+    - design
+    - tasks
   tracks: tasks.md

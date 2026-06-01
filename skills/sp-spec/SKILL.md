@@ -7,13 +7,17 @@ description: Use when the user invokes /sp-spec or asks to create OpenSpec propo
 
 ## Core Rule
 
-Use this skill to convert confirmed discovery artifacts into formal OpenSpec proposal, capability specs, reviewed technical design, and design review. Specs define observable behavior. Design records implementation decisions, customer/user confirmations, E2E decisions, and rule-backed constraints. This phase does not create tasks or write code.
+Use this skill to convert confirmed discovery artifacts into formal OpenSpec proposal, capability specs, reviewed technical design, and design review. Specs define observable behavior. Design records implementation decisions, customer/user confirmations or goal-mode decision records, E2E decisions, and rule-backed constraints. This phase does not create tasks or write code.
+
+## Artifact Placement
+
+Durable OpenSpec contracts stay in `openspec/changes/<change-id>/`: `proposal.md`, `design.md`, and `specs/<capability>/spec.md`. Process evidence for discovery, review, context research, and UI mockups lives under `.agent/workdir/sp-openspec/<change-id>/` and must not be copied into the durable change folder.
 
 ## Inputs
 
-- `openspec/changes/<change-id>/brainstorm.md`
-- `openspec/changes/<change-id>/context.md`
-- `openspec/changes/<change-id>/brainstorm-review.md`
+- `.agent/workdir/sp-openspec/<change-id>/brainstorm.md`
+- `.agent/workdir/sp-openspec/<change-id>/context.md`
+- `.agent/workdir/sp-openspec/<change-id>/brainstorm-review.md`
 - `openspec/project.md`
 - Existing `openspec/specs/` and related active changes
 - Relevant project-defined rules under `docs/rules/*.md`, when present
@@ -26,48 +30,57 @@ Create or update:
 
 - `openspec/changes/<change-id>/proposal.md`
 - `openspec/changes/<change-id>/specs/<capability>/spec.md`
-- `openspec/changes/<change-id>/spec-review.md`
 - `openspec/changes/<change-id>/design.md`
-- `openspec/changes/<change-id>/design-review.md`
-- `openspec/changes/<change-id>/mockups/`, when UI changes require mockup artifacts
+- `.agent/workdir/sp-openspec/<change-id>/spec-review.md`
+- `.agent/workdir/sp-openspec/<change-id>/design-review.md`
+- `.agent/workdir/sp-openspec/<change-id>/mockups/`, when UI changes require mockup artifacts
 
 ## Workflow
 
 1. Confirm `<change-id>` from the user command or existing brainstorm artifact.
-2. Verify `brainstorm-review.md` records customer/user confirmation of the brainstorm output. If confirmation is missing or rejected, stop and return to `/sp-brainstorm` confirmation before proposal/spec work.
+2. Verify `brainstorm-review.md` records customer/user confirmation of the reviewed final brainstorm output and workflow lane decision. If confirmation is missing or rejected, stop and return to `/sp-brainstorm` confirmation before proposal/spec work.
 3. Read `brainstorm.md`, `context.md`, `openspec/project.md`, relevant existing specs, relevant source materials, similar implementation patterns, and relevant project-defined rules under `docs/rules/*.md` when present.
-4. Create `proposal.md` with product-level scope and risk.
-5. Identify project-defined rules that affect scope and observable behavior.
-6. Create capability spec files under `specs/`.
-7. Use OpenSpec Requirement and Scenario format.
-8. Make every behavior independently verifiable through an observable entry point.
-9. Make scenarios specific enough for design to decide whether real E2E is required.
-10. Review proposal and specs for alignment with confirmed brainstorm, context, rules, existing specs, OpenSpec format, standalone verifiability, and E2E-verifiability.
-11. Create `spec-review.md` with findings and required fixes before design work.
-12. Fix review findings that are inside the approved spec scope and re-review until `spec-review.md` has no unresolved blocking gaps.
-13. Write `design.md` only after `spec-review.md` is closed. Design must stay inside approved specs and must not create new behavior.
-14. In `design.md`, recommend generated/modified code paths by feature point and define a split plan for any file that may exceed 1000 lines.
-15. In `design.md`, identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
-16. In `design.md`, define requirement scope, compatibility/fallback decisions, and parameter/data-object design before implementation.
-17. In `design.md`, apply product, design, engineering, developer-experience, security, and QA review lenses when relevant.
-18. In `design.md`, define useful code comment needs, logging events, `trace_id` propagation, structured fields, log levels, exception stack traces, sensitive-data masking, and logging performance considerations.
-19. In `design.md`, define encoding/no-mojibake risks and validation for generated or modified comments, code text, configuration, test data, non-ASCII text, import/export, serialization, logs, API payloads, database text, and UI text.
-20. In `design.md`, explicitly decide whether a database is required. If required, specify SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
-21. In `design.md`, define all backend logic changes and stop to ask the customer/user to confirm those backend logic decisions before the design is considered complete.
-22. In `design.md`, define backend APIs from OpenAPI contracts, separate at least Controller and Service responsibilities, document API method/path/parameters, document API IO, and require async handling for very time-consuming operations. If any API exists, stop to ask the customer/user to confirm every API path and parameter set.
-23. If UI changes exist, generate a mockup artifact and functional description, define real browser QA or the project-approved UI runner when a runnable target exists, then stop to ask the customer/user to confirm the mockup and behavior description before the design is considered complete.
-24. If configuration parameters exist, list every parameter name, proposed value, environment/scope, and reason, then stop to ask the customer/user to confirm the names and values before the design is considered complete.
-25. In `design.md`, assess whether each changed capability needs real E2E testing, stop to ask the user to confirm the E2E required/not-required decision, and record the confirmation evidence.
-26. After all required customer/user confirmations, define real E2E test design for required E2E paths, including runnable command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence to collect.
-27. If any design confirmation exposes missing or incorrect spec behavior, stop, update proposal/specs/spec-review inside this `/sp-spec` workflow, then re-run design and design review.
-28. Create `design-review.md` with findings and required fixes before `/sp-tasks`.
-29. Fix design review findings that are inside the approved spec/design scope and re-review until `design-review.md` has no unresolved blocking gaps.
-30. Start one independent review thread after proposal, specs, `spec-review.md`, `design.md`, and `design-review.md` are complete. The independent thread must review spec/design alignment, customer confirmations, E2E decisions, implementation readiness, and rule compliance; it must return findings to the main thread and must not edit files.
-31. The main thread must discuss, triage, fix, and reply to every independent review finding, update proposal/spec/design/review artifacts when needed, and re-run the independent review thread until there are no unresolved blocking findings.
-32. Stop before creating tasks or writing code.
+4. Determine the workflow lane from `brainstorm-review.md`:
+   - `full`: follow the full spec/design workflow below.
+   - `lightweight`: use compact proposal/spec/design content and lightweight review only when the confirmed Lightweight Precheck remains valid. If new evidence expands scope or hits an escalation trigger, update `brainstorm-review.md` evidence if needed and switch to `full`.
+5. Create `proposal.md` with product-level scope and risk. For `lightweight`, keep it compact: problem, expected behavior, affected paths, validation entry, exclusions, and escalation guardrails.
+6. Identify project-defined rules that affect scope and observable behavior.
+7. Create capability spec files under `specs/`.
+8. Use OpenSpec Requirement and Scenario format. For `lightweight`, write the smallest externally observable requirement/scenario needed to capture the bug fix or light change; do not invent new capability scope.
+9. Make every behavior independently verifiable through an observable entry point.
+10. Make scenarios specific enough for design to decide whether real E2E is required.
+11. Review proposal and specs for alignment with confirmed brainstorm, context, rules, existing specs, OpenSpec format, standalone verifiability, and E2E-verifiability. For `lightweight`, this may be a scoped review of the compact proposal/spec plus the Lightweight Precheck.
+12. Create `spec-review.md` with findings and required fixes before design work. For `lightweight`, record `review_mode: lightweight`, the precheck evidence, skipped full-review areas with reasons, findings, and escalation decision.
+13. Fix review findings that are inside the approved spec scope and re-review until `spec-review.md` has no unresolved blocking gaps.
+14. Write `design.md` only after `spec-review.md` is closed. Design must stay inside approved specs and must not create new behavior.
+15. In `design.md`, recommend generated/modified code paths by feature point and define a split plan for any file that may exceed 1000 lines. If an existing target file is already over 1000 lines, record its baseline line count, complete-functionality-first plan, and post-functionality refactor/split plan.
+16. In `design.md`, identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
+17. In `design.md`, define requirement scope, compatibility/fallback decisions, and parameter/data-object design before implementation.
+18. In `design.md`, apply product, design, engineering, developer-experience, security, and QA review lenses when relevant. For `lightweight`, apply only the lenses relevant to the precheck evidence and record why other lenses are not applicable.
+19. In `design.md`, define useful code comment needs, logging events, `trace_id` propagation, structured fields, log levels, exception stack traces, sensitive-data masking, and logging performance considerations.
+20. In `design.md`, define encoding/no-mojibake risks and validation for generated or modified comments, code text, configuration, test data, non-ASCII text, import/export, serialization, logs, API payloads, database text, and UI text.
+21. In `design.md`, explicitly decide whether a database is required. If required, specify SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
+22. In `design.md`, draft the customer/user confirmation package for all backend logic changes; mark confirmation as pending until review closure.
+23. In `design.md`, define backend APIs from OpenAPI contracts, separate at least Controller and Service responsibilities, document API method/path/parameters, document API IO, and require async handling for very time-consuming operations. If any API exists, include every API path and parameter set in the pending confirmation package.
+24. If UI changes exist, generate a mockup artifact and functional description, define real browser QA or the project-approved UI runner when a runnable target exists, and include the mockup plus behavior description in the pending confirmation package.
+25. If configuration parameters exist, list every parameter name, proposed value, environment/scope, and reason, and include the names and values in the pending confirmation package.
+26. In `design.md`, assess whether each changed capability needs real E2E testing and include the required/not-required decision plus rationale in the pending confirmation package.
+27. The main process must run a spec/design draft review before manual customer/user confirmation or `/sp-goal` goal-mode decision recording. For `full`, run comprehensive review. For `lightweight`, run a scoped lightweight review against the compact proposal/spec/design, Lightweight Precheck, affected paths, behavior boundary, validation plan, and escalation triggers. Create or update `spec-review.md` plus `design-review.md` with draft findings and required fixes.
+28. Fix main-process spec/design review findings that are inside the approved spec/design scope and re-review until the main-process review has no unresolved blocking gaps except explicitly pending customer/user decisions.
+29. Start one independent read-only review thread after proposal, specs, `spec-review.md`, `design.md`, and `design-review.md` drafts are present, but before manual customer/user confirmation or `/sp-goal` goal-mode decision recording, when true parallel execution is available. For `lightweight`, reuse an existing reviewer when available and keep the review scoped to eligibility, compact spec/design alignment, verification, and escalation triggers. The independent thread must return concise findings only to the main thread and must not edit files. If true parallel execution is unavailable, record the blocker and run the same scoped review in the main thread.
+30. Cross-validate main-process findings and independent review thread findings. Confirm whether each finding is valid, duplicate, false positive, already fixed, requires full-lane escalation, or requires customer/user decision. Record the confirmation decision and evidence in `spec-review.md` and/or `design-review.md`.
+31. The main thread must discuss, triage, fix, and reply to every confirmed finding from both the main-process review and independent review thread, update proposal/spec/design/review artifacts when needed, and re-run the affected review until there are no unresolved blocking findings. If lightweight eligibility fails, switch to `full` and complete the full spec/design workflow.
+32. After draft review closure, handle confirmation by invocation mode:
+   - Manual `/sp-spec`: ask the customer/user to confirm the reviewed design confirmation package: backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E required/not-required decisions when applicable.
+   - `/sp-goal`: do not ask for extra user confirmation after brainstorm has been confirmed. Record a goal-mode design decision record in `design.md` and `design-review.md` that lists the reviewed backend logic, UI, API, configuration, and E2E decisions, the sources used, and the review evidence supporting them.
+33. If the customer/user requests changes in manual mode, or if goal mode finds ambiguity that cannot be resolved from specs, brainstorm, context, rules, or source evidence, update proposal/specs/spec-review/design/design-review inside this `/sp-spec` workflow, re-run affected main-process and independent review, and ask only for the specific clarification that is truly required.
+34. After all required manual confirmations or goal-mode design decision records are complete, record the evidence in `design.md` and `design-review.md`. For required E2E paths, define real E2E test design, including runnable command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence to collect.
+35. Run a final main-process confirmation-closure review, and re-run affected independent review when confirmation, goal-mode decision records, or E2E design materially changed the artifacts. `spec-review.md` and `design-review.md` must record review evidence, cross-validation, confirmation evidence or goal-mode decision evidence, main-thread responses, workflow lane, and zero unresolved blocking gaps before `/sp-tasks`.
+36. Stop before creating tasks or writing code.
 
 ## Required `proposal.md` Sections
 
+- Workflow Lane
 - Why
 - What Changes
 - Scope
@@ -80,6 +93,8 @@ Create or update:
 ## Required `spec-review.md` Sections
 
 - Summary
+- Workflow Lane
+- Lightweight Eligibility / Escalation Review
 - Brainstorm Alignment
 - Brainstorm Confirmation
 - Context Alignment
@@ -89,13 +104,17 @@ Create or update:
 - Standalone Verifiability
 - E2E-Verifiable Behavior
 - Out-of-Scope or Implementation Leakage
+- Main Process Comprehensive Review
 - Independent Review Thread
+- Cross-Validation / Finding Confirmation
 - Main Thread Finding Response
 - Finding Closure
 - Required Fixes Before Design
 
 ## Required `design.md` Sections
 
+- Workflow Lane
+- Lightweight Design Scope
 - Current Behavior
 - Target Behavior
 - Architecture Impact
@@ -120,12 +139,13 @@ Create or update:
 - Error Handling
 - Compatibility / Migration
 - Test Strategy
+- Project-Code Test Boundary
 - Standalone Verification Plan
 - Real E2E Test Design
 - Multi-Lens Planning Review
 - Browser / UI QA Plan
 - Project Learning Candidates
-- Customer Confirmation
+- Customer Confirmation / Goal-Mode Decision Record
 - Rules Compliance
 - Source Mapping
 - Spec Gaps
@@ -136,7 +156,7 @@ Create or update:
 - Spec Alignment
 - Design Completeness
 - Source Mapping
-- Customer Confirmation Gates
+- Customer Confirmation / Goal-Mode Decision Gates
 - Implementation Standards
 - Comment / Logging / Traceability Review
 - Encoding / No-Mojibake Review
@@ -145,7 +165,9 @@ Create or update:
 - UI Mockup / Browser QA Review
 - Rule Alignment
 - Task Readiness
+- Main Process Comprehensive Review
 - Independent Review Thread
+- Cross-Validation / Finding Confirmation
 - Main Thread Finding Response
 - Finding Closure
 - Required Fixes Before /sp-tasks
@@ -184,11 +206,21 @@ For `design-review.md`, the reviewer should receive only:
 - Existing implementation patterns referenced by `context.md`
 - The design alignment checklist from this skill
 
-After `spec-review.md` and `design-review.md` are internally clean, start one independent review thread when the runtime supports independent threads or subagents. The independent thread receives the same scoped artifacts plus both review files. It must not edit files; it returns findings to the main thread. The main thread owns triage, fixes, replies, verification, and closure records in `spec-review.md` and `design-review.md`.
+The main process must perform its own comprehensive review before relying on a read-only independent review thread. The independent thread is an additional reviewer, not a replacement for main-process review.
+
+After `spec-review.md` and `design-review.md` are internally clean from the main-process draft review, start one independent review thread automatically before manual design customer/user confirmation or `/sp-goal` goal-mode decision recording when the runtime supports true parallel independent threads/subagents and the current tool has permission; do not ask the user for extra authorization. Permission means the current runtime/tool policy allows spawning read-only review threads, not that the user must confirm thread startup. Do not launch a sequential or fake-parallel subagent just to satisfy this requirement; record `parallel_unavailable_or_sequential_runtime` and perform the same scoped review in the main thread instead.
+
+When the runtime supports persistent reusable review threads, reuse an existing same-change, same-repository, same-role spec/design reviewer instead of opening a new thread. Every reused invocation must receive the current spec/design scope, fresh artifacts, checklist, and evidence references, and `spec-review.md` or `design-review.md` must record the reviewer role, thread identifier/name when available, reused/new status, reviewed scope, artifacts provided, findings, and restart/fallback reason.
+
+Lightweight review mode is allowed for narrow, low-risk spec/design checks. It must still record evidence in `spec-review.md` or `design-review.md`, but it may use a scoped checklist instead of expanding to all project rules. Record `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. Escalate to full review if the change touches production behavior outside the approved compact scope, authentication/authorization, sensitive data, database/persistence, API contracts, UI behavior, async/IO, external integrations, logging/security, E2E-required behavior, broad qualifiers, or any implementation-standard exception.
+
+The independent thread receives the same scoped artifacts plus both review files. It must not edit files. It must return findings only, in concise structured form: priority, finding, evidence location, impact, and suggested fix. It must not return long summaries, restated context, implementation plans, or broad explanations. The main thread owns cross-validation, confirmation of valid findings, triage, fixes, replies, verification, and closure records in `spec-review.md` and `design-review.md`.
+
+Cross-validation must compare main-process findings and independent-thread findings, identify duplicates and disagreements, dismiss false positives only with evidence, and record findings requiring customer/user decision before artifact changes.
 
 Do not pass the full conversation history as review context.
 
-If the Superpower review skills are unavailable in the current runtime, record the unavailable reason in `spec-review.md` or `design-review.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. If independent review threads are unavailable, record the blocker and get explicit user approval before using a fallback single-thread review. Do not silently downgrade or skip the independent review.
+If the Superpower review skills are unavailable in the current runtime, record the unavailable reason in `spec-review.md` or `design-review.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. If independent review threads are unavailable, fake-parallel, sequential-only, or the current tool lacks permission to start them, record the blocker and perform the same scoped review in the main thread. Do not stop to request extra user approval, and do not skip the review.
 
 ## Spec Format
 
@@ -219,8 +251,10 @@ Use these groups when appropriate:
 - Describe externally observable behavior in specs.
 - Specs must be independently verifiable from a real user-facing, API-facing, job-facing, or system-facing entry point.
 - Specs must define behavior with enough external-entry detail for design to decide whether real E2E is required: actor/client, trigger, expected observable result, and externally visible side effects.
-- Design owns the required/not-required E2E decision and must confirm that decision with the user.
+- Design owns the required/not-required E2E decision. In manual `/sp-spec`, user confirmation must happen only after the draft design confirmation package has passed main-process review, independent read-only review, cross-validation, and required revisions. When invoked by `/sp-goal`, do not ask for extra design/API/config/E2E confirmation after brainstorm is confirmed; record reviewed goal-mode decision evidence instead.
 - A real E2E test means exercising the application through its actual supported boundary, such as a running backend API, browser UI, CLI/job trigger, or project-supported test server. Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not satisfy E2E.
+- Design must define the project-code test boundary: tests may use dependencies and third-party clients as collaborators, but must not test dependency package behavior or third-party API/provider correctness as the primary subject.
+- For third-party integrations, design must prefer mocks, stubs, contract fixtures, recorded safe samples, local fakes, or explicitly approved sandbox/test endpoints, and assertions must focus on project-owned request construction, response mapping, error handling, persistence, and externally visible results.
 - Backend behavior scenarios must be written so a real API request and response can be verified later.
 - UI behavior scenarios must be written so an interface test can verify the changed screen behavior later.
 - Bug fix scenarios must identify the bug entry point and expected fixed behavior.
@@ -238,21 +272,21 @@ Use these groups when appropriate:
 - Logging design must follow `docs/rules/logging-standards.md` when present.
 - Design must define encoding/no-mojibake validation when generated or modified comments, code text, configuration, test data, non-ASCII text, import/export, serialization, logs, API payloads, database text, or UI text are involved.
 - Encoding design must follow `docs/rules/encoding-standards.md` when present.
-- Design must enforce the 1000-line maximum for each generated or modified code file and split files before implementation when needed.
+- Design must enforce the 1000-line maximum for each generated or modified code file and split files before implementation when planned new code would exceed the limit. If a target file is already over 1000 lines before the change, design must record the baseline size and require implementation to finish the approved functionality first, then refactor/split the oversized file with verification before task completion.
 - Design must explicitly say whether a database is required.
 - If a database is required, design must specify SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, a connection pool, and maximum pool size <= 100.
-- Design must identify all backend logic decisions and record customer/user confirmation before design is considered complete.
+- Design must identify all backend logic decisions in the reviewed confirmation package. Manual `/sp-spec` records customer/user confirmation before design is considered complete; `/sp-goal` records a reviewed goal-mode decision record instead and must not ask for extra confirmation after brainstorm is confirmed.
 - Backend API design must be based on OpenAPI and must separate at least Controller and Service responsibilities.
-- If APIs are introduced or changed, design must list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter before asking customer/user confirmation.
-- API paths and parameters must be confirmed by the customer/user and recorded in `design.md` before design is considered complete.
+- If APIs are introduced or changed, design must list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter before draft review and before manual customer/user confirmation or goal-mode decision recording.
+- API paths and parameters must be confirmed by the customer/user in manual `/sp-spec`, or captured in the reviewed goal-mode decision record when invoked by `/sp-goal`, before design is considered complete.
 - Every API design must document IO behavior.
 - Very time-consuming API work must be designed as async.
-- If UI changes are introduced, design must generate a mockup artifact and a functional description, then record customer/user confirmation of both before design is considered complete.
+- If UI changes are introduced, design must generate a mockup artifact and a functional description before draft review, then record customer/user confirmation in manual `/sp-spec` or a reviewed goal-mode decision record in `/sp-goal` before design is considered complete.
 - If UI changes are introduced and a runnable target exists, design must require real browser QA or the project-approved UI runner, including target route, actions, assertions, and evidence.
-- If configuration parameters are introduced or changed, design must list every parameter name, proposed value, environment/scope, and reason, then record customer/user confirmation before design is considered complete.
-- Design review must confirm backend logic, UI mockup/function description, API paths/parameters, configuration parameters, and E2E decisions are confirmed or clearly not applicable.
-- `spec-review.md` and `design-review.md` must record independent review thread findings, main-thread responses, and zero unresolved blocking findings before `/sp-tasks`.
-- If any design confirmation exposes missing or wrong behavior in specs, update specs and `spec-review.md` before continuing.
+- If configuration parameters are introduced or changed, design must list every parameter name, proposed value, environment/scope, and reason before draft review, then record customer/user confirmation in manual `/sp-spec` or a reviewed goal-mode decision record in `/sp-goal` before design is considered complete.
+- Design review must confirm backend logic, UI mockup/function description, API paths/parameters, configuration parameters, and E2E decisions were reviewed before manual customer/user confirmation or goal-mode decision recording and are now confirmed, goal-mode recorded, or clearly not applicable.
+- `spec-review.md` and `design-review.md` must record main-process comprehensive or allowed lightweight review, independent review thread findings or documented main-thread fallback, cross-validation decisions, main-thread responses, and zero unresolved blocking findings before `/sp-tasks`.
+- If manual design confirmation or goal-mode decision review exposes missing or wrong behavior in specs, update specs and `spec-review.md` before continuing.
 - Do not create or edit `tasks.md`.
 - Do not write code.
 - If behavior is unclear, add an open question instead of inventing scope.

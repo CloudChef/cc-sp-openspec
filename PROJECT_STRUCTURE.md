@@ -11,6 +11,7 @@ project-root/
   AGENTS.md
   README.md
   README.en.md
+  .gitignore
 
   skills/
     sp-goal/
@@ -29,6 +30,7 @@ project-root/
   templates/
     AGENTS.md
     agent.md
+    .gitignore
     openspec/
       config.yaml
       AGENTS.md
@@ -40,15 +42,10 @@ project-root/
         superpower-openspec/
           schema.yaml
           templates/
-            brainstorm.md
-            context.md
             proposal.md
             spec.md
             design.md
-            design-review.md
-            mockup.md
             tasks.md
-            review.md
     docs/
       codex-superpower-openspec.png
       ai-context/
@@ -91,44 +88,38 @@ project-root/
     changes/
       archive/
       <change-id>/
-        brainstorm.md
-        context.md
-        brainstorm-review.md
         proposal.md
         specs/
           <capability>/
             spec.md
-        spec-review.md
         design.md
-        design-review.md
-        mockups/
-          <ui-area>.md
         tasks.md
-        tasks-review.md
-        test-params/
-          <scenario-name>.md
-        task-reviews.md
-        review.md
-        completion.md
     schemas/
       superpower-openspec/
         schema.yaml
         templates/
+          proposal.md
+          spec.md
+          design.md
+          tasks.md
+
+  .agent/
+    workdir/
+      sp-openspec/
+        <change-id>/
           brainstorm.md
-            context.md
-            brainstorm-review.md
-            proposal.md
-            spec.md
-            design.md
-            design-review.md
-            mockup.md
-            tasks.md
-            spec-review.md
-            tasks-review.md
-            task-reviews.md
-            review.md
-            completion.md
-            wiki.md
+          context.md
+          brainstorm-review.md
+          spec-review.md
+          design-review.md
+          mockups/
+            <ui-area>.md
+          tasks-review.md
+          test-params/
+            <scenario-name>.json
+          task-reviews.md
+          review.md
+          completion.md
 
   docs/
     codex-superpower-openspec.png
@@ -174,31 +165,31 @@ project-root/
   -> runs the remaining workflow through /sp-complete
 
 /sp-brainstorm
-  -> brainstorm.md
-  -> context.md
-  -> brainstorm-review.md (includes customer/user confirmation before /sp-spec)
+  -> .agent/workdir/sp-openspec/<change-id>/brainstorm.md
+  -> .agent/workdir/sp-openspec/<change-id>/context.md
+  -> .agent/workdir/sp-openspec/<change-id>/brainstorm-review.md
 
 /sp-spec
-  -> proposal.md
-  -> specs/<capability>/spec.md
-  -> spec-review.md
-  -> design.md
-  -> design-review.md
-  -> mockups/<ui-area>.md (when UI changes require mockups)
+  -> openspec/changes/<change-id>/proposal.md
+  -> openspec/changes/<change-id>/specs/<capability>/spec.md
+  -> openspec/changes/<change-id>/design.md
+  -> .agent/workdir/sp-openspec/<change-id>/spec-review.md
+  -> .agent/workdir/sp-openspec/<change-id>/design-review.md
+  -> .agent/workdir/sp-openspec/<change-id>/mockups/<ui-area>.md
 
 /sp-tasks
-  -> tasks.md
-  -> tasks-review.md (checks tasks against specs/design/design-review and backend/UI/API/config/E2E confirmations)
+  -> openspec/changes/<change-id>/tasks.md
+  -> .agent/workdir/sp-openspec/<change-id>/tasks-review.md
 
 /sp-impl
   -> code changes
-  -> updated tasks.md
-  -> test-params/<scenario-name>.md
-  -> task-reviews.md
-  -> review.md
+  -> updated openspec/changes/<change-id>/tasks.md
+  -> .agent/workdir/sp-openspec/<change-id>/test-params/<scenario-name>.json
+  -> .agent/workdir/sp-openspec/<change-id>/task-reviews.md
+  -> .agent/workdir/sp-openspec/<change-id>/review.md
 
 /sp-complete
-  -> completion.md
+  -> .agent/workdir/sp-openspec/<change-id>/completion.md
   -> docs/wiki/<feature-or-story-title>.md
   -> openspec/changes/archive/<YYYY-MM-DD>-<change-id>/
 ```
@@ -208,7 +199,7 @@ project-root/
 When sources conflict, use this priority:
 
 1. `AGENTS.md`
-2. Current OpenSpec change files
+2. Current OpenSpec change files and `.agent/workdir/sp-openspec/<change-id>/` evidence
 3. `openspec/project.md`
 4. `docs/rules/*.md`
 5. `docs/standards/*.md`

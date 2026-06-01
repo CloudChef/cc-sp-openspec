@@ -9,7 +9,7 @@ This file tells Codex which project documents must be used during OpenSpec conte
 When sources conflict, use this priority:
 
 1. `AGENTS.md`
-2. Current OpenSpec change files
+2. Current OpenSpec change files and `.agent/workdir/sp-openspec/<change-id>/` evidence
 3. `openspec/project.md`
 4. `docs/rules/*.md`
 5. `docs/standards/*.md`
@@ -86,10 +86,10 @@ Read:
 
 ## Design Requirement
 
-Before writing `design.md` and `design-review.md`, create or update:
+Before writing durable `design.md` and workdir `design-review.md`, create or update:
 
 ```text
-openspec/changes/<change-id>/context.md
+.agent/workdir/sp-openspec/<change-id>/context.md
 ```
 
-The design must reference `context.md`. Task creation must wait until `design-review.md` has no unresolved blocking gaps.
+The design must reference the workdir `context.md`. Task creation must wait until the workdir `design-review.md` has no unresolved blocking gaps.

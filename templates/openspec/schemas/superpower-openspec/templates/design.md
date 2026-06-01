@@ -4,6 +4,23 @@
 
 > 阶段归属：本文档由 `/sp-spec` 生成和维护。`/sp-tasks` 不得补写设计；如果任务拆分发现缺少设计决策或确认，必须回到 `/sp-spec`。
 
+## Workflow Lane
+
+- Lane: `<full/lightweight>`
+- Source: `.agent/workdir/sp-openspec/<change-id>/brainstorm-review.md`
+- Lightweight Precheck summary: `<entry point + expected behavior source + affected paths + verification entry + escalation triggers>`
+- Escalation decision: `<stay lightweight / switch to full>`
+
+## Lightweight Design Scope
+
+> 仅在 lane 为 `lightweight` 时填写。记录为什么这是简单 bug、文案、配置或小逻辑调整，以及为什么没有扩大行为边界。
+
+- Existing expected behavior source:
+- Behavior boundary unchanged:
+- Estimated changed files:
+- Shared/core impact:
+- Verification entry:
+- Security review required: `<yes/no + reason>`
 
 ## Current Behavior
 
@@ -67,6 +84,7 @@ Generated or modified comments, code, configuration, test data, logs, API payloa
 
 - Generated or modified code files must stay at or below 1000 lines.
 - If any planned file may exceed 1000 lines, split it before implementation.
+- If an existing target file is already over 1000 lines before the change, record its baseline line count, complete-functionality-first plan, and post-functionality refactor/split plan.
 
 ## Data Impact
 
@@ -132,6 +150,13 @@ Every new or changed configuration parameter name and value must be confirmed wi
 
 ## Test Strategy
 
+## Project-Code Test Boundary
+
+Tests must focus on project-owned code and behavior. Dependency packages, SDK internals, framework behavior, and third-party API/provider correctness are not test targets.
+
+| Integration / Dependency | Project-Owned Behavior To Test | Dependency / Provider Boundary | Mock / Stub / Fixture / Sandbox Plan | Live Provider Call Approved | Evidence |
+|---|---|---|---|---|---|
+
 ## Standalone Verification Plan
 
 | Change Area | Entry Point | Verification Method | Request/Input | Expected Response/Output | External Service Check / Skip Reason |
@@ -139,18 +164,19 @@ Every new or changed configuration parameter name and value must be confirmed wi
 
 ## Real E2E Test Design
 
-Confirm the E2E required/not-required decision with the user before creating tasks. If confirmation reveals missing or incorrect spec behavior, update specs before continuing.
+Manual `/sp-spec` must confirm the E2E required/not-required decision with the user before creating tasks. `/sp-goal` must record reviewed goal-mode decision evidence instead and must not ask for extra E2E confirmation after brainstorm is confirmed. If confirmation or goal-mode review reveals missing or incorrect spec behavior, update specs before continuing.
 
-| Capability / Scenario | E2E Required | User Confirmation | Command / Tool | Runtime Target | Test Data / Parameter File | Flow / Trigger | Assertions | Evidence / Skip Reason |
+| Capability / Scenario | E2E Required | Manual Confirmation or Goal-Mode Decision | Command / Tool | Runtime Target | Test Data / Parameter File | Flow / Trigger | Assertions | Evidence / Skip Reason |
 |---|---|---|---|---|---|---|---|---|
 
-## Customer Confirmation
+## Customer Confirmation / Goal-Mode Decision Record
 
-Record all customer/user confirmations required before tasks or implementation.
+Record all customer/user confirmations or `/sp-goal` goal-mode decision records required before tasks or implementation. Manual confirmations must be collected after the design confirmation package has passed main-process review, independent read-only review, cross-validation, and required revisions. In `/sp-goal`, missing brainstorm confirmation is the only normal reason to ask the user for extra confirmation; record reviewed goal-mode decisions for design/API/config/E2E items instead.
 
-| Confirmation Area | Required | Status | Evidence | Follow-Up |
+| Confirmation / Decision Area | Required | Status | Evidence | Follow-Up |
 |---|---|---|---|---|
-| Brainstorm output confirmed before spec |  |  |  |  |
+| Reviewed final brainstorm output confirmed before spec |  |  |  |  |
+| Design confirmation package reviewed before manual confirmation or goal-mode decision recording |  |  |  |  |
 | Backend logic confirmed |  |  |  |  |
 | UI mockup and functional description confirmed |  |  |  |  |
 | API paths and parameters confirmed |  |  |  |  |
