@@ -67,16 +67,14 @@ Create or update:
 26. In `design.md`, assess whether each changed capability needs real E2E testing and include the required/not-required decision plus rationale in the pending confirmation package.
 27. The main process must run a spec/design draft review before manual customer/user confirmation or `/sp-goal` goal-mode decision recording. For `full`, run comprehensive review. For `lightweight`, run a scoped lightweight review against the compact proposal/spec/design, Lightweight Precheck, affected paths, behavior boundary, validation plan, and escalation triggers. Create or update `spec-review.md` plus `design-review.md` with draft findings and required fixes.
 28. Fix main-process spec/design review findings that are inside the approved spec/design scope and re-review until the main-process review has no unresolved blocking gaps except explicitly pending customer/user decisions.
-29. Start one independent read-only review thread after proposal, specs, `spec-review.md`, `design.md`, and `design-review.md` drafts are present, but before manual customer/user confirmation or `/sp-goal` goal-mode decision recording, when true parallel execution is available. For `lightweight`, reuse an existing reviewer when available and keep the review scoped to eligibility, compact spec/design alignment, verification, and escalation triggers. The independent thread must return concise findings only to the main thread and must not edit files. If true parallel execution is unavailable, record the blocker and run the same scoped review in the main thread.
-30. Cross-validate main-process findings and independent review thread findings. Confirm whether each finding is valid, duplicate, false positive, already fixed, requires full-lane escalation, or requires customer/user decision. Record the confirmation decision and evidence in `spec-review.md` and/or `design-review.md`.
-31. The main thread must discuss, triage, fix, and reply to every confirmed finding from both the main-process review and independent review thread, update proposal/spec/design/review artifacts when needed, and re-run the affected review until there are no unresolved blocking findings. If lightweight eligibility fails, switch to `full` and complete the full spec/design workflow.
-32. After draft review closure, handle confirmation by invocation mode:
+29. The main thread must discuss, triage, fix, and reply to every confirmed main-process review finding, update proposal/spec/design/review artifacts when needed, and re-run the affected review until there are no unresolved blocking findings. If lightweight eligibility fails, switch to `full` and complete the full spec/design workflow.
+30. After draft review closure, handle confirmation by invocation mode:
    - Manual `/sp-spec`: ask the customer/user to confirm the reviewed design confirmation package: backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E required/not-required decisions when applicable.
    - `/sp-goal`: do not ask for extra user confirmation after brainstorm has been confirmed. Record a goal-mode design decision record in `design.md` and `design-review.md` that lists the reviewed backend logic, UI, API, configuration, and E2E decisions, the sources used, and the review evidence supporting them.
-33. If the customer/user requests changes in manual mode, or if goal mode finds ambiguity that cannot be resolved from specs, brainstorm, context, rules, or source evidence, update proposal/specs/spec-review/design/design-review inside this `/sp-spec` workflow, re-run affected main-process and independent review, and ask only for the specific clarification that is truly required.
-34. After all required manual confirmations or goal-mode design decision records are complete, record the evidence in `design.md` and `design-review.md`. For required E2E paths, define real E2E test design, including runnable command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence to collect.
-35. Run a final main-process confirmation-closure review, and re-run affected independent review when confirmation, goal-mode decision records, or E2E design materially changed the artifacts. `spec-review.md` and `design-review.md` must record review evidence, cross-validation, confirmation evidence or goal-mode decision evidence, main-thread responses, workflow lane, and zero unresolved blocking gaps before `/sp-tasks`.
-36. Stop before creating tasks or writing code.
+31. If the customer/user requests changes in manual mode, or if goal mode finds ambiguity that cannot be resolved from specs, brainstorm, context, rules, or source evidence, update proposal/specs/spec-review/design/design-review inside this `/sp-spec` workflow, re-run affected main-process review, and ask only for the specific clarification that is truly required.
+32. After all required manual confirmations or goal-mode design decision records are complete, record the evidence in `design.md` and `design-review.md`. For required E2E paths, define real E2E test design, including runnable command/tool, runtime target, test data, request/UI flow/job trigger, assertions, and evidence to collect.
+33. Run a final main-process confirmation-closure review when confirmation, goal-mode decision records, or E2E design materially changed the artifacts. `spec-review.md` and `design-review.md` must record review evidence, confirmation evidence or goal-mode decision evidence, main-thread responses, workflow lane, and zero unresolved blocking gaps before `/sp-tasks`.
+34. Stop before creating tasks or writing code.
 
 ## Required `proposal.md` Sections
 
@@ -105,8 +103,6 @@ Create or update:
 - E2E-Verifiable Behavior
 - Out-of-Scope or Implementation Leakage
 - Main Process Comprehensive Review
-- Independent Review Thread
-- Cross-Validation / Finding Confirmation
 - Main Thread Finding Response
 - Finding Closure
 - Required Fixes Before Design
@@ -166,8 +162,6 @@ Create or update:
 - Rule Alignment
 - Task Readiness
 - Main Process Comprehensive Review
-- Independent Review Thread
-- Cross-Validation / Finding Confirmation
 - Main Thread Finding Response
 - Finding Closure
 - Required Fixes Before /sp-tasks
@@ -181,9 +175,9 @@ Create or update:
 
 ## Review Method
 
-Use Superpower review skills when available. Request phase reviews with `superpowers:requesting-code-review`; when findings are returned, process, verify, and fix them with `superpowers:receiving-code-review` before re-review.
+Use Superpower review methods and checklists when available, but keep these phase reviews in the main agent. Do not call review skills that dispatch subagents for `/sp-spec`; process, verify, fix, and re-review findings in the main thread.
 
-For `spec-review.md`, the reviewer should receive only:
+For `spec-review.md`, the main-process review context should include only:
 
 - `brainstorm.md`
 - `context.md`
@@ -194,7 +188,7 @@ For `spec-review.md`, the reviewer should receive only:
 - Existing specs being modified or extended
 - The spec alignment checklist from this skill
 
-For `design-review.md`, the reviewer should receive only:
+For `design-review.md`, the main-process review context should include only:
 
 - `proposal.md`
 - `specs/<capability>/spec.md`
@@ -206,21 +200,11 @@ For `design-review.md`, the reviewer should receive only:
 - Existing implementation patterns referenced by `context.md`
 - The design alignment checklist from this skill
 
-The main process must perform its own comprehensive review before relying on a read-only independent review thread. The independent thread is an additional reviewer, not a replacement for main-process review.
-
-After `spec-review.md` and `design-review.md` are internally clean from the main-process draft review, start one independent review thread automatically before manual design customer/user confirmation or `/sp-goal` goal-mode decision recording when the runtime supports true parallel independent threads/subagents and the current tool has permission; do not ask the user for extra authorization. Permission means the current runtime/tool policy allows spawning read-only review threads, not that the user must confirm thread startup. Do not launch a sequential or fake-parallel subagent just to satisfy this requirement; record `parallel_unavailable_or_sequential_runtime` and perform the same scoped review in the main thread instead.
-
-When the runtime supports persistent reusable review threads, reuse an existing same-change, same-repository, same-role spec/design reviewer instead of opening a new thread. Every reused invocation must receive the current spec/design scope, fresh artifacts, checklist, and evidence references, and `spec-review.md` or `design-review.md` must record the reviewer role, thread identifier/name when available, reused/new status, reviewed scope, artifacts provided, findings, and restart/fallback reason.
+Do not start independent review threads or subagents for `/sp-spec`. Proposal, specs, design, design-review, and goal-mode decision evidence are reviewed by the main agent only.
 
 Lightweight review mode is allowed for narrow, low-risk spec/design checks. It must still record evidence in `spec-review.md` or `design-review.md`, but it may use a scoped checklist instead of expanding to all project rules. Record `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. Escalate to full review if the change touches production behavior outside the approved compact scope, authentication/authorization, sensitive data, database/persistence, API contracts, UI behavior, async/IO, external integrations, logging/security, E2E-required behavior, broad qualifiers, or any implementation-standard exception.
 
-The independent thread receives the same scoped artifacts plus both review files. It must not edit files. It must return findings only, in concise structured form: priority, finding, evidence location, impact, and suggested fix. It must not return long summaries, restated context, implementation plans, or broad explanations. The main thread owns cross-validation, confirmation of valid findings, triage, fixes, replies, verification, and closure records in `spec-review.md` and `design-review.md`.
-
-Cross-validation must compare main-process findings and independent-thread findings, identify duplicates and disagreements, dismiss false positives only with evidence, and record findings requiring customer/user decision before artifact changes.
-
-Do not pass the full conversation history as review context.
-
-If the Superpower review skills are unavailable in the current runtime, record the unavailable reason in `spec-review.md` or `design-review.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. If independent review threads are unavailable, fake-parallel, sequential-only, or the current tool lacks permission to start them, record the blocker and perform the same scoped review in the main thread. Do not stop to request extra user approval, and do not skip the review.
+If Superpower review guidance is unavailable in the current runtime, record the unavailable reason in `spec-review.md` or `design-review.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. Do not skip the main-process review.
 
 ## Spec Format
 
@@ -251,7 +235,7 @@ Use these groups when appropriate:
 - Describe externally observable behavior in specs.
 - Specs must be independently verifiable from a real user-facing, API-facing, job-facing, or system-facing entry point.
 - Specs must define behavior with enough external-entry detail for design to decide whether real E2E is required: actor/client, trigger, expected observable result, and externally visible side effects.
-- Design owns the required/not-required E2E decision. In manual `/sp-spec`, user confirmation must happen only after the draft design confirmation package has passed main-process review, independent read-only review, cross-validation, and required revisions. When invoked by `/sp-goal`, do not ask for extra design/API/config/E2E confirmation after brainstorm is confirmed; record reviewed goal-mode decision evidence instead.
+- Design owns the required/not-required E2E decision. In manual `/sp-spec`, user confirmation must happen only after the draft design confirmation package has passed main-process review and required revisions. When invoked by `/sp-goal`, do not ask for extra design/API/config/E2E confirmation after brainstorm is confirmed; record reviewed goal-mode decision evidence instead.
 - A real E2E test means exercising the application through its actual supported boundary, such as a running backend API, browser UI, CLI/job trigger, or project-supported test server. Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not satisfy E2E.
 - Design must define the project-code test boundary: tests may use dependencies and third-party clients as collaborators, but must not test dependency package behavior or third-party API/provider correctness as the primary subject.
 - For third-party integrations, design must prefer mocks, stubs, contract fixtures, recorded safe samples, local fakes, or explicitly approved sandbox/test endpoints, and assertions must focus on project-owned request construction, response mapping, error handling, persistence, and externally visible results.
@@ -285,7 +269,7 @@ Use these groups when appropriate:
 - If UI changes are introduced and a runnable target exists, design must require real browser QA or the project-approved UI runner, including target route, actions, assertions, and evidence.
 - If configuration parameters are introduced or changed, design must list every parameter name, proposed value, environment/scope, and reason before draft review, then record customer/user confirmation in manual `/sp-spec` or a reviewed goal-mode decision record in `/sp-goal` before design is considered complete.
 - Design review must confirm backend logic, UI mockup/function description, API paths/parameters, configuration parameters, and E2E decisions were reviewed before manual customer/user confirmation or goal-mode decision recording and are now confirmed, goal-mode recorded, or clearly not applicable.
-- `spec-review.md` and `design-review.md` must record main-process comprehensive or allowed lightweight review, independent review thread findings or documented main-thread fallback, cross-validation decisions, main-thread responses, and zero unresolved blocking findings before `/sp-tasks`.
+- `spec-review.md` and `design-review.md` must record main-process comprehensive or allowed lightweight review, main-thread responses, and zero unresolved blocking findings before `/sp-tasks`.
 - If manual design confirmation or goal-mode decision review exposes missing or wrong behavior in specs, update specs and `spec-review.md` before continuing.
 - Do not create or edit `tasks.md`.
 - Do not write code.

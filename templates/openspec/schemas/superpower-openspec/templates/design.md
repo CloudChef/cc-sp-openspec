@@ -171,7 +171,7 @@ Manual `/sp-spec` must confirm the E2E required/not-required decision with the u
 
 ## Customer Confirmation / Goal-Mode Decision Record
 
-Record all customer/user confirmations or `/sp-goal` goal-mode decision records required before tasks or implementation. Manual confirmations must be collected after the design confirmation package has passed main-process review, independent read-only review, cross-validation, and required revisions. In `/sp-goal`, missing brainstorm confirmation is the only normal reason to ask the user for extra confirmation; record reviewed goal-mode decisions for design/API/config/E2E items instead.
+Record all customer/user confirmations or `/sp-goal` goal-mode decision records required before tasks or implementation. Manual confirmations must be collected after the design confirmation package has passed main-process review and required revisions. In `/sp-goal`, missing brainstorm confirmation is the only normal reason to ask the user for extra confirmation; record reviewed goal-mode decisions for design/API/config/E2E items instead.
 
 | Confirmation / Decision Area | Required | Status | Evidence | Follow-Up |
 |---|---|---|---|---|

@@ -11,11 +11,12 @@ When sources conflict, use this priority:
 1. `AGENTS.md`
 2. Current OpenSpec change files and `.agent/workdir/sp-openspec/<change-id>/` evidence
 3. `openspec/project.md`
-4. `docs/rules/*.md`
-5. `docs/standards/*.md`
-6. `docs/wiki/*.md` with `status: active`
-7. Existing implementation patterns
-8. User prompt
+4. `docs/ai-context/codebase-inventory.md`, when present
+5. `docs/rules/*.md`
+6. `docs/standards/*.md`
+7. `docs/wiki/*.md` with `status: active`
+8. Existing implementation patterns
+9. User prompt
 
 If there is a conflict, report it in `context.md`, `design.md`, or `review.md`. Do not guess.
 
@@ -27,6 +28,7 @@ Read:
 
 - `docs/rules/project-implementation-standards.md`, when present
 - `docs/rules/ai-workflow-quality-standards.md`, when present
+- `docs/rules/business-standards.md`, when business terms, lifecycle states, policies, permissions, eligibility, approval, status transitions, or cross-capability business rules are involved
 - `docs/rules/logging-standards.md`, when comments, logs, traceability, `trace_id`, observability, or sensitive-data logging risk is involved
 - `docs/rules/encoding-standards.md`, when generated or modified comments, code, configuration, test data, non-ASCII text, file import/export, serialization, logs, API payloads, database text, or UI text are involved
 - `docs/rules/java-code-standards.md`, when Java code is involved
@@ -37,11 +39,26 @@ Read:
 
 Rule files are project-specific. Keep the baseline implementation standards when present, and add any other `.md` files this project needs under `docs/rules/`.
 
+### Business
+
+Read:
+
+- `docs/rules/business-standards.md`, when present
+- Relevant capability baseline specs under `docs/standards/modules/`
+- Active `docs/wiki/*.md` files for business context
+- `docs/ai-context/codebase-inventory.md`, when present
+
+When `/sp-code-to-spec` generates baseline specs, current-function business definitions, feature descriptions, feature flows, and feature point / branch matrices belong in `docs/standards/modules/<module>/<module>-<capability>-spec.md`. These current-state specs must not be written under `openspec/specs/`; project-level reusable business terminology, lifecycle states, policies, invariants, and cross-capability rules belong in `docs/rules/business-standards.md` only when supported by evidence or explicit user confirmation.
+
+Evidence means project-owned proof for a claim and why it proves the behavior. Unknowns means unclear, unsupported, conflicting, or owner-dependent behavior; do not treat Unknowns as approved requirements, rules, compatibility promises, or implementation decisions.
+
 ### Architecture
 
 Read:
 
 - `docs/standards/architecture.md`
+- Relevant files under `docs/standards/modules/`, when present
+- `docs/ai-context/codebase-inventory.md`, when present
 
 ### Backend
 
@@ -49,6 +66,8 @@ Read:
 
 - `docs/standards/backend.md`
 - `docs/standards/api.md`
+- Relevant files under `docs/standards/modules/`, when present
+- `docs/ai-context/codebase-inventory.md`, when present
 
 ### Frontend
 
@@ -83,6 +102,7 @@ Read:
 Read:
 
 - `docs/standards/testing.md`
+- `docs/ai-context/codebase-inventory.md`, when present
 
 ## Design Requirement
 

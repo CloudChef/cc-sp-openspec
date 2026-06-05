@@ -52,9 +52,9 @@ Then create:
 
 1. Read all inputs before editing.
 2. Verify `design-review.md` exists and has zero unresolved blocking gaps.
-3. Verify `brainstorm-review.md` records that `brainstorm.md`, `context.md`, and `brainstorm-review.md` were created from customer/user-confirmed reviewed final brainstorm/context draft content after Lightweight Precheck, workflow lane decision, main-process review, independent read-only review or fallback, cross-validation, and required revisions.
-4. Verify `brainstorm-review.md`, `spec-review.md`, `design-review.md`, `tasks-review.md`, and `review.md` record required main-process comprehensive or allowed lightweight review, independent read-only review thread evidence or documented main-thread fallback, cross-validation/finding confirmation, main-thread responses, and zero unresolved review findings.
-5. Verify `review.md` records final implementation review required by the workflow lane. Full lane requires one main-thread full implementation review, two independent final review threads or documented fallback passes, and cross-validation. Lightweight lane requires one scoped main-thread final review, one reusable read-only reviewer or documented fallback, and cross-validation.
+3. Verify `brainstorm-review.md` records that `brainstorm.md`, `context.md`, and `brainstorm-review.md` were created from customer/user-confirmed reviewed final brainstorm/context draft content after Lightweight Precheck, workflow lane decision, main-process review, and required revisions.
+4. Verify `brainstorm-review.md`, `spec-review.md`, `design-review.md`, and `tasks-review.md` record required main-process comprehensive or allowed lightweight review, main-thread responses, and zero unresolved review findings.
+5. Verify `review.md` records final implementation review closure: one main-thread final implementation review, two read-only independent final review agents or two documented fallback passes, finding confirmation, main-thread responses, confirmed non-blocking/minor/informational/follow-up final-review finding fixes, and zero unresolved review findings. Lightweight lane scopes the two final review roles to compact contracts, changed code, verification evidence, and escalation triggers.
 6. Verify every task in `tasks.md` is marked complete with `[x]`.
 7. Verify `task-reviews.md` shows every task passed the review gates required by the workflow lane. Full lane requires Alignment Review and Security Review. Lightweight lane requires scoped lightweight alignment/verification review and requires Security Review only when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk exists.
 8. Verify `task-reviews.md` has zero open findings.
@@ -86,8 +86,8 @@ Do not archive if any pre-archive gate fails. Do not mark completion successful 
 - Generated completion, wiki, and final report documentation must be written in Chinese by default unless the user explicitly requests English.
 - `design-review.md` is missing or has unresolved blocking gaps.
 - `brainstorm-review.md` is missing evidence that the reviewed final brainstorm/context draft content was confirmed by the customer/user before `brainstorm.md`, `context.md`, or `brainstorm-review.md` was created or updated.
-- Required main-process comprehensive or allowed lightweight review, independent review thread evidence or documented main-thread fallback, cross-validation/finding confirmation, main-thread responses, or closure is missing from `brainstorm-review.md`, `spec-review.md`, `design-review.md`, `tasks-review.md`, or `review.md`.
-- `review.md` is missing final review evidence required by the workflow lane: full lane requires main-thread full implementation review plus independent final review threads or fallback passes; lightweight lane requires scoped main-thread final review plus one reusable read-only reviewer or fallback.
+- Required main-process comprehensive or allowed lightweight review, main-thread responses, or closure is missing from `brainstorm-review.md`, `spec-review.md`, `design-review.md`, or `tasks-review.md`.
+- `review.md` is missing final review evidence: one main-thread final implementation review plus two read-only independent final review agents or two documented fallback passes, finding confirmation, main-thread responses, fixes for confirmed non-blocking/minor/informational/follow-up final-review findings, and closure.
 - Any task in `tasks.md` is unchecked.
 - Any task lacks review evidence required by its workflow lane.
 - Any full-lane task lacks Alignment Review or Security Review evidence.
@@ -176,8 +176,8 @@ Workflow:
 
 - Summary
 - Completion Gate Results
-- Main Process Review and Cross-Validation Closure
-- Independent Review Thread Closure
+- Main Process Review Closure
+- Final Independent Review Agents or Fallback Closure
 - Task Completion Evidence
 - Design Review Closure
 - Per-Task Review Closure
@@ -245,7 +245,7 @@ The generated wiki page must include:
 
 ## Review Method
 
-Use Superpower review skills when available. Request the completion review with `superpowers:requesting-code-review`; when findings are returned, process, verify, and fix them with `superpowers:receiving-code-review` before re-review and before archiving. The reviewer should receive only:
+Use Superpower review methods and checklists when available, but keep completion review in the main agent. Do not call review skills that dispatch subagents for `/sp-complete`; process, verify, fix, and re-review findings in the main thread before archiving. The main-process review context should include only:
 
 - Specs
 - Design
@@ -259,7 +259,7 @@ Use Superpower review skills when available. Request the completion review with 
 
 Do not pass the full conversation history as review context.
 
-If the Superpower review skills are unavailable in the current runtime, record the unavailable reason in `completion.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. Do not silently downgrade or skip the review.
+If Superpower review guidance is unavailable in the current runtime, record the unavailable reason in `completion.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. Do not silently downgrade or skip the review.
 
 ## Final Response
 

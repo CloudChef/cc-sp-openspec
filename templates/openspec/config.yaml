@@ -9,6 +9,7 @@ context: |
   Rules under docs/rules are mandatory inputs.
   docs/rules/project-implementation-standards.md is the baseline implementation rule file when present.
   docs/rules/ai-workflow-quality-standards.md is the baseline AI workflow quality rule file when present.
+  docs/rules/business-standards.md is the baseline project business terminology and business-rule file when present.
   docs/rules/logging-standards.md is the baseline logging, trace_id, and sensitive-data logging rule file when present.
   docs/rules/encoding-standards.md is the baseline encoding and no-mojibake rule file when present.
   docs/rules/java-code-standards.md, docs/rules/python-code-standards.md, docs/rules/configuration-standards.md, and docs/rules/testing-standards.md are default language/configuration/testing standards when present and applicable.
@@ -16,6 +17,7 @@ context: |
   Specs must reflect relevant behavior-affecting rules.
   Design and implementation must use docs/ai-context/source-index.md, docs/rules, docs/standards, docs/wiki, and existing code patterns.
   Generated OpenSpec, workdir evidence, test-parameter, wiki, and workflow documents default to Chinese unless the user explicitly asks for English.
+  Optional /sp-code-to-spec bootstrap may derive current-state capability specs under docs/standards/modules, current-function business definitions, feature descriptions, feature flows, feature point / branch matrices, module/capability design baselines, codebase inventory, and project rules from existing code before normal change workflows.
 
 rules:
   goal:
@@ -30,38 +32,57 @@ rules:
     - In goal mode, missing brainstorm confirmation is the only normal workflow reason to ask the user for extra confirmation.
     - If design.md exists but lacks backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, or E2E required/not-required decision, treat specs/design as incomplete.
     - When design decisions are missing during goal mode, re-enter the owning workflow, review/fill the pending decision package first, record a goal-mode design decision record, and continue without asking for extra design/API/config/E2E confirmation after brainstorm is confirmed unless a true ambiguity requires new user clarification.
-    - For brainstorm, draft content in the conversation, complete main-process review, independent read-only review, cross-validation, and required draft revisions, then confirm the reviewed final draft before creating or updating brainstorm.md, context.md, or brainstorm-review.md.
+    - For brainstorm, draft content in the conversation, complete main-process review and required draft revisions, then confirm the reviewed final draft before creating or updating brainstorm.md, context.md, or brainstorm-review.md.
     - If tasks, tests, task reviews, coverage, or final review are incomplete, start at implementation.
     - If completion, wiki, or archive output is missing, start at complete.
     - Do not skip phase reviews, per-task reviews, coverage, test parameter files, wiki generation, or archive gates.
-    - Start required independent review threads automatically when the runtime supports true parallel execution and the current tool has permission; do not ask the user for extra authorization.
-    - Permission means the current runtime/tool policy allows spawning read-only review threads; do not treat missing user confirmation as missing permission.
-    - If independent review threads are unavailable, fake-parallel, sequential-only, or the current tool lacks permission, record the blocker in the relevant workdir review artifact and perform the same scoped review in the main thread.
-    - Reuse existing read-only review threads when the runtime supports persistent reusable threads. Reuse is limited to the same change-id, repository/worktree, and review role; do not start a new thread for every task when an eligible reviewer already exists.
-    - Every reused review invocation must receive the current phase/task scope, fresh artifacts/diff, checklist, and evidence references. Record reviewer role, thread identifier/name when available, reused/new status, reviewed scope, artifacts provided, findings, and restart/fallback reason in the relevant workdir review artifact.
+    - Start two read-only independent final review agents automatically only after /sp-impl completes all tasks and records the main-thread final implementation review, when the runtime supports true parallel execution and the current tool has permission; do not ask the user for extra authorization.
+    - Permission means the current runtime/tool policy allows spawning read-only final review agents; do not treat missing user confirmation as missing permission.
+    - If final review agents are unavailable, fake-parallel, sequential-only, or the current tool lacks permission, record the blocker in review.md and perform the same two scoped final review passes in the main thread.
     - Allow lightweight review mode for low-risk, narrow-scope checks; record review_mode, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision.
     - Escalate lightweight review to full review when risk touches production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integrations, logging/security, E2E, broad qualifiers, or implementation-standard exceptions.
-    - Independent review threads must be read-only and findings-only; return concise structured findings with priority, evidence location, impact, and suggested fix, not long summaries or implementation plans.
+    - Independent final review agents must be read-only and findings-only; return concise structured findings with priority, evidence location, impact, and suggested fix, not long summaries or implementation plans.
     - Do not mark tasks complete without implementation and review evidence.
     - Do not write process evidence into the durable OpenSpec change folder.
     - Stop and ask for user input when the active change cannot be resolved.
+  code_to_spec:
+    - Optional bootstrap only. Do not insert /sp-code-to-spec into the required /sp-goal phase sequence.
+    - Use it only to derive initial current-state capability specs under docs/standards/modules, current-function business definitions, feature descriptions, feature flows, feature point / branch matrices, module/capability design baselines, project context, rules, and standards from an existing codebase.
+    - It may create or update docs/ai-context/source-index.md, docs/ai-context/codebase-inventory.md, openspec/project.md, docs/standards/modules/<module>/<module>-<capability>-spec.md, docs/standards/modules/<module>/<module>-<capability>-design.md, docs/rules/business-standards.md, docs/rules/*.md, docs/standards/*.md, and .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md.
+    - Do not put /sp-code-to-spec current-state specs under openspec/specs; reserve openspec for project workflow configuration and real change contracts produced by /sp-spec.
+    - For multi-module projects, generate module/capability-scoped specs and design baselines instead of one catch-all spec/design.
+    - For multi-language projects, keep language/runtime code standards separate and record the modules each rule file applies to.
+    - Every module/capability document path must use real module and feature point/capability names. Non-OpenSpec module document filenames must include both names and must not use generic names or sequence numbers such as module-1, feature-1, capability-001, common, misc, general, default, or design.md.
+    - Every generated capability spec must include a current-function business definition and a concrete feature point / branch matrix with observable branches, unknowns, and evidence.
+    - Every generated feature point must have a meaningful business-facing description with actor, goal, trigger, branch behavior, data/state side effects, outcome, evidence, and unknowns. One-line summaries are review findings.
+    - Every generated feature point must include a business-facing feature flow from start/trigger to observable end state, including preconditions, main flow, branch points, data/state changes, and external IO/async behavior when present.
+    - Evidence means project-owned proof for a claim, such as code path plus behavior summary, tests, config, migrations/schema, API docs, README/wiki, deployment docs, or explicit user confirmation. It must explain why the source proves the claim.
+    - Unknowns means unclear, unsupported, conflicting, or owner-dependent behavior. Unknowns are not approved requirements, rules, compatibility promises, or implementation decisions.
+    - Feature descriptions, feature flows, business definitions, requirements, and scenarios must use business language and must not contain direct code, pseudocode, call chains, SQL fragments, class/method snippets, or conditional expressions. Code identifiers and paths belong only in evidence, source mapping, design baselines, or rule provenance.
+    - Generate or update docs/rules/business-standards.md only for stable project-level business terms, lifecycle states, policies, invariants, and cross-capability rules supported by evidence or explicit user confirmation.
+    - Do not create openspec/changes/<change-id>/ artifacts, write production code, write tests, create implementation tasks, archive changes, or commit.
+    - Every generated requirement, design claim, flow statement, rule, or standard must map to project-owned code, tests, config, docs, or explicit user input.
+    - Draft generated artifacts in the conversation, review evidence mapping and overreach, then get user confirmation before writing files.
+    - Put unclear behavior in Unknowns and record conflicts instead of guessing.
   brainstorm:
-    - Run Lightweight Precheck before drafting the full brainstorm. Inspect minimal context and affected code to decide whether the change is full or lightweight.
+    - Start by drafting a Business Story Baseline inside the brainstorm flow, not as a separate workflow. Include user story, acceptance criteria, non-goals, and success metrics.
+    - After the Business Story Baseline, run Lightweight Precheck before drafting the full brainstorm. Inspect minimal context and affected code to decide whether the change is full or lightweight.
+    - Use the Business Story Baseline as the business input for the Lightweight Precheck and workflow lane decision.
     - Default to full workflow when eligibility evidence is incomplete or any escalation trigger exists.
     - Lightweight lane is allowed only for simple bug fixes or light text/config/small-logic changes with unchanged behavior boundary, small impact, clear verification entry, and no API/database/security/async/external/E2E/broad-qualifier/fallback/shared-core risk.
     - Draft the proposed brainstorm.md and context.md content in the conversation first.
-    - Include Lightweight Precheck and workflow lane decision in the draft and later in brainstorm.md and brainstorm-review.md.
+    - Include Business Story Baseline, Lightweight Precheck, and workflow lane decision in the draft and later in brainstorm.md and brainstorm-review.md.
     - Run main-process comprehensive review on the draft before asking for customer/user confirmation.
-    - Start one independent read-only review thread for the drafted brainstorm/context content; findings return to the main thread.
-    - Cross-validate main-process findings and independent-thread findings; record valid, duplicate, false-positive, already-fixed, and user-decision findings.
+    - Review drafted brainstorm/context content in the main process.
+    - Record valid, duplicate, false-positive, already-fixed, and user-decision findings.
     - Revise the draft and re-run affected review until zero unresolved blocking findings.
     - Ask the customer/user to confirm the reviewed final brainstorm/context draft and workflow lane decision before moving to proposal/spec work.
     - Do not create or update brainstorm.md, context.md, or brainstorm-review.md until the reviewed final draft is confirmed.
-    - After confirmation, produce brainstorm.md, context.md, and brainstorm-review.md, recording review, cross-validation, revision, and confirmation evidence.
-    - Challenge product scope before spec work by identifying the real user, pain point, expected outcome, success signal, smallest useful slice, rejected/deferred scope, alternatives, and open product questions.
+    - After confirmation, produce brainstorm.md, context.md, and brainstorm-review.md, recording review, revision, and confirmation evidence.
+    - Challenge product scope before spec work by identifying the real user, pain point, expected outcome, acceptance criteria, non-goals, success signal, smallest useful slice, rejected/deferred scope, alternatives, and open product questions.
     - If review findings or customer/user requested changes alter the draft materially, re-run the affected review before asking for confirmation again.
     - Record customer/user confirmation, requested changes, or rejection in brainstorm-review.md after files are created.
-    - Use Superpower review skills when available; request reviews with superpowers:requesting-code-review, process findings with superpowers:receiving-code-review, and record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if the skills are unavailable.
+    - Use Superpower review methods and checklists when available, but keep brainstorm review in the main agent; do not call review skills that dispatch subagents for this phase. Record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if Superpower guidance is unavailable.
     - Review alignment with user request, context, rules, existing specs, and source gaps.
     - Do not write code.
     - Do not create proposal/specs/design/tasks yet.
@@ -78,8 +99,8 @@ rules:
     - For lightweight lane, keep proposal/spec/design compact and focused on expected behavior, affected paths, verification entry, exclusions, and escalation guardrails; switch to full when new evidence disproves lightweight eligibility.
     - Identify project-defined rules that affect scope.
     - Produce spec-review.md after proposal/specs are drafted and before design.
-    - After spec/design artifacts are complete, run main-process comprehensive or allowed lightweight review, then start one independent review thread when true parallel execution is available; findings return to the main thread, and the main thread cross-validates, fixes/responds until zero unresolved blocking findings. If true parallel execution is unavailable, record the blocker and run the same scoped review in the main thread.
-    - Use Superpower review skills when available; request reviews with superpowers:requesting-code-review, process findings with superpowers:receiving-code-review, and record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if the skills are unavailable.
+    - After spec/design artifacts are complete, run main-process comprehensive or allowed lightweight review, fix/respond until zero unresolved blocking findings, and do not start independent review threads for this phase.
+    - Use Superpower review methods and checklists when available, but keep proposal/spec review in the main agent; do not call review skills that dispatch subagents for this phase. Record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if Superpower guidance is unavailable.
     - Keep it product-oriented and requirement-oriented.
     - Do not include low-level implementation details.
   specs:
@@ -115,8 +136,8 @@ rules:
     - If APIs exist, list every API method, path, path parameter, query parameter, request body parameter, and response-relevant parameter, and include them in the pending confirmation package.
     - If configuration parameters exist, list every parameter name, proposed value, environment/scope, and reason, and include them in the pending confirmation package.
     - Assess whether each changed capability requires real E2E, include the required/not-required decision and rationale in the pending confirmation package, and record final manual confirmation or goal-mode decision evidence after review closure.
-    - Run main-process comprehensive or allowed lightweight review and one independent read-only review thread on the spec/design draft and confirmation package before asking the customer/user to confirm in manual mode or recording goal-mode decision evidence. For lightweight lane, scope the review to compact contracts, precheck assumptions, affected paths, verification, and escalation triggers. If true parallel execution is unavailable, record the blocker and run the same scoped review in the main thread.
-    - Cross-validate findings, revise the draft, and re-run affected review until zero unresolved blocking findings remain except explicit pending customer/user decisions.
+    - Run main-process comprehensive or allowed lightweight review on the spec/design draft and confirmation package before asking the customer/user to confirm in manual mode or recording goal-mode decision evidence. For lightweight lane, scope the review to compact contracts, precheck assumptions, affected paths, verification, and escalation triggers.
+    - Revise the draft and re-run affected review until zero unresolved blocking findings remain except explicit pending customer/user decisions.
     - After review closure, ask the customer/user to confirm the reviewed design confirmation package in manual mode; in /sp-goal, record reviewed goal-mode decision evidence and do not ask for extra confirmation after brainstorm is confirmed.
     - For confirmed required E2E paths, define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, evidence, and fallback/skip reason when no runnable target exists.
     - If the confirmed or goal-mode recorded E2E decision reveals missing or incorrect spec behavior, stop and update specs before creating tasks or implementing.
@@ -128,9 +149,9 @@ rules:
     - Include Source Mapping.
     - Include Rules Compliance.
     - Include Spec Gaps if behavior is needed but not covered by specs.
-    - Produce design-review.md during draft review and close it only after reviewed manual confirmation evidence or goal-mode decision evidence and final review closure are recorded.
-    - Record main-process comprehensive or allowed lightweight review, independent spec/design review thread findings or documented main-thread fallback, cross-validation decisions, main-thread responses, and closure in spec-review.md and/or design-review.md.
-    - Use Superpower review skills when available; request reviews with superpowers:requesting-code-review, process findings with superpowers:receiving-code-review, and record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if the skills are unavailable.
+    - Produce design-review.md during draft review and close it only after reviewed manual confirmation evidence or goal-mode decision evidence and design-review closure are recorded.
+    - Record main-process comprehensive or allowed lightweight review, main-thread responses, and closure in spec-review.md and/or design-review.md.
+    - Use Superpower review methods and checklists when available, but keep design review in the main agent; do not call review skills that dispatch subagents for this phase. Record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if Superpower guidance is unavailable.
     - Do not proceed to tasks until design-review.md has zero unresolved blocking gaps.
     - Do not add behavior outside specs.
   tasks:
@@ -169,11 +190,10 @@ rules:
     - Do not create tasks not covered by specs or approved design.
     - Do not create or modify design.md or design-review.md in the tasks phase.
     - Produce tasks-review.md before implementation.
-    - Run main-process comprehensive or allowed lightweight task review before relying on independent review.
-    - Start one independent read-only review thread for tasks after tasks.md and tasks-review.md drafts are present when true parallel execution is available; findings return to the main thread. If true parallel execution is unavailable, record the blocker and run the same scoped review in the main thread.
-    - Cross-validate main-process task findings and independent-thread findings; record valid, duplicate, false-positive, already-fixed, and user-decision findings in tasks-review.md.
+    - Run main-process comprehensive or allowed lightweight task review.
+    - Record valid, duplicate, false-positive, already-fixed, and user-decision findings in tasks-review.md.
     - Fix and re-review every confirmed task review finding until tasks-review.md has zero unresolved blocking gaps.
-    - Use Superpower review skills when available; request reviews with superpowers:requesting-code-review, process findings with superpowers:receiving-code-review, and record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if the skills are unavailable.
+    - Use Superpower review methods and checklists when available, but keep task review in the main agent; do not call review skills that dispatch subagents for this phase. Record the unavailable reason before using Codex or the current tool/agent's own review capability to perform the same checklist if Superpower guidance is unavailable.
     - Review alignment with specs, spec-review.md, design.md, design-review.md, rules, and validation coverage.
     - Review customer/user confirmation gates for brainstorm output and manual confirmation or goal-mode decision records for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.
   review:
@@ -209,23 +229,23 @@ rules:
     - Reject tests that only cover empty/no-op code, class/method initialization, dependency package behavior, or third-party API/provider correctness.
     - Check implementation against applicable project-defined rules.
     - Check Java, Python, configuration, and testing rule compliance when those areas changed.
-    - After all tasks are complete, run final review according to the lane. Full lane runs one main-thread full implementation review against every requirement, spec scenario, design decision, changed code path, test, verification result, and rule.
-    - Full lane then runs two independent final review threads in one parallel dispatch when true parallel execution is available. Thread 1 reviews requirement/spec/design/code alignment and adversarial evidence. Thread 2 reviews security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates. If true parallel execution is unavailable or the tool cannot dispatch both concurrently, record the blocker and run the same two scoped passes in the main thread.
-    - Lightweight lane runs one scoped main-thread final review and one reusable read-only reviewer when true parallel execution is available, or the same scoped fallback review in the main thread. The scope is Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers.
-    - Independent implementation review threads must not edit files and must return concise findings only. Findings return to the main thread; the main thread cross-validates its own findings against both independent-thread or fallback findings, confirms issue status, fixes, replies, verifies, and re-runs the relevant review until zero unresolved findings.
-    - Independent Review Thread 1 or the same scoped fallback pass satisfies final code review pass 1 and must check specs, design, design-review, tasks, rules, architecture, tests, requirement-to-test mapping, counterexample matrices, masked-test analyses, broad-qualifier audits, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, encoding/no-mojibake evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes.
-    - Independent Review Thread 2 or the same scoped fallback pass satisfies final code review pass 2 and must check security, data handling, authorization, logging/trace_id/sensitive-data exposure, encoding/no-mojibake regressions, API IO, async behavior, configuration, dependencies, test quality, masked-test risks, decision-chain masking regressions, evidence-capture timing regressions, deterministic-sort regressions, narrower code qualifiers, and remaining rule violations.
-    - Fix every confirmed finding from required final reviews or fallback passes, then re-review until all reviews have zero open confirmed findings.
+    - After all tasks are complete, run one main-thread final implementation review against every requirement, spec scenario, design decision, changed code path, test, verification result, and rule.
+    - Then run two read-only independent final review agents in one parallel dispatch when true parallel execution is available. Agent 1 reviews requirement/spec/design/code alignment and adversarial evidence. Agent 2 reviews security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates. If true parallel execution is unavailable or the tool cannot dispatch both concurrently, record the blocker and run the same two scoped passes in the main thread.
+    - Lightweight lane keeps the two final review roles but scopes them to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers.
+    - Independent final review agents must not edit files and must return concise findings only. Findings return to the main thread; the main thread confirms issue status, fixes every confirmed finding, including non-blocking/minor/informational/follow-up findings, replies, verifies, and re-runs the relevant review until zero unresolved findings.
+    - Independent Final Review Agent 1 or the same scoped fallback pass satisfies final code review pass 1 and must check specs, design, design-review, tasks, rules, architecture, tests, requirement-to-test mapping, counterexample matrices, masked-test analyses, broad-qualifier audits, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, encoding/no-mojibake evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints, and file sizes.
+    - Independent Final Review Agent 2 or the same scoped fallback pass satisfies final code review pass 2 and must check security, data handling, authorization, logging/trace_id/sensitive-data exposure, encoding/no-mojibake regressions, API IO, async behavior, configuration, dependencies, test quality, masked-test risks, decision-chain masking regressions, evidence-capture timing regressions, deterministic-sort regressions, narrower code qualifiers, and remaining rule violations.
+    - Fix every confirmed finding from required final reviews or fallback passes, including non-blocking/minor/informational/follow-up findings, then re-review until all reviews have zero open confirmed findings.
     - Mark out-of-spec behavior explicitly.
     - Do not silently add new requirements.
   complete:
     - Require design-review.md to show zero unresolved blocking gaps.
-    - Require brainstorm-review.md, spec-review.md, design-review.md, tasks-review.md, and review.md to record required main-process comprehensive or allowed lightweight review, independent review thread evidence or documented main-thread fallback, cross-validation/finding confirmation, main-thread responses, and zero unresolved independent review findings.
-    - Require review.md to record final review evidence required by the workflow lane. Full lane requires one main-thread full implementation review, two independent final review threads or documented fallback passes, and cross-validation. Lightweight lane requires one scoped main-thread final review, one reusable read-only reviewer or documented fallback, and cross-validation.
+    - Require brainstorm-review.md, spec-review.md, design-review.md, and tasks-review.md to record required main-process comprehensive or allowed lightweight review, main-thread responses, and zero unresolved findings.
+    - Require review.md to record one main-thread final implementation review, two read-only independent final review agents or two documented fallback passes, finding confirmation, main-thread responses, fixes for confirmed non-blocking/minor/informational/follow-up final-review findings, and zero unresolved findings.
     - Require every task in tasks.md to be marked complete.
     - Require task-reviews.md to show zero open findings.
     - Require review.md to show zero unresolved findings.
-    - Require review.md to record final complete-diff code review evidence required by the workflow lane with zero open findings. Full lane requires two final complete-diff review passes. Lightweight lane requires one scoped main final review plus one reusable read-only reviewer or documented fallback; these satisfy the lane-specific final review requirement only when no escalation trigger exists.
+    - Require review.md to record final complete-diff code review evidence with zero open findings. Both lanes require two final complete-diff review passes; lightweight scopes them to compact contracts, changed code, verification evidence, and escalation triggers.
     - Require coverage evidence to show at least 85% coverage.
     - Require requirement-to-test mapping, Requirement Counterexample Matrix, Masked-Test Analysis, Broad-Qualifier Audit, Decision Chain Trace, Evidence Capture Timing Audit, and Deterministic Sort Audit when applicable.
     - Require Masked-Test Analysis and Decision Chain Trace to cover every gate, filter, sort, or transform before the target behavior, not only prove that the sections exist.

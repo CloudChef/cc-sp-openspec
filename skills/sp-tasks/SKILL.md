@@ -43,10 +43,8 @@ Create or update:
 8. The main process must review the drafted `tasks.md` for alignment with specs, `spec-review.md`, approved `design.md`, `design-review.md`, customer/user confirmations or goal-mode decision records, required E2E decisions, rules, source mapping, code path planning, product/design/engineering/developer-experience/security/QA review lenses, browser/UI QA plans, reuse/common logic plans, compatibility/fallback decisions, parameter/data-object plans, comment/logging/traceability plans, encoding/no-mojibake plans, real E2E test design, project-code test boundary, file-size limits, database/API/IO rules, per-task review gates, and implementation readiness. For `lightweight`, review the lane evidence, compact task scope, verification entry, and escalation triggers instead of expanding to unrelated full-workflow checks.
 9. Create `tasks-review.md` with main-process findings and required fixes before `/sp-impl`.
 10. Fix main-process task review findings that are inside the approved task scope and re-review until the main-process review has no unresolved blocking gaps.
-11. Start one independent read-only review thread after `tasks.md` and `tasks-review.md` drafts are present when true parallel execution is available. The independent thread must review task alignment, design-review closure, customer confirmations or goal-mode decision records, E2E propagation, implementation-standard readiness, validation coverage, and per-task review gates; for `lightweight`, keep the review scoped to eligibility, affected paths, verification, required review gates, and escalation triggers. It must return concise findings only to the main thread and must not edit files. If true parallel execution is unavailable, record the blocker and run the same scoped review in the main thread.
-12. Cross-validate main-process findings and independent review thread findings. Confirm whether each finding is valid, duplicate, false positive, already fixed, or requires customer/user decision. Record the confirmation decision and evidence in `tasks-review.md`.
-13. The main thread must discuss, triage, fix, and reply to every confirmed finding from both the main-process review and independent review thread, update `tasks.md` and `tasks-review.md` when needed, and re-run the affected review until there are no unresolved blocking findings. If lightweight eligibility fails, return to `/sp-spec` and switch to `full`.
-14. Stop before writing code.
+11. The main thread must discuss, triage, fix, and reply to every confirmed main-process review finding, update `tasks.md` and `tasks-review.md` when needed, and re-run the affected review until there are no unresolved blocking findings. If lightweight eligibility fails, return to `/sp-spec` and switch to `full`.
+12. Stop before writing code.
 
 ## Task Format
 
@@ -113,15 +111,13 @@ Create or update:
 - Per-Task Review Gates
 - Implementation Readiness
 - Main Process Comprehensive Review
-- Independent Review Thread
-- Cross-Validation / Finding Confirmation
 - Main Thread Finding Response
 - Finding Closure
 - Required Fixes Before /sp-impl
 
 ## Review Method
 
-Use Superpower review skills when available. Request the phase review with `superpowers:requesting-code-review`; when findings are returned, process, verify, and fix them with `superpowers:receiving-code-review` before re-review. The reviewer should receive only:
+Use Superpower review methods and checklists when available, but keep this phase review in the main agent. Do not call review skills that dispatch subagents for `/sp-tasks`; process, verify, fix, and re-review findings in the main thread. The main-process review context should include only:
 
 - `proposal.md`
 - `specs/<capability>/spec.md`
@@ -134,21 +130,11 @@ Use Superpower review skills when available. Request the phase review with `supe
 - Source mapping inputs used by the approved design
 - The alignment checklist from this skill
 
-The main process must perform its own comprehensive or allowed lightweight task review before relying on a read-only independent review thread. The independent thread is an additional reviewer, not a replacement for main-process review.
-
-After `tasks.md` and `tasks-review.md` are internally clean from the main-process review, start one independent review thread automatically when the runtime supports true parallel independent threads/subagents and the current tool has permission; do not ask the user for extra authorization. Permission means the current runtime/tool policy allows spawning read-only review threads, not that the user must confirm thread startup. Do not launch a sequential or fake-parallel subagent just to satisfy this requirement; record `parallel_unavailable_or_sequential_runtime` and perform the same scoped review in the main thread instead.
-
-When the runtime supports persistent reusable review threads, reuse an existing same-change, same-repository, same-role task reviewer instead of opening a new thread. Every reused invocation must receive the current task-planning scope, fresh artifacts, checklist, and evidence references, and `tasks-review.md` must record the reviewer role, thread identifier/name when available, reused/new status, reviewed scope, artifacts provided, findings, and restart/fallback reason.
+Do not start independent review threads or subagents for `/sp-tasks`. Task readiness review is performed by the main agent only.
 
 Lightweight review mode is allowed for narrow, low-risk task-readiness checks. It must still record evidence in `tasks-review.md`, but it may use a scoped checklist instead of expanding to all project rules. Record `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. Escalate to full review if tasks touch production behavior outside the approved compact scope, authentication/authorization, sensitive data, database/persistence, API contracts, UI behavior, async/IO, external integrations, logging/security, E2E-required behavior, broad qualifiers, or implementation-standard exceptions.
 
-The independent thread receives the same scoped artifacts plus `tasks-review.md`. It must not edit files. It must return findings only, in concise structured form: priority, finding, evidence location, impact, and suggested fix. It must not return long summaries, restated context, implementation plans, or broad explanations. The main thread owns cross-validation, confirmation of valid findings, triage, fixes, replies, verification, and closure records in `tasks-review.md`.
-
-Cross-validation must compare main-process findings and independent-thread findings, identify duplicates and disagreements, dismiss false positives only with evidence, and record findings requiring customer/user decision before artifact changes.
-
-Do not pass the full conversation history as review context.
-
-If the Superpower review skills are unavailable in the current runtime, record the unavailable reason in `tasks-review.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. If independent review threads are unavailable, fake-parallel, sequential-only, or the current tool lacks permission to start them, record the blocker and perform the same scoped review in the main thread. Do not stop to request extra user approval, and do not skip the review.
+If Superpower review guidance is unavailable in the current runtime, record the unavailable reason in `tasks-review.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. Do not skip the main-process review.
 
 ## Rules
 
@@ -210,6 +196,6 @@ If the Superpower review skills are unavailable in the current runtime, record t
 - Lightweight-lane tasks must include one scoped lightweight alignment/verification review gate, plus a Security Review gate only when the task touches authentication, authorization, tenant isolation, sensitive data, external input, logging/security, dependency/configuration risk, database/API/IO, async, or external-service behavior.
 - Findings from any required review gate must block the next task until fixed and re-reviewed.
 - Prefer existing architecture and code patterns over new abstractions.
-- `tasks-review.md` must record main-process comprehensive or allowed lightweight review, independent review thread findings or documented main-thread fallback, cross-validation decisions, main-thread responses, and zero unresolved blocking findings before `/sp-impl`.
+- `tasks-review.md` must record main-process comprehensive or allowed lightweight review, main-thread responses, and zero unresolved blocking findings before `/sp-impl`.
 - Do not proceed to `/sp-impl` if `tasks-review.md` has unresolved blocking gaps.
 - Do not proceed to `/sp-impl` if required manual customer/user confirmations or `/sp-goal` goal-mode decision records for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, or E2E decisions are missing.

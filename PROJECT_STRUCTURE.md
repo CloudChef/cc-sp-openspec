@@ -14,6 +14,8 @@ project-root/
   .gitignore
 
   skills/
+    sp-code-to-spec/
+      SKILL.md
     sp-goal/
       SKILL.md
     sp-brainstorm/
@@ -49,10 +51,12 @@ project-root/
     docs/
       codex-superpower-openspec.png
       ai-context/
+        codebase-inventory.md
         source-index.md
         project-learnings.md
       rules/
         ai-workflow-quality-standards.md
+        business-standards.md
         logging-standards.md
         encoding-standards.md
         project-implementation-standards.md
@@ -70,6 +74,10 @@ project-root/
         integration.md
         security.md
         testing.md
+        modules/
+          <module>/
+            <module>-<capability>-spec.md
+            <module>-<capability>-design.md
       wiki/
         service-catalog.md
         vm-provisioning.md
@@ -106,6 +114,8 @@ project-root/
   .agent/
     workdir/
       sp-openspec/
+        bootstrap/
+          code-to-spec-review.md
         <change-id>/
           brainstorm.md
           context.md
@@ -124,10 +134,12 @@ project-root/
   docs/
     codex-superpower-openspec.png
     ai-context/
+      codebase-inventory.md
       source-index.md
       project-learnings.md
     rules/
       ai-workflow-quality-standards.md
+      business-standards.md
       logging-standards.md
       encoding-standards.md
       project-implementation-standards.md
@@ -145,6 +157,10 @@ project-root/
       integration.md
       security.md
       testing.md
+      modules/
+        <module>/
+          <module>-<capability>-spec.md
+          <module>-<capability>-design.md
     wiki/
       service-catalog.md
       vm-provisioning.md
@@ -160,6 +176,18 @@ project-root/
 ## Workflow Artifacts
 
 ```text
+/sp-code-to-spec
+  -> docs/ai-context/source-index.md
+  -> docs/ai-context/codebase-inventory.md
+  -> openspec/project.md
+  -> docs/standards/modules/<module>/<module>-<capability>-spec.md
+  -> docs/standards/modules/<module>/<module>-<capability>-design.md
+  -> docs/rules/business-standards.md
+  -> docs/rules/<project-rule>.md
+  -> docs/rules/<language>-code-standards.md or docs/rules/<language>-<runtime>-code-standards.md
+  -> docs/standards/<area>.md
+  -> .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md
+
 /sp-goal
   -> detects the earliest incomplete phase
   -> runs the remaining workflow through /sp-complete
@@ -201,10 +229,11 @@ When sources conflict, use this priority:
 1. `AGENTS.md`
 2. Current OpenSpec change files and `.agent/workdir/sp-openspec/<change-id>/` evidence
 3. `openspec/project.md`
-4. `docs/rules/*.md`
-5. `docs/standards/*.md`
-6. active `docs/wiki/*.md`
-7. existing implementation patterns
-8. user prompt
+4. `docs/ai-context/codebase-inventory.md`, when present
+5. `docs/rules/*.md`
+6. `docs/standards/*.md`
+7. active `docs/wiki/*.md`
+8. existing implementation patterns
+9. user prompt
 
 Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
