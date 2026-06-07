@@ -57,7 +57,7 @@ Validation must include:
 - Code coverage check showing at least 85% coverage for changed/affected code.
 - Reuse/common logic check showing no avoidable duplicate logic was introduced.
 - Requirement-scope/fallback check showing no unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior was added.
-- Parameter-count/data-object check showing no method/function has more than 5 inputs unless it uses an explicit named data object.
+- Parameter-count/data-object check showing no method/function has more than 5 inputs unless it uses an explicit named data object, and no project-owned method/function parameter uses exception objects/classes, map-like objects, generic objects, or non-self-explanatory parameter definitions.
 - Comment/logging/traceability check showing useful comments, key behavior logs, `trace_id` propagation/output, exception stack traces, correct log levels, and no sensitive data in logs.
 - Encoding/no-mojibake check showing generated or modified comments, code strings, configuration, test parameters, non-ASCII text, and workflow artifacts are readable and parser-compatible.
 - File length check showing every generated/modified code file is at or below 1000 lines, with baseline line-count evidence and post-functionality refactor/split verification for any touched file that was already over 1000 lines before the change.

@@ -121,7 +121,7 @@ openspec/changes/<change-id>/
 - 测试参数必须以 JSON 文件独立保存到 `.agent/workdir/sp-openspec/<change-id>/test-params/`；同一模块测试的数据能复用就必须复用或扩展已有 JSON/fixture，不能无理由重复创建；稳定复用的项目测试 fixture 可另存到项目测试目录。
 - 实现必须尽量复用同项目内相同/等价逻辑。
 - 如果需求没有要求兼容性、fallback、降级或 silent default，不允许生成这些代码。
-- 方法/函数不得超过 5 个入参；确实需要更多时使用字段明确的 data object，不使用含义不清的 map/dict/object。
+- 方法/函数不得超过 5 个入参；确实需要更多时使用字段明确的 data object。所有开发语言中，项目自有方法/函数参数不得使用异常类对象、异常实例、Map/dict/object/`**kwargs`、未类型化 key-value bag 或同类 Map-like 对象；每个参数必须有自解释的领域命名、明确类型/schema、归属和校验预期。
 - 修改或生成的代码、注释、配置、测试数据和文档不得出现乱码。
 - 代码实现必须包含有用注释和可追踪日志，日志不得暴露敏感信息，优先包含 `trace_id`。
 

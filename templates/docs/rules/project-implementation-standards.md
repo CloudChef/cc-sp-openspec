@@ -114,10 +114,12 @@ Code changes MUST stay inside the approved requirement and design scope.
 - Modified code SHOULD be made generally reusable within the same project when the behavior is common, but generality must not add out-of-scope behavior.
 - Method and function signatures MUST have no more than 5 input parameters.
 - If more than 5 inputs are genuinely required, use a named data object, request object, command object, options object, or DTO with explicit fields.
-- Do not replace excessive parameters with vague `Map`, `dict`, `object`, or untyped key/value bags unless the domain behavior is explicitly a map and the allowed keys/schema are documented.
+- Project-owned methods/functions MUST NOT use exception class objects or exception instances, such as `Exception`, `Throwable`, `BaseException`, `Error`, or language equivalents, as regular input parameters. Boundary exception handlers required by a framework MUST map the exception immediately to an explicit error/result data object and MUST NOT pass the exception object deeper as business input.
+- Project-owned methods/functions MUST NOT use `Map`, `dict`, generic `object`, `**kwargs`, untyped key/value bags, or language-equivalent map-like objects as input parameters. If the business behavior is dynamic key/value data, wrap it in a named data object with documented key/value schema and validation expectations.
+- Every parameter MUST have a self-explanatory domain name, concrete type or schema, ownership, and validation expectation. Avoid opaque parameter names such as `data`, `param`, `params`, `map`, `obj`, `exception`, or `error` unless the name is made domain-specific and self-explanatory.
 - Data objects used for parameters MUST have clear field names, types or schema, validation expectations, and ownership.
 - Design and task artifacts MUST call out compatibility/fallback decisions and parameter-object needs before implementation.
-- Implementation review MUST reject unrequested fallback behavior, over-broad compatibility behavior, avoidable duplicate one-off logic, methods/functions with more than 5 inputs, and vague map-like parameter objects.
+- Implementation review MUST reject unrequested fallback behavior, over-broad compatibility behavior, avoidable duplicate one-off logic, methods/functions with more than 5 inputs, exception-object input parameters, map-like input parameters, and non-self-explanatory parameter definitions.
 
 ## PIR-011: Code Comments and Behavior Logging
 

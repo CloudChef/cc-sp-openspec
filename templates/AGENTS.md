@@ -190,7 +190,7 @@ Rules:
 - Use OpenSpec Requirement and Scenario format.
 - Review proposal/spec alignment before design.
 - Do not create design until `spec-review.md` has zero unresolved blocking gaps.
-- `design.md` must include Source Mapping, Rules Compliance, Spec Gaps, code path planning, reuse/common logic planning, requirement-scope/fallback decisions, parameter/data-object planning, comments/logging/traceability planning, encoding/no-mojibake planning, standalone verification, E2E design, and customer/user confirmation evidence or `/sp-goal` goal-mode decision evidence.
+- `design.md` must include Source Mapping, Rules Compliance, Spec Gaps, code path planning, reuse/common logic planning, requirement-scope/fallback decisions, parameter/data-object planning, explicit self-explanatory parameter definitions, exception-object/map-like parameter prohibition, comments/logging/traceability planning, encoding/no-mojibake planning, standalone verification, E2E design, and customer/user confirmation evidence or `/sp-goal` goal-mode decision evidence.
 - `design.md` must prepare a pending confirmation package for backend logic decisions, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E required/not-required decisions.
 - Before manual customer/user confirmation or `/sp-goal` goal-mode decision recording, the main process must review the spec/design draft, revise, and re-run affected review until there are no unresolved blocking findings except explicit pending customer/user decisions.
 - After review closure, manual `/sp-spec` must record customer/user confirmation for backend logic decisions, UI mockup/function description when applicable, API paths/parameters when applicable, configuration parameter names/values when applicable, and E2E required/not-required decision. `/sp-goal` must record the same decisions as reviewed goal-mode decision evidence without asking for extra confirmation after brainstorm is confirmed.
@@ -219,7 +219,7 @@ Rules:
 - Do not create or modify `design.md`, `design-review.md`, `proposal.md`, or `specs/`.
 - If a design decision, API/config detail, E2E decision, mockup, or spec update is missing, return to `/sp-spec` instead of inventing it in tasks. In `/sp-goal`, do not return only to collect extra design confirmation after brainstorm is confirmed; use reviewed goal-mode decision evidence.
 - Every task must reference a requirement, approved design decision, closed design-review evidence, applicable rules, target code paths, reuse/common logic impact, implementation-standard impact, and validation.
-- Every task must include requirement-scope/fallback instructions and method/function parameter constraints.
+- Every task must include requirement-scope/fallback instructions, method/function parameter constraints, exception-object/map-like parameter prohibition, and self-explanatory parameter definition requirements.
 - Every task must include code comment and logging requirements, including `trace_id`, log levels, structured fields, and sensitive-data exclusion when relevant.
 - Every task must include encoding/mojibake validation requirements when it changes comments, code, configuration, test data, or text-bearing behavior.
 - Every task must include standalone full verification from the relevant entry point.
@@ -292,7 +292,7 @@ Rules:
 - Unit tests, mock-only tests, class initialization tests, isolated method tests, and static screenshots do not count as real E2E evidence.
 - Same or equivalent logic must be reused or generalized; avoidable duplicate logic must be fixed before task completion.
 - Existing-code changes must implement only approved requirements. Do not add fallback, compatibility, degraded-mode, dual-path, or silent default behavior unless specs/design/tasks explicitly require it.
-- Methods/functions must have no more than 5 input parameters, or use explicit named data objects instead of vague maps/dicts/objects/key-value bags.
+- Methods/functions must have no more than 5 input parameters, and project-owned parameters must use explicit self-explanatory names and concrete types/schemas. Do not use exception objects/classes, maps/dicts/generic objects/`**kwargs`, or untyped key-value bags as parameters; use explicit named data objects instead.
 - Code implementation must include useful comments for non-obvious behavior and logs that trace key behavior with `trace_id` when context exists.
 - Logs must not include secrets, credentials, tokens, session identifiers, raw personal data, or sensitive request/response bodies.
 - Generated or modified comments, code, configuration, test parameters, and workflow artifacts must not contain mojibake, wrong transcoding, or unreadable characters.
@@ -368,7 +368,7 @@ Rules:
 - Do not complete if required real E2E test evidence is missing.
 - Do not complete if avoidable same/equivalent logic duplication remains.
 - Do not complete if unrequested fallback/compatibility behavior was added.
-- Do not complete if methods/functions exceed 5 input parameters without explicit named data objects.
+- Do not complete if methods/functions exceed 5 input parameters without explicit named data objects, or if project-owned method/function parameters use exception objects/classes, map-like objects, generic objects, untyped key-value bags, or non-self-explanatory parameter definitions.
 - Do not complete if required JSON test parameter files are missing, invalid, duplicated without justification, or not reused when same-module reusable data exists.
 - Generate or update a semantic `docs/wiki/<feature-or-story-title>.md` file from specs, design, design-review, customer/user confirmations or goal-mode decision records, code, rules, review evidence, and applicable Decision Chain Trace/Evidence Capture Timing Audit/Deterministic Sort Audit evidence.
 - Update `docs/ai-context/project-learnings.md` when the completed change reveals reusable patterns, pitfalls, preferences, or verification notes; otherwise record that no reusable learning was found.

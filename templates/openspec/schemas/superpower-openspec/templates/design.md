@@ -61,7 +61,9 @@
 
 - Methods/functions must have no more than 5 input parameters.
 - If more than 5 inputs are required, use a named data object with explicit fields and validation expectations.
-- Do not use vague `Map`, `dict`, `object`, `**kwargs`, or key/value bags unless the domain behavior is explicitly a map and the allowed keys/schema are documented.
+- Do not use exception class objects or exception instances as regular method/function parameters. Framework-mandated exception handler signatures must map exceptions at the boundary and must not pass exception objects deeper as business input.
+- Do not use `Map`, `dict`, generic `object`, `**kwargs`, untyped key/value bags, or language-equivalent map-like objects as method/function parameters. If dynamic key/value behavior is required, wrap it in a named data object with documented key/value schema and validation expectations.
+- Every parameter and data-object field must have a self-explanatory domain name, concrete type or schema, ownership, and validation expectation.
 
 | API / Method / Function Area | Expected Inputs | Parameter Count Risk | Data Object Needed | Data Object / Schema |
 |---|---|---|---|---|

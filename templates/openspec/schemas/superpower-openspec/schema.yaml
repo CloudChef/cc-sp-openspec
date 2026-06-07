@@ -70,7 +70,9 @@ durable_artifacts:
       mapping, and workdir context/review evidence. Include target code paths,
       reuse/common logic plan, database/API/IO/async decisions, confirmation
       evidence, E2E decisions, validation plan, logging/traceability, encoding,
-      and implementation constraints.
+      parameter/data-object constraints including exception-object/map-like
+      parameter prohibition and self-explanatory parameter definitions, and
+      implementation constraints.
 
   - id: tasks
     generates: tasks.md
@@ -81,7 +83,9 @@ durable_artifacts:
       design review evidence. Every task must map to requirements and design
       decisions, name target code paths, define validation, identify reusable
       JSON test parameters, identify stable project fixture paths when committed
-      tests need reusable files, and require per-task alignment and security reviews.
+      tests need reusable files, enforce parameter/data-object constraints including
+      exception-object/map-like parameter prohibition and self-explanatory parameter
+      definitions, and require per-task alignment and security reviews.
 
 process_evidence:
   path: .agent/workdir/sp-openspec/<change-id>

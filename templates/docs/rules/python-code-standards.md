@@ -154,7 +154,9 @@ Python functions and methods MUST keep inputs explicit and readable.
 
 - Do not define functions or methods with more than 5 input parameters.
 - If more than 5 inputs are required, introduce a named dataclass, pydantic model, TypedDict with a documented schema, request object, command object, or options object.
-- Do not use plain `dict`, `**kwargs`, `object`, or ambiguous key/value bags to avoid creating a clear data object.
+- Do not use exception class objects or exception instances, such as `Exception`, `BaseException`, or custom exception types, as regular function or method parameters. Framework-mandated exception handler signatures must map the exception at the boundary and must not pass it deeper as business input.
+- Do not use plain `dict`, `**kwargs`, `object`, or ambiguous key/value bags as function or method parameters. If dynamic key/value behavior is required, wrap it in a named dataclass, pydantic model, TypedDict, or options object with documented key/value schema and validation expectations.
+- Every parameter name and data-object field name MUST be self-explanatory and domain-specific; avoid opaque names such as `data`, `param`, `params`, `kwargs`, `obj`, `exception`, or `error`.
 - Data objects used for parameters MUST have descriptive field names, type hints or schema, validation expectations, and clear ownership.
 - Do not add fallback or compatibility branches unless the approved requirement or design explicitly requires them.
 - Use context managers for files, sockets, clients, and other stateful resources when available.

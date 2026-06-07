@@ -251,7 +251,9 @@ Use these groups when appropriate:
 - Design must state whether compatibility or fallback behavior is required. If specs do not require it, design must explicitly prohibit adding fallback or compatibility branches.
 - Design must require changed behavior to match approved requirements exactly, especially when modifying existing code.
 - Design must identify any method/function that would need more than 5 inputs and replace it with a named data object, request object, command object, options object, DTO, or equivalent explicit schema.
-- Do not use vague `Map`, `dict`, `object`, `**kwargs`, or key/value bags as a substitute for a clear data object unless the domain behavior is explicitly a map and the allowed keys/schema are documented.
+- Do not design project-owned method/function parameters that use exception class objects or exception instances, such as `Exception`, `Throwable`, `BaseException`, `Error`, or language equivalents. Framework-mandated exception handler signatures must map exceptions at the boundary and must not pass exception objects deeper as business input.
+- Do not design project-owned method/function parameters that use `Map`, `dict`, generic `object`, `**kwargs`, untyped key/value bags, or language-equivalent map-like objects. If dynamic key/value behavior is required, wrap it in a named data object with documented key/value schema and validation expectations.
+- Every parameter and data-object field must have a self-explanatory domain name, concrete type or schema, ownership, and validation expectation.
 - Design must define useful code comments for non-obvious behavior plus logging events, `trace_id` propagation, structured fields, log levels, sensitive-data masking, exception stack-trace behavior, and logging performance considerations.
 - Logging design must follow `docs/rules/logging-standards.md` when present.
 - Design must define encoding/no-mojibake validation when generated or modified comments, code text, configuration, test data, non-ASCII text, import/export, serialization, logs, API payloads, database text, or UI text are involved.

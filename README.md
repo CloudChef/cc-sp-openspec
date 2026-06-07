@@ -147,7 +147,7 @@ Copy-Item -Path C:\Projects\cmps\sp-openspec\skills\* -Destination $HOME\.agents
 
 模板默认提供这些规则：
 
-- `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、需求边界与 fallback 控制、方法参数/data object、单独完整验证、真实 E2E 测试设计与执行、相同逻辑复用、文档默认中文、单文件 1000 行限制、存量超限文件先完成功能再拆分、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
+- `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、需求边界与 fallback 控制、方法参数/data object、自解释参数、禁止异常对象参数、禁止 Map 类参数、单独完整验证、真实 E2E 测试设计与执行、相同逻辑复用、文档默认中文、单文件 1000 行限制、存量超限文件先完成功能再拆分、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
 - `docs/rules/ai-workflow-quality-standards.md`: AI 工作流质量规则，包括 brainstorm 产品挑战、design 多视角规划、UI 浏览器验证、安全审查和 wiki/项目经验沉淀。
 - `docs/rules/business-standards.md`: 项目级业务规范，包括业务术语、领域对象、状态生命周期、权限/审批/准入策略、不变量、跨功能业务规则，以及功能说明不得包含代码或伪代码的边界。
 - `docs/rules/logging-standards.md`: 日志规则，包括统一格式、`trace_id`、日志级别、参数完整性、异常堆栈、敏感信息脱敏、异步/性能、结构化检索和监控告警。

@@ -173,7 +173,9 @@ Java methods and constructors MUST keep input parameters understandable and expl
 
 - Do not define methods or constructors with more than 5 input parameters.
 - If more than 5 inputs are required, introduce a named request object, command object, options object, DTO, or record with explicit typed fields.
-- Do not use `Map<String, Object>`, raw `Map`, generic `Object`, or ambiguous key/value bags to avoid creating a clear data object.
+- Do not use exception class objects or exception instances, such as `Exception`, `Throwable`, `RuntimeException`, or `Error`, as regular method or constructor parameters. Framework-mandated exception handler signatures must map the exception at the boundary and must not pass it deeper as business input.
+- Do not use `Map<String, Object>`, raw `Map`, generic `Object`, or ambiguous key/value bags as method or constructor parameters. If dynamic key/value behavior is required, wrap it in a named DTO/record with documented key/value schema and validation expectations.
+- Every parameter name and DTO field name MUST be self-explanatory and domain-specific; avoid opaque names such as `data`, `param`, `params`, `map`, `obj`, `exception`, or `error`.
 - DTO/request object fields MUST have descriptive names, concrete types, validation expectations, and ownership near the API or service boundary that uses them.
 - Do not add fallback or compatibility branches unless the approved requirement or design explicitly requires them.
 

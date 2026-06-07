@@ -14,7 +14,7 @@ Keep durable OpenSpec contracts limited to `proposal.md`, `design.md`, `tasks.md
 
 When present, `docs/ai-context/codebase-inventory.md` is the current-codebase map produced by optional `/sp-code-to-spec` bootstrap work and should be used for business definitions, architecture, API, data, configuration, integration, and testing questions.
 
-Read `docs/rules/project-implementation-standards.md` when present. It defines baseline design, task, implementation, and review requirements for code paths, requirement scope, fallback control, parameter data objects, standalone verification, logic reuse, code comments, logging, encoding/no-mojibake, file size, database runtime, OpenAPI, backend layering, API IO, and async work.
+Read `docs/rules/project-implementation-standards.md` when present. It defines baseline design, task, implementation, and review requirements for code paths, requirement scope, fallback control, parameter data objects, self-explanatory parameters, exception-object/map-like parameter prohibition, standalone verification, logic reuse, code comments, logging, encoding/no-mojibake, file size, database runtime, OpenAPI, backend layering, API IO, and async work.
 
 Also read these default rule files when the change touches the matching area:
 
@@ -164,7 +164,7 @@ Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
 - During `/sp-spec` design and `/sp-tasks` planning, apply product, design, engineering, developer-experience, security, and QA review lenses when relevant.
 - During `/sp-spec` design and `/sp-tasks` planning, declare the browser/API/job QA plan before implementation.
 - During design and implementation, existing-code changes must implement only approved requirements. Do not add fallback, compatibility, degraded-mode, dual-path, or silent default behavior unless specs/design/tasks explicitly require it.
-- During design and implementation, methods/functions must have no more than 5 input parameters, or use explicit named data objects instead of vague maps/dicts/objects/key-value bags.
+- During design and implementation, methods/functions must have no more than 5 input parameters, and project-owned parameters must use explicit self-explanatory names and concrete types/schemas. Do not use exception objects/classes, maps/dicts/generic objects/`**kwargs`, or untyped key-value bags as parameters; use explicit named data objects instead.
 - During design and implementation, define and implement useful comments for non-obvious behavior plus behavior logs with `trace_id`, safe structured fields, correct log levels, exception stack traces, and sensitive-data exclusion.
 - During design and implementation, prevent mojibake in generated or modified comments, code, configuration, test data, and workflow artifacts.
 - During spec, design, task, and implementation work, require standalone full verification from the relevant entry point.
