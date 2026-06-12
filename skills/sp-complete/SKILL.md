@@ -54,7 +54,7 @@ Then create:
 2. Verify `design-review.md` exists and has zero unresolved blocking gaps.
 3. Verify `brainstorm-review.md` records that `brainstorm.md`, `context.md`, and `brainstorm-review.md` were created from customer/user-confirmed reviewed final brainstorm/context draft content after Lightweight Precheck, workflow lane decision, main-process review, and required revisions.
 4. Verify `brainstorm-review.md`, `spec-review.md`, `design-review.md`, and `tasks-review.md` record required main-process comprehensive or allowed lightweight review, main-thread responses, and zero unresolved review findings.
-5. Verify `review.md` records final implementation review closure: one main-thread final implementation review, two read-only independent final review agents or two documented fallback passes, finding confirmation, main-thread responses, confirmed non-blocking/minor/informational/follow-up final-review finding fixes, and zero unresolved review findings. Lightweight lane scopes the two final review roles to compact contracts, changed code, verification evidence, and escalation triggers.
+5. Verify `review.md` records final implementation review closure: one main-thread final implementation review, Main Final Code Review Pass 1, Main Final Code Review Pass 2, final finding cross-check, main-thread responses, confirmed non-blocking/minor/informational/follow-up final-review finding fixes, and zero unresolved review findings. Lightweight lane scopes the two final code review passes to compact contracts, changed code, verification evidence, and escalation triggers.
 6. Verify every task in `tasks.md` is marked complete with `[x]`.
 7. Verify `task-reviews.md` shows every task passed the review gates required by the workflow lane. Full lane requires Alignment Review and Security Review. Lightweight lane requires scoped lightweight alignment/verification review and requires Security Review only when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk exists.
 8. Verify `task-reviews.md` has zero open findings.
@@ -87,7 +87,7 @@ Do not archive if any pre-archive gate fails. Do not mark completion successful 
 - `design-review.md` is missing or has unresolved blocking gaps.
 - `brainstorm-review.md` is missing evidence that the reviewed final brainstorm/context draft content was confirmed by the customer/user before `brainstorm.md`, `context.md`, or `brainstorm-review.md` was created or updated.
 - Required main-process comprehensive or allowed lightweight review, main-thread responses, or closure is missing from `brainstorm-review.md`, `spec-review.md`, `design-review.md`, or `tasks-review.md`.
-- `review.md` is missing final review evidence: one main-thread final implementation review plus two read-only independent final review agents or two documented fallback passes, finding confirmation, main-thread responses, fixes for confirmed non-blocking/minor/informational/follow-up final-review findings, and closure.
+- `review.md` is missing final review evidence: one main-thread final implementation review, Main Final Code Review Pass 1, Main Final Code Review Pass 2, final finding cross-check, main-thread responses, fixes for confirmed non-blocking/minor/informational/follow-up final-review findings, and closure.
 - Any task in `tasks.md` is unchecked.
 - Any task lacks review evidence required by its workflow lane.
 - Any full-lane task lacks Alignment Review or Security Review evidence.
@@ -177,7 +177,7 @@ Workflow:
 - Summary
 - Completion Gate Results
 - Main Process Review Closure
-- Final Independent Review Agents or Fallback Closure
+- Main Final Code Review Pass Closure
 - Task Completion Evidence
 - Design Review Closure
 - Per-Task Review Closure

@@ -10,14 +10,14 @@ context: |
   docs/rules/project-implementation-standards.md is the baseline implementation rule file when present.
   docs/rules/ai-workflow-quality-standards.md is the baseline AI workflow quality rule file when present.
   docs/rules/business-standards.md is the baseline project business terminology and business-rule file when present.
-  docs/rules/logging-standards.md is the baseline logging, trace_id, and sensitive-data logging rule file when present.
+  docs/rules/logging-standards.md is the baseline logging, Java SLF4J, trace_id, and sensitive-data logging rule file when present.
   docs/rules/encoding-standards.md is the baseline encoding and no-mojibake rule file when present.
   docs/rules/java-code-standards.md, docs/rules/python-code-standards.md, docs/rules/configuration-standards.md, and docs/rules/testing-standards.md are default language/configuration/testing standards when present and applicable.
   Wiki and standards under docs/ are design inputs.
   Specs must reflect relevant behavior-affecting rules.
   Design and implementation must use docs/ai-context/source-index.md, docs/rules, docs/standards, docs/wiki, and existing code patterns.
   Generated OpenSpec, workdir evidence, test-parameter, wiki, and workflow documents default to Chinese unless the user explicitly asks for English.
-  Optional /sp-code-to-spec bootstrap may derive current-state capability specs under docs/standards/modules, current-function business definitions, feature descriptions, feature flows, feature point / branch matrices, module/capability design baselines, codebase inventory, and project rules from existing code before normal change workflows.
+  Optional /sp-code-to-spec bootstrap may derive current-state project/module/feature docs under docs/<project-name>/<module>/<feature>/, codebase inventory, and project rules from existing code before normal change workflows.
 
 rules:
   goal:
@@ -36,34 +36,30 @@ rules:
     - If tasks, tests, task reviews, coverage, or final review are incomplete, start at implementation.
     - If completion, wiki, or archive output is missing, start at complete.
     - Do not skip phase reviews, per-task reviews, coverage, test parameter files, wiki generation, or archive gates.
-    - Start two read-only independent final review agents automatically only after /sp-impl completes all tasks and records the main-thread final implementation review, when the runtime supports true parallel execution and the current tool has permission; do not ask the user for extra authorization.
-    - Permission means the current runtime/tool policy allows spawning read-only final review agents; do not treat missing user confirmation as missing permission.
-    - If final review agents are unavailable, fake-parallel, sequential-only, or the current tool lacks permission, record the blocker in review.md and perform the same two scoped final review passes in the main thread.
+    - Do not start independent review threads, child agents, subagents, parallel review agents, or fallback subagent passes for any review, including final implementation review.
+    - After /sp-impl completes all tasks and records the main-thread final implementation review, run Main Final Code Review Pass 1 and Main Final Code Review Pass 2 in the main thread.
     - Allow lightweight review mode for low-risk, narrow-scope checks; record review_mode, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision.
     - Escalate lightweight review to full review when risk touches production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integrations, logging/security, E2E, broad qualifiers, or implementation-standard exceptions.
-    - Independent final review agents must be read-only and findings-only; return concise structured findings with priority, evidence location, impact, and suggested fix, not long summaries or implementation plans.
     - Do not mark tasks complete without implementation and review evidence.
     - Do not write process evidence into the durable OpenSpec change folder.
     - Stop and ask for user input when the active change cannot be resolved.
   code_to_spec:
     - Optional bootstrap only. Do not insert /sp-code-to-spec into the required /sp-goal phase sequence.
-    - Use it only to derive initial current-state capability specs under docs/standards/modules, current-function business definitions, feature descriptions, feature flows, feature point / branch matrices, module/capability design baselines, project context, rules, and standards from an existing codebase.
-    - It may create or update docs/ai-context/source-index.md, docs/ai-context/codebase-inventory.md, openspec/project.md, docs/standards/modules/<module>/<module>-<capability>-spec.md, docs/standards/modules/<module>/<module>-<capability>-design.md, docs/rules/business-standards.md, docs/rules/*.md, docs/standards/*.md, and .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md.
+    - Use it only to derive initial current-state project/module/feature docs under docs/<project-name>/<module>/<feature>/, project context, rules, and standards from an existing codebase.
+    - It may create or update docs/ai-context/source-index.md, docs/ai-context/codebase-inventory.md, openspec/project.md, docs/<project-name>/readme.md, docs/<project-name>/<module>/readme.md, docs/<project-name>/<module>/<feature>/readme.md, docs/<project-name>/<module>/<feature>/spec/spec.md, docs/<project-name>/<module>/<feature>/design/design.md, docs/<project-name>/<module>/<feature>/flow/flow.md, optional files under docs/<project-name>/<module>/<feature>/other/, docs/rules/business-standards.md, docs/rules/*.md, docs/standards/*.md, and .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md.
     - Do not put /sp-code-to-spec current-state specs under openspec/specs; reserve openspec for project workflow configuration and real change contracts produced by /sp-spec.
-    - For multi-module projects, generate module/capability-scoped specs and design baselines instead of one catch-all spec/design.
+    - Do not put /sp-code-to-spec current-state docs under docs/standards/modules.
+    - For multi-module projects, generate module/feature-scoped docs instead of one catch-all spec/design.
     - For multi-language projects, keep language/runtime code standards separate and record the modules each rule file applies to.
-    - Every module/capability document path must use real module and feature point/capability names. Non-OpenSpec module document filenames must include both names and must not use generic names or sequence numbers such as module-1, feature-1, capability-001, common, misc, general, default, or design.md.
-    - Every generated capability spec must include a current-function business definition and a concrete feature point / branch matrix with observable branches, unknowns, and evidence.
-    - Every generated feature point must have a meaningful business-facing description with actor, goal, trigger, branch behavior, data/state side effects, outcome, evidence, and unknowns. One-line summaries are review findings.
-    - Every generated feature point must include a business-facing feature flow from start/trigger to observable end state, including preconditions, main flow, branch points, data/state changes, and external IO/async behavior when present.
-    - Evidence means project-owned proof for a claim, such as code path plus behavior summary, tests, config, migrations/schema, API docs, README/wiki, deployment docs, or explicit user confirmation. It must explain why the source proves the claim.
-    - Unknowns means unclear, unsupported, conflicting, or owner-dependent behavior. Unknowns are not approved requirements, rules, compatibility promises, or implementation decisions.
-    - Feature descriptions, feature flows, business definitions, requirements, and scenarios must use business language and must not contain direct code, pseudocode, call chains, SQL fragments, class/method snippets, or conditional expressions. Code identifiers and paths belong only in evidence, source mapping, design baselines, or rule provenance.
-    - Generate or update docs/rules/business-standards.md only for stable project-level business terms, lifecycle states, policies, invariants, and cross-capability rules supported by evidence or explicit user confirmation.
+    - Every project/module/feature document path must use real names and must not use generic names or sequence numbers such as module-1, feature-1, capability-001, common, misc, general, default, or design.
+    - Every generated feature directory must include readme.md, spec/, design/, and flow/; use other/ only for supporting notes.
+    - Do not generate old fixed matrix, evidence, or owner-question section templates for this workflow.
+    - Feature docs must use business language and must not contain direct code, pseudocode, call chains, SQL fragments, class/method snippets, or conditional expressions in business descriptions. Code identifiers and paths belong only in source references, source mapping, design baselines, or rule provenance.
+    - Generate or update docs/rules/business-standards.md only for stable project-level business terms, lifecycle states, policies, invariants, and cross-feature rules supported by repeated project patterns or explicit user confirmation.
     - Do not create openspec/changes/<change-id>/ artifacts, write production code, write tests, create implementation tasks, archive changes, or commit.
     - Every generated requirement, design claim, flow statement, rule, or standard must map to project-owned code, tests, config, docs, or explicit user input.
-    - Draft generated artifacts in the conversation, review evidence mapping and overreach, then get user confirmation before writing files.
-    - Put unclear behavior in Unknowns and record conflicts instead of guessing.
+    - Draft generated artifacts in the conversation, review source mapping and overreach, then get user confirmation before writing files.
+    - Put unclear behavior in 待确认事项 and record conflicts instead of guessing.
   brainstorm:
     - Start by drafting a Business Story Baseline inside the brainstorm flow, not as a separate workflow. Include user story, acceptance criteria, non-goals, and success metrics.
     - After the Business Story Baseline, run Lightweight Precheck before drafting the full brainstorm. Inspect minimal context and affected code to decide whether the change is full or lightweight.
@@ -232,18 +228,17 @@ rules:
     - Check implementation against applicable project-defined rules.
     - Check Java, Python, configuration, and testing rule compliance when those areas changed.
     - After all tasks are complete, run one main-thread final implementation review against every requirement, spec scenario, design decision, changed code path, test, verification result, and rule.
-    - Then run two read-only independent final review agents in one parallel dispatch when true parallel execution is available. Agent 1 reviews requirement/spec/design/code alignment and adversarial evidence. Agent 2 reviews security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates. If true parallel execution is unavailable or the tool cannot dispatch both concurrently, record the blocker and run the same two scoped passes in the main thread.
-    - Lightweight lane keeps the two final review roles but scopes them to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers.
-    - Independent final review agents must not edit files and must return concise findings only. Findings return to the main thread; the main thread confirms issue status, fixes every confirmed finding, including non-blocking/minor/informational/follow-up findings, replies, verifies, and re-runs the relevant review until zero unresolved findings.
-    - Independent Final Review Agent 1 or the same scoped fallback pass satisfies final code review pass 1 and must check specs, design, design-review, tasks, rules, architecture, tests, requirement-to-test mapping, counterexample matrices, masked-test analyses, broad-qualifier audits, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, encoding/no-mojibake evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints including exception-object/map-like parameter prohibition and self-explanatory parameter definitions, and file sizes.
-    - Independent Final Review Agent 2 or the same scoped fallback pass satisfies final code review pass 2 and must check security, data handling, authorization, logging/trace_id/sensitive-data exposure, encoding/no-mojibake regressions, API IO, async behavior, configuration, dependencies, test quality, masked-test risks, decision-chain masking regressions, evidence-capture timing regressions, deterministic-sort regressions, narrower code qualifiers, and remaining rule violations.
-    - Fix every confirmed finding from required final reviews or fallback passes, including non-blocking/minor/informational/follow-up findings, then re-review until all reviews have zero open confirmed findings.
+    - Then run Main Final Code Review Pass 1 for requirement/spec/design/code alignment and adversarial evidence, and Main Final Code Review Pass 2 for security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates.
+    - Lightweight lane keeps the two final code review passes but scopes them to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers.
+    - Main Final Code Review Pass 1 must check specs, design, design-review, tasks, rules, architecture, tests, requirement-to-test mapping, counterexample matrices, masked-test analyses, broad-qualifier audits, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, encoding/no-mojibake evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints including exception-object/map-like parameter prohibition and self-explanatory parameter definitions, and file sizes.
+    - Main Final Code Review Pass 2 must check security, data handling, authorization, logging/trace_id/sensitive-data exposure, encoding/no-mojibake regressions, API IO, async behavior, configuration, dependencies, test quality, masked-test risks, decision-chain masking regressions, evidence-capture timing regressions, deterministic-sort regressions, narrower code qualifiers, and remaining rule violations.
+    - Cross-check findings across all final main-thread review passes. Fix every confirmed finding, including non-blocking/minor/informational/follow-up findings, then re-review until all reviews have zero open confirmed findings.
     - Mark out-of-spec behavior explicitly.
     - Do not silently add new requirements.
   complete:
     - Require design-review.md to show zero unresolved blocking gaps.
     - Require brainstorm-review.md, spec-review.md, design-review.md, and tasks-review.md to record required main-process comprehensive or allowed lightweight review, main-thread responses, and zero unresolved findings.
-    - Require review.md to record one main-thread final implementation review, two read-only independent final review agents or two documented fallback passes, finding confirmation, main-thread responses, fixes for confirmed non-blocking/minor/informational/follow-up final-review findings, and zero unresolved findings.
+    - Require review.md to record one main-thread final implementation review, Main Final Code Review Pass 1, Main Final Code Review Pass 2, final finding cross-check, main-thread responses, fixes for confirmed non-blocking/minor/informational/follow-up final-review findings, and zero unresolved findings.
     - Require every task in tasks.md to be marked complete.
     - Require task-reviews.md to show zero open findings.
     - Require review.md to show zero unresolved findings.

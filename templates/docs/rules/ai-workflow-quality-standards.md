@@ -33,26 +33,23 @@ Brainstorm output MUST challenge the requirement before it becomes scope.
 
 ## AIQ-001A: Existing-Code Bootstrap
 
-`/sp-code-to-spec` MAY be used before normal change workflows to generate initial current-state context, capability specs under `docs/`, current-function business definitions, feature descriptions, feature flows, feature point / branch matrices, module/capability design baselines, rules, and standards from an existing codebase.
+`/sp-code-to-spec` MAY be used before normal change workflows to generate initial current-state context, project/module/feature documentation under `docs/<project-name>/<module>/<feature>/`, project rules, language/runtime rules, and standards from an existing codebase.
 
 - Do not make `/sp-code-to-spec` part of the required `/sp-goal` phase sequence.
 - Do not use `/sp-code-to-spec` for new behavior, bug fixes, or implementation.
 - Every generated requirement, design claim, rule, or standard MUST map to project-owned code, tests, config, docs, or explicit user input.
-- Current-state baseline specs belong under `docs/standards/modules/<module>/<module>-<capability>-spec.md`; feature changes belong under `openspec/changes/<change-id>/`.
-- `/sp-code-to-spec` MUST NOT write current-state specs under `openspec/specs/`; reserve `openspec/` for project workflow configuration and real change contracts produced by `/sp-spec`.
-- Current-state module/capability design baselines belong under `docs/standards/modules/<module>/<module>-<capability>-design.md`, not under `openspec/changes/<change-id>/design.md`.
-- Multi-module projects MUST generate module/capability-scoped specs and design baselines instead of one catch-all spec/design.
+- Current-state feature documents belong under `docs/<project-name>/<module>/<feature>/`; feature changes belong under `openspec/changes/<change-id>/`.
+- `/sp-code-to-spec` MUST NOT write current-state feature documents under `docs/standards/modules/` or `openspec/specs/`; reserve `openspec/` for project workflow configuration and real change contracts produced by `/sp-spec`.
+- Each current-state feature directory MUST include `readme.md`, `spec/spec.md`, `design/design.md`, and `flow/flow.md`; use `other/` only for supporting notes.
+- Multi-module projects MUST generate module/feature-scoped documents instead of one catch-all spec/design.
 - Multi-language projects MUST keep language/runtime code standards separate and record which modules each rule file applies to.
-- Every module/capability document path MUST use real module and feature point/capability names. Non-OpenSpec module document filenames MUST include both names and MUST NOT use generic names or sequence numbers such as `module-1`, `feature-1`, `capability-001`, `common`, `misc`, `general`, `default`, or `design.md`.
-- Every generated capability spec MUST include a current-function business definition and a concrete feature point / branch matrix with observable branches, unknowns, and evidence.
-- Every generated feature point MUST include a meaningful business-facing description with actor, goal, trigger, branch behavior, data/state side effects, outcome, evidence, and unknowns. One-line summaries or title-only descriptions are findings.
-- Every generated feature point MUST include a business-facing feature flow from start/trigger to observable end state, including preconditions, main flow, branch points, data/state changes, and external IO/async behavior when present.
-- Evidence MUST be project-owned proof for a claim, such as code path plus behavior summary, tests, config, migrations/schema, API docs, README/wiki, deployment docs, or explicit user confirmation. It MUST explain why the source proves the claim.
-- Unknowns MUST capture unclear, unsupported, conflicting, or owner-dependent behavior. Unknowns MUST NOT be treated as approved requirements, rules, compatibility promises, or implementation decisions.
+- Every project/module/feature path MUST use real project, module, and feature names. Generated paths MUST NOT use generic names or sequence numbers such as `module-1`, `feature-1`, `capability-001`, `common`, `misc`, `general`, `default`, or `design`.
+- `/sp-code-to-spec` MUST NOT require old matrix/evidence section templates as fixed sections. Describe current behavior, design, and flow directly in the feature directory structure.
+- Every generated feature document MUST include meaningful business-facing descriptions with actor/client, goal, trigger, branch behavior, data/state side effects, observable outcome, and source references when those items exist in the current codebase. One-line summaries or title-only descriptions are findings.
 - Feature descriptions, feature flows, business definitions, requirements, and scenarios MUST use business language and MUST NOT contain direct code, pseudocode, call chains, SQL fragments, class/method snippets, or conditional expressions.
-- Project-level business terminology, lifecycle states, policies, invariants, and cross-capability rules MAY be generated in `docs/rules/business-standards.md` only when supported by evidence or explicit user confirmation.
+- Project-level business terminology, lifecycle states, policies, invariants, and cross-feature rules MAY be generated in `docs/rules/business-standards.md` only when supported by repeated project patterns or explicit user confirmation.
 - Generated codebase inventory belongs in `docs/ai-context/codebase-inventory.md`.
-- Unclear behavior MUST be recorded as unknown or conflicting; do not promote inference to approved requirements.
+- Unclear behavior MUST be recorded as `待确认事项` or conflicting behavior; do not promote inference to approved requirements.
 - Draft, review, and confirm generated artifacts before writing files.
 
 ## AIQ-002: Multi-Lens Planning Review
@@ -117,17 +114,12 @@ Implementation review MUST try to break the implementation, not only confirm the
 - Reviewers MUST explicitly answer whether an earlier gate, filter, sort, or transform can let a test pass without proving the target semantic behavior.
 - A checklist section existing is not sufficient evidence; each audit MUST map to actual code paths, test inputs, expected outputs, and finding closure.
 
-## AIQ-008: Final Independent Implementation Review
+## AIQ-008: Main-Thread Final Implementation Review
 
-Phase reviews MUST include main-process comprehensive review or allowed lightweight review. `/sp-brainstorm`, `/sp-spec`, `/sp-tasks`, and per-task implementation reviews are owned by the main agent and MUST NOT start independent review threads. Independent child agents are reserved for final implementation review after `/sp-impl` has completed every task and recorded the main-thread final implementation review.
+Phase reviews MUST include main-process comprehensive review or allowed lightweight review. `/sp-brainstorm`, `/sp-spec`, `/sp-tasks`, per-task implementation reviews, final implementation review, and completion review are owned by the main agent and MUST NOT start independent review threads, child agents, subagents, or parallel review agents.
 
-- `/sp-impl` MUST run one main-thread final implementation review, then two read-only independent final review agents when true parallel execution is available: one for requirement/spec/design/code alignment and adversarial evidence, and one for security/implementation standards/regression risks. If true parallel execution is unavailable, it records the blocker and runs the same two scoped passes in the main thread. Lightweight lane keeps the same two final review roles but scopes them to compact contracts, changed code, verification evidence, and escalation triggers. Every confirmed valid final-review finding, including non-blocking, minor, informational, and follow-up findings, MUST be fixed and re-reviewed before completion.
-- The main process MUST perform its own final implementation review before relying on independent final review agent findings.
-- Independent final review agents MUST NOT edit files. They MUST return findings only, in concise structured form: priority, finding, evidence location, impact, and suggested fix. Do not ask independent reviewers for long summaries, restated context, implementation plans, or broad explanations.
-- Give independent final review agents only the scoped artifacts and checklist needed for that review. Do not pass the full conversation history or unrelated project files.
+- `/sp-impl` MUST run one main-thread final implementation review, then Main Final Code Review Pass 1 for requirement/spec/design/code alignment and adversarial evidence, then Main Final Code Review Pass 2 for security/implementation standards/regression risks. Lightweight lane keeps the same two focused final review passes but scopes them to compact contracts, changed code, verification evidence, and escalation triggers. Every confirmed valid final-review finding, including non-blocking, minor, informational, and follow-up findings, MUST be fixed and re-reviewed before completion.
 - Lightweight review mode is allowed for low-risk, narrow-scope checks. It must still record evidence, but it may use a scoped checklist instead of all project rules. The evidence must state `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision.
 - Lightweight review MUST escalate to full review when it finds a blocking issue or when the change touches production behavior outside the approved compact scope, authentication/authorization, sensitive data, database/persistence, API contracts, UI behavior, async/IO, external integrations, logging/security, E2E-required behavior, broad qualifiers, or implementation-standard exceptions.
-- Start independent final review agents only when the current runtime can run them truly in parallel. If the runtime can only run them sequentially or fake-parallel, record `parallel_unavailable_or_sequential_runtime` and perform the same two scoped final review passes in the main thread instead of launching slow sequential subagents.
 - The main thread owns finding confirmation, fixes, replies, verification, and closure records.
-- Finding confirmation MUST compare main-process final review findings and independent final-agent or fallback findings, identify duplicates and disagreements, dismiss false positives only with evidence, record findings requiring customer/user decisions, and prove that confirmed non-blocking/minor/informational/follow-up findings were fixed before completion.
-- If independent final review agents are unavailable, fake-parallel, sequential-only, or the current tool lacks permission to start them, record the blocker and perform the same two scoped final review passes in the main thread. Do not stop to request extra user approval.
+- Finding cross-check MUST compare the main final implementation review, Main Final Code Review Pass 1, and Main Final Code Review Pass 2, identify duplicates and disagreements, dismiss false positives only with evidence, record findings requiring customer/user decisions, and prove that confirmed non-blocking/minor/informational/follow-up findings were fixed before completion.

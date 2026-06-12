@@ -184,19 +184,18 @@ Implementation review MUST actively try to disprove broad requirements before ma
 - If implementation has a narrower code qualifier than the spec qualifier, review MUST record a finding unless specs/design/tasks explicitly approve the exception.
 - Implementation-standard violations cannot be closed by explanation alone; they must be fixed or explicitly approved as exceptions in the current OpenSpec artifacts.
 
-## PIR-016: Final Independent Review Closure
+## PIR-016: Main-Thread Final Review Closure
 
-The main thread MUST perform all phase reviews and per-task implementation reviews itself. Independent read-only child agents are used only for final implementation review after all `/sp-impl` tasks are complete and the main-thread final implementation review has been recorded. Start the two final independent review agents automatically when the runtime supports true parallel execution and the current tool has permission; do not ask the user for extra authorization. Permission means the current runtime/tool policy allows spawning read-only final review agents, not that the user must confirm startup.
+The main thread MUST perform all phase reviews, per-task implementation reviews, final implementation review, focused final code review passes, and completion review itself. Do not start independent review threads, child agents, subagents, parallel review agents, or fallback subagent passes.
 
 - Lightweight review mode MAY be used only when `/sp-brainstorm` has recorded and the user has confirmed a `lightweight` workflow lane from a reviewed Lightweight Precheck. Later phases must not invent lightweight eligibility in `/sp-impl`.
 - Lightweight review evidence must record `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. It MUST escalate to full review for production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integration, logging/security, E2E-required behavior, broad qualifiers, implementation-standard exception risks, or disproved precheck assumptions.
-- Independent final review agents MUST be read-only and findings-only. Findings MUST be concise and structured with priority, evidence location, impact, and suggested fix. They MUST NOT return long narrative summaries or implementation plans.
-- Independent final review agents SHOULD be started only when true parallel execution is available. If the runtime is sequential-only or fake-parallel, record `parallel_unavailable_or_sequential_runtime` and perform the same two scoped final review passes in the main thread instead.
 - `brainstorm-review.md` MUST record Lightweight Precheck, workflow lane decision, main-process comprehensive or allowed lightweight review, main-thread responses, customer/user confirmation of the lane, and zero unresolved blocking findings before `/sp-spec`.
 - `spec-review.md` and `design-review.md` MUST record workflow lane, main-process comprehensive or allowed lightweight review, main-thread responses, and zero unresolved blocking findings before `/sp-tasks`.
 - `tasks-review.md` MUST record workflow lane, main-process comprehensive or allowed lightweight review, main-thread responses, lane-specific review gates, and zero unresolved blocking findings before `/sp-impl`.
 - `review.md` MUST record one main-thread final implementation review against all requirements, specs, design, code, tests, and rules.
-- `review.md` MUST record two independent final implementation review agents when true parallel execution is available, or documented two-pass main-thread fallback when it is not. Agent 1 checks requirement/spec/design/code alignment. Agent 2 checks security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates.
-- Lightweight-lane `review.md` MUST keep the same two final review roles but scope them to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers.
-- `review.md` MUST record finding confirmation between the main-thread final review and required independent final agents or fallback passes.
-- Independent final review agents MUST NOT edit files. Findings return to the main thread, and the main thread must confirm issue status, fix every confirmed finding including non-blocking/minor/informational/follow-up findings, reply, verify, and re-run review until zero unresolved findings remain.
+- `review.md` MUST record Main Final Code Review Pass 1 for requirement/spec/design/code alignment.
+- `review.md` MUST record Main Final Code Review Pass 2 for security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates.
+- Lightweight-lane `review.md` MUST keep the same two final code review passes but scope them to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers.
+- `review.md` MUST record finding cross-check across all three main-thread final review passes.
+- The main thread must confirm issue status, fix every confirmed finding including non-blocking/minor/informational/follow-up findings, reply, verify, and re-run review until zero unresolved findings remain.

@@ -29,6 +29,12 @@ Automatic goal mode:
 
 1. `/sp-goal <requirement-or-change-id>`
 
+Jira bug-fix mode:
+
+1. `CC-FixBug <jira-id-or-url>`
+2. `CC-Deploy` is invoked by `CC-FixBug` after implementation/review closure.
+3. `CC-Commit` is invoked by `CC-FixBug` after deployment and post-deploy verification.
+
 Manual phase mode:
 
 0. Optional bootstrap for existing codebases: `/sp-code-to-spec <scope>`
@@ -44,6 +50,7 @@ Commands may generate multiple artifacts, but artifact responsibilities must rem
 
 - Durable contracts: `openspec/changes/<change-id>/proposal.md`, `design.md`, `tasks.md`, and `specs/<capability>/spec.md`.
 - Process evidence: `.agent/workdir/sp-openspec/<change-id>/brainstorm.md`, `context.md`, review logs, mockups, workflow test-parameter records, and `completion.md`.
+- Jira bug-fix process evidence: `.agent/workdir/cc-fixbug/<jira-id>/jira.md`, `brainstorm.md`, `context.md`, `spec.md`, `design.md`, `tasks.md`, review logs, test-parameter records, `cc-deploy.md`, `deploy-params/<environment>.json`, and `cc-commit.md`.
 - Final documentation: `docs/wiki/<feature-or-story-title>.md`.
 
 ## Skill Location
@@ -71,12 +78,9 @@ Purpose:
 - Detect the earliest incomplete phase for the requested or active change.
 - Start from that phase and run all remaining phases through `/sp-complete`.
 - Never skip phase artifacts, tests, coverage, reviews, finding closure, wiki generation, or archive gates.
-- Never skip required reviews or documented final fallback review passes. `/sp-brainstorm`, `/sp-spec`, `/sp-tasks`, and per-task implementation reviews are owned by the main agent. `/sp-impl` final closure requires one main-thread final implementation review plus two read-only independent final review agents or two documented fallback passes after all tasks are complete.
-- Start the two required independent final review agents automatically only after `/sp-impl` completes all tasks and records the main-thread final implementation review, when the runtime supports true parallel execution and the current tool has permission. Do not ask the user for extra authorization to start read-only final review agents.
-- Permission means the current runtime/tool policy allows spawning read-only final review agents. Do not treat missing user confirmation as missing permission.
-- If final review agents are unavailable, fake-parallel, sequential-only, or the current tool lacks permission, record the blocker in `review.md` and perform the same two scoped final review passes in the main thread.
+- Never skip required reviews. `/sp-brainstorm`, `/sp-spec`, `/sp-tasks`, per-task implementation reviews, final implementation review, and `/sp-complete` review are owned by the main agent. `/sp-impl` final closure requires one main-thread final implementation review plus Main Final Code Review Pass 1 and Main Final Code Review Pass 2 after all tasks are complete.
+- Do not start independent review threads, child agents, subagents, parallel review agents, or fallback subagent passes for any review, including final implementation review.
 - Lightweight review mode is allowed for low-risk, narrow-scope checks. It must still record evidence with `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. Escalate to full review when risk touches production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integrations, logging/security, E2E, broad qualifiers, or implementation-standard exceptions.
-- Independent final review agents must be read-only and findings-only. They return concise structured findings with priority, evidence location, impact, and suggested fix, not long summaries or implementation plans.
 - Never skip main-process comprehensive or allowed lightweight review.
 
 Rules:
@@ -97,14 +101,62 @@ Rules:
 - Do not mark spec/design complete without required manual customer/user confirmation evidence or `/sp-goal` goal-mode decision records in `design.md`, plus zero unresolved blocking gaps in `design-review.md`.
 - Stop when progress requires user input or approved OpenSpec scope changes.
 
+## CC-FixBug
+
+Use `cc-fixbug` for Jira-backed bug fixes.
+
+Purpose:
+
+- Read the Jira ID and bug details.
+- Run a bug-focused `sp-brainstorm` draft and main-process review.
+- Ask for user confirmation only for the reviewed brainstorm/context draft.
+- After brainstorm confirmation, continue through spec/design, tasks, implementation, review, `CC-Deploy`, and `CC-Commit` without extra normal confirmations.
+- Keep process artifacts under `.agent/workdir/cc-fixbug/<jira-id>/`.
+- Do not create `openspec/changes/`, `openspec/specs/`, or `docs/wiki/` artifacts for this bug workflow unless explicitly requested.
+
+Rules:
+
+- Required workdir artifacts: `jira.md`, `brainstorm.md`, `context.md`, `brainstorm-review.md`, `spec.md`, `design.md`, `spec-review.md`, `tasks.md`, `tasks-review.md`, `task-reviews.md`, `review.md`, `deploy-params/<environment>.json` when deployment runs, `cc-deploy.md`, and `cc-commit.md`.
+- Do not commit `.agent/workdir/cc-fixbug/` process evidence.
+- Implementation must verify the original bug entry point and record tests/standalone verification.
+- All findings, including non-blocking findings, must be fixed or closed as false-positive with evidence before `CC-Deploy` and `CC-Commit`.
+
+## CC-Deploy
+
+Use `cc-deploy` to package and remotely deploy the completed Jira bug fix before Gerrit submission.
+
+Rules:
+
+- Deploy only after implementation, tests, bug-entry verification, and required reviews are closed.
+- Use project-approved configuration, scripts, or deployment docs for Java and Python services.
+- If target environment, services, host aliases, remote paths, restart commands, or health checks are missing, ask the user for the missing non-secret environment details.
+- Do not ask the user to paste passwords, private keys, tokens, or other secrets into chat.
+- Package only affected Java/Python services when service-scoped deployment is supported.
+- Record sanitized deployment parameters in `.agent/workdir/cc-fixbug/<jira-id>/deploy-params/<environment>.json`.
+- Record build/package commands, remote deployment commands, target environment, deployed services, health checks, bug-entry verification, rollback command, and result in `.agent/workdir/cc-fixbug/<jira-id>/cc-deploy.md`.
+- Do not continue to `CC-Commit` when deployment or post-deploy verification fails, unless user/project rules explicitly record that remote deployment is not applicable.
+
+## CC-Commit
+
+Use `cc-commit` to submit the completed Jira bug fix to Gerrit.
+
+Rules:
+
+- Run only after `CC-Deploy` succeeds or records an explicit deployment-not-applicable decision.
+- Commit only code, tests, fixtures, config, or project files that are part of the bug fix.
+- Do not stage or commit `.agent/workdir/`.
+- Commit message must include `Bug-Fix`, `Bug-Id`, `Jira`, `Bug-Name`, `Solution`, `Modified-Points`, `Tests`, `Deploy`, and `Review`.
+- Submit to Gerrit review with `git push <gerrit-remote> HEAD:refs/for/<target-branch>`.
+- Do not push directly to `main`, `master`, or a normal branch for this workflow.
+
 ## /sp-code-to-spec
 
 Use `sp-code-to-spec` only as an optional bootstrap workflow for existing codebases.
 
 Purpose:
 
-- Generate initial current-state capability specifications under `docs/` from existing code and verified docs.
-- Generate or update `docs/ai-context/source-index.md`, `docs/ai-context/codebase-inventory.md`, `openspec/project.md`, module/capability baseline specs under `docs/standards/modules/`, current-function business definitions, feature descriptions, feature flows, feature point / branch matrices, module/capability design baselines, project business rules, language/runtime rules, and standards.
+- Generate initial current-state project/module/feature documentation under `docs/<project-name>/` from existing code and verified docs.
+- Generate or update `docs/ai-context/source-index.md`, `docs/ai-context/codebase-inventory.md`, `openspec/project.md`, feature docs under `docs/<project-name>/<module>/<feature>/`, project business rules, language/runtime rules, and standards.
 - Help later `/sp-brainstorm`, `/sp-spec`, `/sp-tasks`, and `/sp-impl` use the existing codebase consistently.
 
 Rules:
@@ -113,20 +165,17 @@ Rules:
 - Do not use `/sp-code-to-spec` for a new feature, bug fix, or behavior change; use `/sp-brainstorm` instead.
 - Do not write production code, tests, migrations, or configs.
 - Do not create `openspec/changes/<change-id>/` artifacts unless the user explicitly asks for the normal change workflow.
-- For multi-module projects, generate `docs/standards/modules/<module>/<module>-<capability>-spec.md` and `docs/standards/modules/<module>/<module>-<capability>-design.md` instead of one catch-all spec/design.
+- For multi-module projects, generate `docs/<project-name>/<module>/<feature>/readme.md`, `spec/spec.md`, `design/design.md`, and `flow/flow.md` instead of one catch-all spec/design.
 - Do not put `/sp-code-to-spec` current-state specs under `openspec/specs/`; reserve `openspec/` for project workflow configuration and real change contracts produced by `/sp-spec`.
+- Do not put `/sp-code-to-spec` current-state docs under `docs/standards/modules/`.
 - For multi-language projects, generate or update separate language/runtime rule files and record which modules each rule file applies to.
-- Every module/capability document path must use real module and feature point/capability names. Non-OpenSpec module document filenames must include both names, and must not use generic names or sequence numbers such as `module-1`, `feature-1`, `capability-001`, `common`, `misc`, `general`, `default`, or `design.md`.
-- Every generated capability spec must include a current-function business definition and a concrete feature point / branch matrix.
-- Every generated feature point must have a meaningful business-facing description with actor, goal, trigger, branch behavior, data/state side effects, outcome, evidence, and unknowns. One-line summaries are review findings.
-- Every generated feature point must include a business-facing feature flow from start/trigger to observable end state, including preconditions, main flow, branch points, data/state changes, and external IO/async behavior when present.
-- Evidence means project-owned proof for a claim, such as code path plus behavior summary, tests, config, migrations/schema, API docs, README/wiki, deployment docs, or explicit user confirmation. It must explain why the source proves the claim.
-- Unknowns means unclear, unsupported, conflicting, or owner-dependent behavior. Unknowns are not approved requirements, rules, compatibility promises, or implementation decisions.
-- Feature descriptions, feature flows, business definitions, requirements, and scenarios must use business language and must not include direct code, pseudocode, call chains, SQL fragments, class/method snippets, or conditional expressions. Put code identifiers and paths only in evidence, source mapping, design baselines, or rule provenance.
-- Generate or update `docs/rules/business-standards.md` only for stable project-level business terms, lifecycle states, policies, invariants, and cross-capability rules supported by evidence or explicit user confirmation.
-- Draft generated specs/rules/context in the conversation first, review for evidence mapping and overreach, then confirm with the user before writing files.
-- Every generated requirement, design claim, or rule must cite supporting project-owned code, tests, config, docs, or explicit user input.
-- Record unknown or conflicting behavior instead of guessing.
+- Every generated project/module/feature path must use real project, module, and feature names. Do not use generic names or sequence numbers such as `module-1`, `feature-1`, `capability-001`, `common`, `misc`, `general`, `default`, or `design`.
+- Every feature directory must include `readme.md`, `spec/`, `design/`, and `flow/`; create `other/` only when supporting notes are useful.
+- Do not generate or require old fixed matrix, evidence, or owner-question section templates for this workflow.
+- Feature docs must be business-readable and must not include direct code, pseudocode, call chains, SQL fragments, class/method snippets, or conditional expressions in business descriptions. Put code identifiers and paths only in source references, source mapping, design baselines, or rule provenance.
+- Generate or update `docs/rules/business-standards.md` only for stable project-level business terms, lifecycle states, policies, invariants, and cross-feature rules supported by repeated project patterns or explicit user confirmation.
+- Draft generated docs/rules/context in the conversation first, review for source mapping, feature independence, naming, and overreach, then confirm with the user before writing files.
+- Record unclear or conflicting behavior as `待确认事项` instead of guessing.
 
 ## /sp-brainstorm
 
@@ -314,9 +363,9 @@ Rules:
 - Update `tasks.md` after completing and verifying tasks.
 - Run relevant tests and coverage checks; reject test evidence that targets dependency packages or third-party APIs instead of project code.
 - Create or update `review.md`, including Rules Compliance.
-- After all tasks are complete, run one main-thread final implementation review against every requirement, spec, design decision, changed code path, test, verification result, and rule, then run two read-only independent final review agents or two fallback passes. Lightweight lane keeps the two final review roles but scopes them to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers.
-- Confirm main-thread final review findings against required independent final-agent or fallback findings before fixing or closing implementation review.
-- Independent final review agents must not edit files and must return findings only. Findings return to the main thread; the main thread confirms issue status, fixes every confirmed finding, including non-blocking/minor/informational/follow-up findings, replies, verifies, and re-runs the relevant review until zero unresolved findings remain.
+- After all tasks are complete, run one main-thread final implementation review against every requirement, spec, design decision, changed code path, test, verification result, and rule, then run Main Final Code Review Pass 1 and Main Final Code Review Pass 2 in the main thread. Lightweight lane keeps the two final review roles but scopes them to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers.
+- Cross-check findings across the main-thread final implementation review and the two main-thread final code review passes before fixing or closing implementation review.
+- The main thread confirms issue status, fixes every confirmed finding, including non-blocking/minor/informational/follow-up findings, replies, verifies, and re-runs the relevant review until zero unresolved findings remain.
 - Final completion requires `task-reviews.md` and `review.md` to show zero unresolved findings.
 
 Final response must include:
@@ -351,7 +400,7 @@ Rules:
 
 - Do not complete if `design-review.md` is missing or has unresolved blocking gaps.
 - Do not complete if required main-process comprehensive or allowed lightweight review, main-thread responses, or closure is missing from `brainstorm-review.md`, `spec-review.md`, `design-review.md`, or `tasks-review.md`.
-- Do not complete if `review.md` lacks one main-thread final implementation review, two read-only independent final review agents or two documented fallback passes, finding confirmation between review sources, main-thread responses, fixes for confirmed non-blocking/minor/informational/follow-up final-review findings, and closure.
+- Do not complete if `review.md` lacks one main-thread final implementation review, Main Final Code Review Pass 1, Main Final Code Review Pass 2, final finding cross-check, main-thread responses, fixes for confirmed non-blocking/minor/informational/follow-up final-review findings, and closure.
 - Do not complete if any task in `tasks.md` is unchecked.
 - Confirm applicable Java, Python, configuration, and testing rules were considered in review evidence.
 - Do not complete if `task-reviews.md` has any open required review finding. Full lane includes Alignment Review and Security Review findings. Lightweight lane includes scoped lightweight alignment/verification findings and Security Review findings only when that security review was required.

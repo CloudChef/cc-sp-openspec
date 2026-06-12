@@ -44,20 +44,18 @@ Rule files are project-specific. Keep the baseline implementation standards when
 Read:
 
 - `docs/rules/business-standards.md`, when present
-- Relevant capability baseline specs under `docs/standards/modules/`
+- Relevant current-state feature docs under `docs/<project-name>/<module>/<feature>/`
 - Active `docs/wiki/*.md` files for business context
 - `docs/ai-context/codebase-inventory.md`, when present
 
-When `/sp-code-to-spec` generates baseline specs, current-function business definitions, feature descriptions, feature flows, and feature point / branch matrices belong in `docs/standards/modules/<module>/<module>-<capability>-spec.md`. These current-state specs must not be written under `openspec/specs/`; project-level reusable business terminology, lifecycle states, policies, invariants, and cross-capability rules belong in `docs/rules/business-standards.md` only when supported by evidence or explicit user confirmation.
-
-Evidence means project-owned proof for a claim and why it proves the behavior. Unknowns means unclear, unsupported, conflicting, or owner-dependent behavior; do not treat Unknowns as approved requirements, rules, compatibility promises, or implementation decisions.
+When `/sp-code-to-spec` generates current-state feature docs, they belong under `docs/<project-name>/<module>/<feature>/` with `readme.md`, `spec/spec.md`, `design/design.md`, `flow/flow.md`, and optional `other/` notes. These current-state docs must not be written under `docs/standards/modules/` or `openspec/specs/`; project-level reusable business terminology, lifecycle states, policies, invariants, and cross-feature rules belong in `docs/rules/business-standards.md` only when supported by repeated project patterns or explicit user confirmation.
 
 ### Architecture
 
 Read:
 
 - `docs/standards/architecture.md`
-- Relevant files under `docs/standards/modules/`, when present
+- Relevant current-state feature docs under `docs/<project-name>/<module>/<feature>/`, when present
 - `docs/ai-context/codebase-inventory.md`, when present
 
 ### Backend
@@ -66,7 +64,7 @@ Read:
 
 - `docs/standards/backend.md`
 - `docs/standards/api.md`
-- Relevant files under `docs/standards/modules/`, when present
+- Relevant current-state feature docs under `docs/<project-name>/<module>/<feature>/`, when present
 - `docs/ai-context/codebase-inventory.md`, when present
 
 ### Frontend

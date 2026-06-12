@@ -14,6 +14,12 @@ project-root/
   .gitignore
 
   skills/
+    cc-fixbug/
+      SKILL.md
+    cc-deploy/
+      SKILL.md
+    cc-commit/
+      SKILL.md
     sp-code-to-spec/
       SKILL.md
     sp-goal/
@@ -74,10 +80,18 @@ project-root/
         integration.md
         security.md
         testing.md
-        modules/
-          <module>/
-            <module>-<capability>-spec.md
-            <module>-<capability>-design.md
+      <project-name>/
+        <module>/
+          readme.md
+          <feature>/
+            readme.md
+            spec/
+              spec.md
+            design/
+              design.md
+            flow/
+              flow.md
+            other/
       wiki/
         service-catalog.md
         vm-provisioning.md
@@ -130,6 +144,25 @@ project-root/
           task-reviews.md
           review.md
           completion.md
+      cc-fixbug/
+        <jira-id>/
+          jira.md
+          brainstorm.md
+          context.md
+          brainstorm-review.md
+          spec.md
+          design.md
+          spec-review.md
+          tasks.md
+          tasks-review.md
+          test-params/
+            <scenario-name>.json
+          task-reviews.md
+          review.md
+          deploy-params/
+            <environment>.json
+          cc-deploy.md
+          cc-commit.md
 
   docs/
     codex-superpower-openspec.png
@@ -157,10 +190,19 @@ project-root/
       integration.md
       security.md
       testing.md
-      modules/
-        <module>/
-          <module>-<capability>-spec.md
-          <module>-<capability>-design.md
+    <project-name>/
+      readme.md
+      <module>/
+        readme.md
+        <feature>/
+          readme.md
+          spec/
+            spec.md
+          design/
+            design.md
+          flow/
+            flow.md
+          other/
     wiki/
       service-catalog.md
       vm-provisioning.md
@@ -176,12 +218,46 @@ project-root/
 ## Workflow Artifacts
 
 ```text
+CC-FixBug
+  -> .agent/workdir/cc-fixbug/<jira-id>/jira.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/brainstorm.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/context.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/brainstorm-review.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/spec.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/design.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/spec-review.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/tasks.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/tasks-review.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/test-params/<scenario-name>.json
+  -> .agent/workdir/cc-fixbug/<jira-id>/task-reviews.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/review.md
+  -> CC-Deploy
+  -> .agent/workdir/cc-fixbug/<jira-id>/deploy-params/<environment>.json
+  -> .agent/workdir/cc-fixbug/<jira-id>/cc-deploy.md
+  -> CC-Commit
+  -> .agent/workdir/cc-fixbug/<jira-id>/cc-commit.md
+
+CC-Deploy
+  -> package changed Java/Python services
+  -> remote deploy to specified environment using project config
+  -> post-deploy health and bug-entry verification
+  -> .agent/workdir/cc-fixbug/<jira-id>/cc-deploy.md
+
+CC-Commit
+  -> local bug-fix commit
+  -> Gerrit review push: git push <gerrit-remote> HEAD:refs/for/<target-branch>
+
 /sp-code-to-spec
   -> docs/ai-context/source-index.md
   -> docs/ai-context/codebase-inventory.md
   -> openspec/project.md
-  -> docs/standards/modules/<module>/<module>-<capability>-spec.md
-  -> docs/standards/modules/<module>/<module>-<capability>-design.md
+  -> docs/<project-name>/readme.md
+  -> docs/<project-name>/<module>/readme.md
+  -> docs/<project-name>/<module>/<feature>/readme.md
+  -> docs/<project-name>/<module>/<feature>/spec/spec.md
+  -> docs/<project-name>/<module>/<feature>/design/design.md
+  -> docs/<project-name>/<module>/<feature>/flow/flow.md
+  -> docs/<project-name>/<module>/<feature>/other/<supporting-topic>.md
   -> docs/rules/business-standards.md
   -> docs/rules/<project-rule>.md
   -> docs/rules/<language>-code-standards.md or docs/rules/<language>-<runtime>-code-standards.md

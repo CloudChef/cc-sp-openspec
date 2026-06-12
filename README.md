@@ -4,14 +4,14 @@
 
 这是一个面向 Codex 或其他支持 skills 的 AI 编码代理的项目工作流模板，用来把 Superpower 风格的研发纪律、OpenSpec 风格的需求规格、项目规则、代码实现、测试、Review 和 Wiki 归档串成一个可重复执行的流程。
 
-这个仓库本身不是业务项目，而是模板仓库。正常使用时，把 `templates/` 目录复制到目标项目根目录，再把 `skills/` 目录中的 `/sp-*` workflow skills 同步到用户级 skills 目录。复制完成后，目标项目就可以使用 `/sp-goal` 自动补完剩余流程，也可以手动使用 `/sp-brainstorm`、`/sp-spec`、`/sp-tasks`、`/sp-impl`、`/sp-complete` 完成从需求澄清到实现归档的完整流程。已有代码库第一次接入时，可以先选用 `/sp-code-to-spec` 从现有代码生成初始 OpenSpec、上下文和项目规则。
+这个仓库本身不是业务项目，而是模板仓库。正常使用时，把 `templates/` 目录复制到目标项目根目录，再把 `skills/` 目录中的 `/sp-*` 和 `CC-*` workflow skills 同步到用户级 skills 目录。复制完成后，目标项目就可以使用 `/sp-goal` 自动补完剩余流程，也可以手动使用 `/sp-brainstorm`、`/sp-spec`、`/sp-tasks`、`/sp-impl`、`/sp-complete` 完成从需求澄清到实现归档的完整流程；Jira Bug 修复可以使用 `CC-FixBug` 到 `CC-Deploy` 再到 `CC-Commit` 的部署和 Gerrit review 流程。已有代码库第一次接入时，可以先选用 `/sp-code-to-spec` 从现有代码生成初始 OpenSpec、上下文和项目规则。
 
 本流程不要求安装 OpenSpec CLI。AI 编码代理直接读取、生成、校验和归档 `openspec/` 下的核心契约文件，并把过程证据写入 `.agent/workdir/sp-openspec/<change-id>/`。
 
 ## 前置要求
 
-1. 必须安装 Superpower。普通阶段 review 使用 Superpower 的 review 方法和清单，但由 main agent 执行；不要在 `/sp-brainstorm`、`/sp-spec`、`/sp-tasks`、per-task implementation review 或 `/sp-complete` 中调用会派发子代理的 review skill。只有 `/sp-impl` 全部任务完成后的两个 final review agents 才可以使用子代理 review；如果当前代理或运行环境没有这些能力，则使用 Codex 或当前工具自己的 review 能力完成同样的 review 门禁。
-2. 必须同步本仓库 `skills/` 下的 `/sp-*` workflow skills 到用户级 skills 目录。
+1. 必须安装 Superpower。Review 使用 Superpower 的 review 方法和清单，但全部由 main agent 执行；不要在 `/sp-brainstorm`、`/sp-spec`、`/sp-tasks`、`/sp-impl`、per-task implementation review 或 `/sp-complete` 中调用会派发子代理的 review skill。如果 Superpower review guidance 不可用，则使用 Codex 或当前工具自己的 review 能力在 main 线程完成同样的 review 门禁。
+2. 必须同步本仓库 `skills/` 下的 `/sp-*` 和 `CC-*` workflow skills 到用户级 skills 目录。
 3. 目标项目必须包含从 `templates/` 复制过去的 `AGENTS.md`、`.gitignore`、`openspec/` 和 `docs/`。
 4. 不需要安装 OpenSpec CLI。
 
@@ -35,6 +35,9 @@
 ```text
 sp-openspec/
   skills/
+    cc-fixbug/
+    cc-deploy/
+    cc-commit/
     sp-code-to-spec/
     sp-goal/
     sp-brainstorm/
@@ -113,6 +116,9 @@ sp-spec/
 sp-tasks/
 sp-impl/
 sp-complete/
+cc-fixbug/
+cc-deploy/
+cc-commit/
 ```
 
 常见目标目录：
@@ -150,7 +156,7 @@ Copy-Item -Path C:\Projects\cmps\sp-openspec\skills\* -Destination $HOME\.agents
 - `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、需求边界与 fallback 控制、方法参数/data object、自解释参数、禁止异常对象参数、禁止 Map 类参数、单独完整验证、真实 E2E 测试设计与执行、相同逻辑复用、文档默认中文、单文件 1000 行限制、存量超限文件先完成功能再拆分、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
 - `docs/rules/ai-workflow-quality-standards.md`: AI 工作流质量规则，包括 brainstorm 产品挑战、design 多视角规划、UI 浏览器验证、安全审查和 wiki/项目经验沉淀。
 - `docs/rules/business-standards.md`: 项目级业务规范，包括业务术语、领域对象、状态生命周期、权限/审批/准入策略、不变量、跨功能业务规则，以及功能说明不得包含代码或伪代码的边界。
-- `docs/rules/logging-standards.md`: 日志规则，包括统一格式、`trace_id`、日志级别、参数完整性、异常堆栈、敏感信息脱敏、异步/性能、结构化检索和监控告警。
+- `docs/rules/logging-standards.md`: 日志规则，包括统一格式、`trace_id`、日志级别、参数完整性、异常堆栈、Java SLF4J 使用规范、敏感信息脱敏、异步/性能、结构化检索和监控告警。
 - `docs/rules/encoding-standards.md`: 编码和乱码规则，要求生成或修改的注释、代码、配置、测试数据和文档文本可读、编码正确、无乱码。
 - `docs/rules/java-code-standards.md`: Java/Spring 规范，结合参考项目实践和 Google Java Style。
 - `docs/rules/python-code-standards.md`: Python 规范，结合参考项目实践和 Google Python Style。
@@ -167,13 +173,25 @@ docs/rules/data-retention.md
 
 ## 如何使用流程
 
+Jira Bug 修复流程：
+
+```text
+CC-FixBug <jira-id-or-url>
+```
+
+`CC-FixBug` 用于 Jira Bug 修复。它会读取 Jira ID 和 Bug 信息，先生成并复审 `sp-brainstorm` 风格的 bug 分析草稿；只有这一步需要客户/使用人确认。确认后，流程会继续生成 spec/design/tasks/implementation/review 证据并实现修复，但这些流程产物全部写入 `.agent/workdir/cc-fixbug/<jira-id>/`，不会写入 `openspec/changes/`、`openspec/specs/` 或 `docs/wiki/`。实现和 Review 完成后，流程调用 `CC-Deploy` 打包并远程部署 Java/Python 服务到指定环境，再调用 `CC-Commit` 创建本地 commit 并提交 Gerrit review。
+
+`CC-Deploy` 必须根据项目配置、脚本或部署文档执行打包和远程部署。目标环境、服务、主机别名、远程路径、重启命令、健康检查等信息缺失时，允许提示用户补充非敏感环境信息；不得要求用户在对话中粘贴密码、私钥、token 或其他密钥。部署证据写入 `.agent/workdir/cc-fixbug/<jira-id>/cc-deploy.md`，可复用的非敏感环境参数写入 `.agent/workdir/cc-fixbug/<jira-id>/deploy-params/<environment>.json`。
+
+`CC-Commit` 必须提交到 Gerrit，而不是普通分支 push。提交信息必须明确这是 Bug 修复，并包含 `Bug-Id`、`Jira`、`Bug-Name`、`Solution`、`Modified-Points`、`Tests`、`Deploy` 和 `Review`。默认不提交 `.agent/workdir/` 过程证据。
+
 可选项目初始化：
 
 ```text
 /sp-code-to-spec <scope>
 ```
 
-`/sp-code-to-spec` 用于已有代码库第一次接入时，从当前代码、测试、配置、README、部署脚本和已有文档中生成初始上下文、`openspec/project.md`、当前状态能力 spec、当前功能业务定义、功能说明、功能流程说明、功能点/分支矩阵、模块/功能点设计基线、项目业务规则、语言/runtime 规则和标准草案。当前状态 spec 是项目知识文档，必须写到 `docs/standards/modules/<module>/<module>-<capability>-spec.md`，不得写入 `openspec/specs/`；`openspec/` 只保留项目 workflow 配置和 `/sp-spec` 生成的真实变更契约。当前状态设计写到 `docs/standards/modules/<module>/<module>-<capability>-design.md`。每个模块/功能点文档路径必须使用真实模块名和功能点名；模块 spec 和 design 文件名本身必须包含模块名和功能点名，不得使用 `module-1`、`feature-1`、`capability-001`、`common`、`misc`、`general`、`default`、`design.md` 这类通用名或序号名。每个 baseline spec 必须包含当前功能的业务定义、具体分支、有实质内容的功能说明和功能流程说明；功能说明必须写清 actor、目标、触发条件、分支行为、数据/状态副作用、可观察结果、证据和 unknowns；功能流程说明必须写清从触发到最终可观察结果的业务路径，包括前置条件、主流程、分支点、数据/状态变化、外部 IO 或异步行为。只有一行摘要属于 review finding。Evidence / 证据是支撑结论的项目内来源，例如代码路径及其行为摘要、测试、配置、迁移/schema、API 文档、README/Wiki、部署文档或明确的用户确认，并且必须说明为什么能证明该结论。Unknowns / 待确认问题是证据不足、存在冲突、语义不清或必须由业务/项目负责人确认的行为，不是已批准需求、规则、兼容承诺或实现决策。功能说明、功能流程说明、业务定义、需求和场景必须使用业务语言，不得直接出现代码、伪代码、调用链、SQL 片段、类名/方法名片段或条件表达式；代码标识符和路径只放在证据、source mapping、设计基线或规则来源中。多语言项目必须按语言/runtime 生成或更新独立规范，例如 `docs/rules/java-code-standards.md`、`docs/rules/python-code-standards.md`、`docs/rules/typescript-react-code-standards.md`。如果当前代码能证明稳定的项目级业务术语、状态生命周期、策略、不变量或跨功能规则，可以生成或更新 `docs/rules/business-standards.md`。它不是功能开发流程，不会创建 `openspec/changes/<change-id>/`、不会写代码、不会归档；所有生成内容必须先基于证据 review 并经用户确认。
+`/sp-code-to-spec` 用于已有代码库第一次接入时，从当前代码、测试、配置、README、部署脚本和已有文档中生成初始上下文、`openspec/project.md`、项目/模块/功能文档、项目业务规则、语言/runtime 规则和标准草案。当前状态功能文档是项目知识文档，必须统一写到 `docs/<project-name>/<module>/<feature>/`，不得写入 `docs/standards/modules/` 或 `openspec/specs/`；`openspec/` 只保留项目 workflow 配置和 `/sp-spec` 生成的真实变更契约。每个功能目录必须使用真实项目名、模块名和功能名，包含 `readme.md`、`spec/spec.md`、`design/design.md`、`flow/flow.md`，需要补充说明时再创建 `other/`。不得使用 `module-1`、`feature-1`、`capability-001`、`common`、`misc`、`general`、`default`、`design` 这类通用名或序号名。`/sp-code-to-spec` 不生成旧式矩阵、证据或待确认问题固定章节模板；只需要用业务语言写清当前功能说明、当前行为规格、当前设计实现和当前流程说明。代码标识符和路径只放在 source reference、source mapping、设计基线或规则来源中。多语言项目必须按语言/runtime 生成或更新独立规范，例如 `docs/rules/java-code-standards.md`、`docs/rules/python-code-standards.md`、`docs/rules/typescript-react-code-standards.md`。如果当前代码能证明稳定的项目级业务术语、状态生命周期、策略、不变量或跨功能规则，可以生成或更新 `docs/rules/business-standards.md`。它不是功能开发流程，不会创建 `openspec/changes/<change-id>/`、不会写代码、不会归档；所有生成内容必须先 review 并经用户确认。
 
 自动补完剩余流程：
 
@@ -183,9 +201,9 @@ docs/rules/data-retention.md
 
 `/sp-goal` 会根据当前 change 的完成情况判断从哪一步开始。如果 brainstorm 没完成或缺少客户确认，就从 brainstorm 开始并要求确认 reviewed final brainstorm/context；如果 brainstorm 已确认但 spec/design 没完成，就从 spec 开始；后续依次类推，直到 `/sp-complete`。在 goal 模式里，brainstorm 缺确认是唯一正常需要额外用户确认的情况。其他设计决策，例如后台逻辑、UI Mockup/功能说明、API 路径和参数、配置参数名和值、E2E required/not-required 决策，不再额外询问用户确认，而是在 `/sp-spec` 中经过主进程 review 后记录为 goal-mode decision evidence；只有 artifact 本身存在真实歧义、必须补充新范围或关键澄清时才询问用户。它不会跳过 review、测试、coverage、finding closure、Wiki 或 archive 门禁。
 
-Review 授权规则：`/sp-brainstorm`、`/sp-spec`、`/sp-tasks` 和实现过程中的单个 task review 都由 main agent 完成，不启动子代理。只有 `/sp-impl` 的所有任务完成、主线程 final implementation review 已记录之后，才在运行环境支持真并行且工具有权限时直接启动两个只读 final review 子代理，不再单独向用户请求授权。这里的“权限”只指当前运行时/工具策略允许启动只读 final review 子代理，不是要求再次向用户确认。
+Review 授权规则：所有 workflow review 都由 main agent 完成，不启动子代理、不启动独立 review 线程，也不需要额外的子代理授权。
 
-Review 性能规则：低风险、窄范围检查可以使用 lightweight review，但必须记录 `review_mode: lightweight`、范围、理由、已审 artifact、跳过的 full-review 项及原因、finding 和是否升级 full review。最终实现子代理 review 必须只读，只返回结构化 findings，不输出长篇说明或实现计划。如果当前工具不能真正并行，只能顺序或假并行运行子代理，就记录 `parallel_unavailable_or_sequential_runtime`，并由 main 线程执行两个同等范围的 final review fallback pass。
+Review 性能规则：低风险、窄范围检查可以使用 lightweight review，但必须记录 `review_mode: lightweight`、范围、理由、已审 artifact、跳过的 full-review 项及原因、finding 和是否升级 full review。最终实现 review 固定在 main 线程完成：一次 final implementation review，加 Main Final Code Review Pass 1 和 Main Final Code Review Pass 2。
 
 Lightweight 判断必须发生在 `/sp-brainstorm`。流程先在 brainstorm 内生成 `Business Story Baseline`，包括用户故事、验收标准、非目标和成功指标；它不是独立 workflow，而是后续分析的业务输入。随后再做 `Lightweight Precheck`，读取最小上下文和候选代码路径，记录入口、期望行为来源、当前行为、候选原因、影响路径、共享/核心模块、API/数据库/安全/异步/外部服务/UI/E2E 影响、预计文件数、行为边界、broad qualifier、fallback/兼容需求、验证入口和 red flags。默认走 full；只有 Precheck 证明这是简单 bug、文案、配置或小逻辑调整，且行为边界不变、影响范围小、验证入口明确、没有升级触发器，才允许 `lightweight` lane。这个 lane 决策需要和 brainstorm/context 草稿一起 review，并由用户确认。
 
@@ -210,7 +228,7 @@ Lightweight 判断必须发生在 `/sp-brainstorm`。流程先在 brainstorm 内
 4. 实现任务：执行 `/sp-impl <change-id>`。
    - 产物：代码变更、更新后的 `openspec/changes/<change-id>/tasks.md`，以及 `.agent/workdir/sp-openspec/<change-id>/test-params/`、`task-reviews.md`、`review.md`。
    - 目的：按任务逐个实现，并在每个任务后完成验证和 workflow lane 对应的 review。
-   - 要求：Full lane 每个任务都必须先完成需求到测试映射、反例矩阵、Masked-Test 分析、Broad-Qualifier 审计，并在适用时完成 Decision Chain Trace、Evidence Capture Timing Audit、Deterministic Sort Audit，再由 main agent 修复 Alignment Review 和 Security Review 的所有 finding，并重新 review 后，才能开始下一个任务。Lightweight lane 每个任务必须完成需求到测试映射、验证入口和升级触发器检查；只有存在 broad qualifier、gate/filter/sort/score/state transition、证据捕获时机、API output、持久化、准入/资格判断等触发器，或 review 要求升级时，才扩展完整矩阵和审计；Security Review 只在触及安全相关风险时要求。覆盖率不能替代需求覆盖，checklist 存在也不能替代代码路径、数据流、证据捕获时机和测试证据映射。所有任务完成后，先由主进程运行一次 final implementation review，再启动两个只读独立 final review agents 或记录两个同等 main-thread fallback pass；lightweight lane 保留两个最终 review 角色，但范围收敛到 compact contracts、changed code、verification evidence 和 escalation triggers。主进程必须确认所有 finding，所有确认有效的 final-review finding，包括 non-blocking、minor、informational 和 follow-up，都必须修复、回复、验证并重新 review，直到没有 open finding 后才能结束 impl。
+   - 要求：Full lane 每个任务都必须先完成需求到测试映射、反例矩阵、Masked-Test 分析、Broad-Qualifier 审计，并在适用时完成 Decision Chain Trace、Evidence Capture Timing Audit、Deterministic Sort Audit，再由 main agent 修复 Alignment Review 和 Security Review 的所有 finding，并重新 review 后，才能开始下一个任务。Lightweight lane 每个任务必须完成需求到测试映射、验证入口和升级触发器检查；只有存在 broad qualifier、gate/filter/sort/score/state transition、证据捕获时机、API output、持久化、准入/资格判断等触发器，或 review 要求升级时，才扩展完整矩阵和审计；Security Review 只在触及安全相关风险时要求。覆盖率不能替代需求覆盖，checklist 存在也不能替代代码路径、数据流、证据捕获时机和测试证据映射。所有任务完成后，由主进程运行一次 final implementation review，再在 main 线程运行 Main Final Code Review Pass 1 和 Main Final Code Review Pass 2；lightweight lane 保留两个最终 review 角色，但范围收敛到 compact contracts、changed code、verification evidence 和 escalation triggers。主进程必须交叉确认所有 finding，所有确认有效的 final-review finding，包括 non-blocking、minor、informational 和 follow-up，都必须修复、回复、验证并重新 review，直到没有 open finding 后才能结束 impl。
 
 5. 完成和归档：执行 `/sp-complete <change-id>`。
    - 产物：`.agent/workdir/sp-openspec/<change-id>/completion.md`、`docs/wiki/<feature-or-story-title>.md`、只包含核心契约的 `openspec/changes/archive/<YYYY-MM-DD>-<change-id>/`、本地 git commit。

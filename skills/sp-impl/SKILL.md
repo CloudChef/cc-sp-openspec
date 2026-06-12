@@ -70,15 +70,14 @@ Keep durable OpenSpec contracts limited to `proposal.md`, `design.md`, `tasks.md
 30. Record required review rounds, findings, fixes, customer/user confirmation evidence or goal-mode decision evidence, requirement-to-test mapping, any required counterexample matrix evidence, masked-test analysis, broad-qualifier audit, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, project-code test boundary evidence, comment/logging/traceability evidence, encoding/no-mojibake evidence, browser/UI QA evidence, standalone verification evidence, real E2E evidence, coverage evidence, reuse/common logic evidence, requirement-scope/fallback evidence, parameter-count/data-object evidence, file length evidence, test parameter files, database/API/IO evidence, escalation-trigger evidence, and closure evidence in `task-reviews.md`.
 31. Mark the task complete in `tasks.md` only after applicable customer/user confirmations or goal-mode decision records, requirement-to-test mapping, any required counterexample matrix, masked-test analysis, broad-qualifier audit, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, comment/logging/traceability evidence, encoding/no-mojibake evidence, browser/UI QA when relevant, standalone verification, required real E2E verification, validation, scenario coverage, coverage percentage, reuse/common logic checks, requirement-scope/fallback checks, parameter-count/data-object checks, file length checks, and all required reviews have no open findings.
 32. Repeat this loop for the next unchecked task.
-33. After all tasks and per-task findings are closed, run a final implementation review. For `full`, run one mandatory main-thread full implementation review against every requirement, spec scenario, design decision, task, changed code path, test, verification result, and rule. For `lightweight`, run one scoped main-thread final review against the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, review findings, and escalation triggers. Record this in `review.md`.
-34. When true parallel execution is available, start exactly two read-only independent final review agents in one parallel dispatch after all tasks and per-task main-thread findings are closed. If the tool cannot dispatch both concurrently, record the blocker and run the same two scoped final review passes in the main thread. This rule applies to both `full` and `lightweight`; `lightweight` keeps the two roles but scopes them to the compact contracts and escalation triggers.
-35. Independent Final Review Agent 1 reviews requirement/spec/design/code alignment across all requirements, specs, design, tasks, code, tests, counterexample matrices, masked-test analysis, broad-qualifier audit, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, and verification evidence. Independent Final Review Agent 2 reviews security, implementation standards, regression, logging/traceability, data handling, API IO/async, test quality, file size, and configuration. For `lightweight`, both agents scope their checks to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers. Reviewers must return concise findings only to the main thread and must not edit files.
-36. Confirm main-thread final review findings against all required independent final-agent or fallback findings. Decide whether each finding is valid, duplicate, false positive, already fixed, requires full-lane escalation, or requires customer/user decision. Record the confirmation decision and evidence in `review.md`.
-37. The main thread must discuss, triage, fix, and reply to every confirmed finding from the main-thread final review and required independent final agents or fallback passes. Confirmed final-review findings are completion-blocking even when the reviewer labels them non-blocking, minor, informational, or follow-up. After fixes, re-run affected tests/verification and re-run the relevant review or fallback pass until all required reviews report zero unresolved findings.
-38. Final Code Review Pass 1 is satisfied by Independent Final Review Agent 1 when true parallel execution is available, or by the same scoped main-thread fallback pass when it is not. It must review the complete code change against specs, design, design review, tasks, rules, architecture, tests, requirement-to-test mapping, counterexample matrices, masked-test analyses, broad-qualifier audits, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, encoding/no-mojibake evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints including exception-object/map-like parameter prohibition and self-explanatory parameter definitions, and changed file sizes. For `lightweight`, keep this pass scoped to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, and escalation triggers.
-39. Final Code Review Pass 2 is satisfied by Independent Final Review Agent 2 when true parallel execution is available, or by the same scoped main-thread fallback pass when it is not. It must review security, data handling, authorization, logging/`trace_id`/sensitive-data exposure, encoding/no-mojibake regressions, API IO, async behavior, configuration, dependencies, test quality, masked-test risks, decision-chain masking regressions, evidence-capture timing regressions, deterministic-sort regressions, broad-qualifier regressions, narrower code qualifiers, and remaining rule violations. For `lightweight`, keep this pass scoped to security-review applicability, implementation-standard risks, changed code, tests, verification evidence, and escalation triggers.
-40. Create or update final `review.md` only after the main-thread final review, two read-only independent final review agents or documented two-pass fallback, finding confirmation, and all required reviews have zero unresolved findings. For `full`, final review includes Requirement Counterexample Matrix, Masked-Test Analysis, Broad-Qualifier Audit, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, independent final-agent findings or fallback findings, confirmation decisions, non-blocking finding closure evidence, and main-thread responses. For `lightweight`, final review includes Lightweight Precheck, compact-contract alignment, verification evidence, security-review applicability, escalation-trigger check, two scoped final-agent findings or two fallback-pass findings, confirmation decisions, non-blocking finding closure evidence, and main-thread responses.
-41. Stop and report if implementation requires behavior not covered by specs.
+33. After all tasks and per-task findings are closed, run a final implementation review in the main thread. For `full`, run one mandatory main-thread full implementation review against every requirement, spec scenario, design decision, task, changed code path, test, verification result, and rule. For `lightweight`, run one scoped main-thread final review against the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, review findings, and escalation triggers. Record this in `review.md`.
+34. Do not start independent final review agents, child agents, subagents, parallel review threads, or fallback subagent passes. All final implementation review work is performed in the main thread.
+35. Run Main Final Code Review Pass 1 in the main thread. It reviews requirement/spec/design/code alignment across all requirements, specs, design, design review, tasks, code, tests, counterexample matrices, masked-test analysis, broad-qualifier audit, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, encoding/no-mojibake evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints including exception-object/map-like parameter prohibition and self-explanatory parameter definitions, and changed file sizes. For `lightweight`, scope this pass to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, and escalation triggers.
+36. Run Main Final Code Review Pass 2 in the main thread. It reviews security, data handling, authorization, logging/`trace_id`/sensitive-data exposure, encoding/no-mojibake regressions, API IO, async behavior, configuration, dependencies, test quality, masked-test risks, decision-chain masking regressions, evidence-capture timing regressions, deterministic-sort regressions, broad-qualifier regressions, narrower code qualifiers, and remaining rule violations. For `lightweight`, scope this pass to security-review applicability, implementation-standard risks, changed code, tests, verification evidence, and escalation triggers.
+37. Cross-check findings across the main-thread final implementation review, Main Final Code Review Pass 1, and Main Final Code Review Pass 2. Decide whether each finding is valid, duplicate, false positive, already fixed, requires full-lane escalation, or requires customer/user decision. Record the confirmation decision and evidence in `review.md`.
+38. The main thread must discuss, triage, fix, and reply to every confirmed finding from all final main-thread review passes. Confirmed final-review findings are completion-blocking even when labeled non-blocking, minor, informational, or follow-up. After fixes, re-run affected tests/verification and re-run the relevant main-thread review pass until all required reviews report zero unresolved findings.
+39. Create or update final `review.md` only after the main-thread final implementation review, Main Final Code Review Pass 1, Main Final Code Review Pass 2, final finding cross-check, and all required reviews have zero unresolved findings. For `full`, final review includes Requirement Counterexample Matrix, Masked-Test Analysis, Broad-Qualifier Audit, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, finding cross-check decisions, non-blocking finding closure evidence, and main-thread responses. For `lightweight`, final review includes Lightweight Precheck, compact-contract alignment, verification evidence, security-review applicability, escalation-trigger check, the two scoped main-thread final review passes, finding cross-check decisions, non-blocking finding closure evidence, and main-thread responses.
+40. Stop and report if implementation requires behavior not covered by specs.
 
 ## Requirement Counterexample Matrix
 
@@ -187,7 +186,7 @@ Use this format in `task-reviews.md`:
 - Very time-consuming API work must be async.
 - Do not rewrite completed tasks unless needed for the current unchecked task.
 - Do not start the next task while the current task has any open required review finding. Full-lane tasks require Alignment Review and Security Review. Lightweight-lane tasks require scoped lightweight alignment/verification review and require Security Review only when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk is present.
-- Do not finalize implementation until the final review required by the workflow lane is complete. Both lanes require one main-thread final implementation review plus two read-only independent final review agents or documented two-pass main-thread fallback. Lightweight lane scopes the two final review roles to compact contracts and escalation triggers unless escalation requires switching to full. In both lanes, finding confirmation must cover every finding and all confirmed findings, including non-blocking/minor/informational/follow-up findings, must be fixed and re-reviewed to zero unresolved status.
+- Do not finalize implementation until the final review required by the workflow lane is complete. Both lanes require one main-thread final implementation review plus two main-thread final code review passes. Lightweight lane scopes the two final code review passes to compact contracts and escalation triggers unless escalation requires switching to full. In both lanes, finding cross-check must cover every finding and all confirmed findings, including non-blocking/minor/informational/follow-up findings, must be fixed and re-reviewed to zero unresolved status.
 - Preserve user changes and existing dirty worktree edits.
 - Update `tasks.md` only after verification supports completion.
 - Do not mark a task complete unless changed/affected code coverage is at least 85%.
@@ -216,7 +215,7 @@ Use this format in `task-reviews.md`:
 
 ## Required `review.md` Sections
 
-For full lane, include every section below. For lightweight lane, keep the same review structure where useful, but record untriggered full-only matrix/audit sections as not applicable with evidence, and scope the two independent final review sections or documented fallback passes to the compact contracts, changed code, verification evidence, and escalation triggers.
+For full lane, include every section below. For lightweight lane, keep the same review structure where useful, but record untriggered full-only matrix/audit sections as not applicable with evidence, and scope the two main-thread final code review passes to the compact contracts, changed code, verification evidence, and escalation triggers.
 
 - Summary
 - Requirement Coverage
@@ -241,13 +240,11 @@ For full lane, include every section below. For lightweight lane, keep the same 
 - Test Coverage
 - Test Quality
 - Documentation Consistency
-- Main Full Requirements / Spec / Design / Code Review
-- Independent Final Review Agent 1 or Fallback Pass 1
-- Independent Final Review Agent 2 or Fallback Pass 2
-- Final Finding Confirmation
+- Main Final Implementation Review
+- Main Final Code Review Pass 1
+- Main Final Code Review Pass 2
+- Final Finding Cross-Check
 - Main Thread Finding Response
-- Final Code Review Pass 1
-- Final Code Review Pass 2
 - Blocking Issues
 - Unresolved Findings
 - Recommended Fixes
@@ -267,63 +264,35 @@ For full lane, include every section below. For lightweight lane, keep the same 
 - If implementation contains a narrower code qualifier than the spec qualifier, record a finding unless the exception is explicitly approved in specs, design, and tasks.
 - File length limits are hard gates. If any modified or generated file exceeds the configured limit, record an open finding unless the current OpenSpec artifacts explicitly approve an exception. Do not write "no findings" while such an exception is merely explained.
 - Final completion requires `task-reviews.md` and `review.md` to show zero unresolved findings.
-- Final completion requires one main-thread final implementation review plus two read-only independent final review agents on the complete implementation diff when true parallel execution is available, or the same two scoped final fallback passes in the main thread. Lightweight lane scopes both final review agents or fallback passes to compact contracts, changed code, verification evidence, and escalation triggers. `review.md` must record finding confirmation for every finding and all confirmed findings, including non-blocking/minor/informational/follow-up findings, fixed by the main thread and re-reviewed to zero open findings.
+- Final completion requires one main-thread final implementation review plus two main-thread final code review passes on the complete implementation diff. Lightweight lane scopes both final code review passes to compact contracts, changed code, verification evidence, and escalation triggers. `review.md` must record finding cross-check for every finding and all confirmed findings, including non-blocking/minor/informational/follow-up findings, fixed by the main thread and re-reviewed to zero open findings.
 - Final completion requires at least 85% coverage evidence, independent valid JSON test parameter files for all implemented tasks, evidence that same-module test data was reused or justified when not reused, and evidence that tests target project-owned code rather than dependency packages or third-party APIs.
 - Do not convert review findings into new requirements without an explicit spec update.
 
 ## Review Method
 
-Use Superpower review methods and checklists when available. Per-task reviews and the main-thread final implementation review are performed by the main agent; do not call review skills that dispatch subagents for those reviews. Use `superpowers:requesting-code-review` only for the two independent final review agents after all tasks are complete and the main-thread final implementation review has been recorded. When findings are returned, process, verify, and fix them before re-review. For lightweight lane, keep reviews scoped unless escalation triggers require full review.
+Use Superpower review methods and checklists when available, but keep every review in the main thread. Do not call review skills that dispatch subagents for `/sp-impl`, including final implementation review. For lightweight lane, keep reviews scoped unless escalation triggers require full review.
 
 For final implementation closure, use this ownership model:
 
-- Main thread: owns implementation, full review, triage, fixes, replies, verification, and updates to `review.md`.
-- Independent Final Review Agent 1: reviews requirement/spec/design/code alignment and counterexample evidence only; it must not edit files.
-- Independent Final Review Agent 2: reviews security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates only; it must not edit files.
-- Findings from independent final agents return to the main thread. The main thread confirms issue status against its own final review findings, fixes and replies to every confirmed finding, including non-blocking/minor/informational/follow-up findings, then re-runs the relevant review until no unresolved findings remain.
-
-Independent final review agents are read-only and findings-only. They must return concise structured findings with priority, evidence location, impact, and suggested fix. They must not return long summaries, restated context, implementation plans, or broad explanations. Do not start or reuse independent review threads for per-task implementation reviews; per-task alignment and security review are owned by the main thread.
+- Main thread owns implementation, all review passes, triage, fixes, replies, verification, and updates to `review.md`.
+- Main Final Implementation Review checks the whole implementation against requirements, specs, design, tasks, code, tests, verification, and rules.
+- Main Final Code Review Pass 1 checks requirement/spec/design/code alignment and adversarial evidence.
+- Main Final Code Review Pass 2 checks security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates.
+- Do not start, reuse, or request independent review threads, child agents, subagents, parallel review agents, or fallback subagent passes.
 
 Lightweight review mode is allowed only for changes whose workflow lane was decided as `lightweight` in `/sp-brainstorm` and preserved through spec/design/tasks. It must still record evidence in `task-reviews.md` or `review.md`, but it may use the task's scoped checklist instead of expanding to all project rules. Record `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. Escalate to full review if the task touches production behavior outside the approved compact scope, authentication/authorization, sensitive data, database/persistence, API contracts, UI behavior, async/IO, external integrations, logging/security, E2E-required behavior, broad qualifiers, or any implementation-standard exception.
 
-Final finding confirmation must compare:
+Final finding cross-check must compare:
 
-- Main-thread findings not reported by independent final agents or fallback passes
-- Independent final-agent or fallback findings not reported by the main thread
-- Duplicates between independent final agents or fallback passes
-- Conflicts between the two independent final agents or fallback passes
+- Findings unique to the main final implementation review
+- Findings unique to Main Final Code Review Pass 1
+- Findings unique to Main Final Code Review Pass 2
+- Duplicates or conflicts across the three main-thread final review passes
 - Potential false positives, with evidence for dismissal
 - Findings requiring customer/user decision before implementation changes
 - Non-blocking/minor/informational/follow-up findings, which must be fixed if confirmed valid and cannot be deferred past completion
 
-Independent final review agents or fallback passes should receive only:
-
-- `proposal.md`
-- `specs/<capability>/spec.md`
-- `spec-review.md`
-- `design.md`
-- `design-review.md`
-- `tasks.md`
-- `tasks-review.md`
-- `task-reviews.md`
-- `test-params/`
-- Relevant `docs/rules/*.md`
-- Changed files or diff
-- Verification output
-- Coverage output
-- Requirement-to-test mapping
-- Requirement Counterexample Matrix
-- Masked-Test Analysis
-- Broad-Qualifier Audit
-- Decision Chain Trace
-- Evidence Capture Timing Audit
-- Deterministic Sort Audit
-
-If Superpower review guidance or final-agent review capability is unavailable in the current runtime, record the unavailable reason in `task-reviews.md` or `review.md` and use Codex or the current tool/agent's own review capability to perform the same checklist. Do not silently downgrade or skip the review.
-
-Start the two required independent final review agents automatically only after all implementation tasks are complete, all per-task main-thread findings are closed, and the main-thread final implementation review has been recorded. Permission means the current runtime/tool policy allows spawning read-only final review agents, not that the user must confirm thread startup. Do not launch sequential or fake-parallel subagents just to satisfy the independent review requirement.
-
-If independent final review agents are unavailable, fake-parallel, sequential-only, or the current tool lacks permission to start them, record `parallel_unavailable_or_sequential_runtime` or the applicable blocker and perform the required two final fallback passes in the main thread. Lightweight lane keeps the same two fallback roles scoped to compact contracts, changed code, verification evidence, and escalation triggers. Do not stop to request extra user approval, and do not skip any required final review pass.
+If Superpower review guidance is unavailable in the current runtime, record the unavailable reason in `task-reviews.md` or `review.md` and use Codex or the current tool/agent's own review capability to perform the same checklist in the main thread. Do not silently downgrade or skip the review.
 
 Run review passes according to the workflow lane:
 
@@ -363,7 +332,7 @@ Required review passes must also verify the following. In lightweight lane, expa
 
 Resolve all findings from required per-task main-thread review passes before starting the next task.
 
-After all tasks are complete, run final implementation review. Both lanes require one main-thread final implementation review and exactly two additional read-only independent final review agents on the complete implementation diff when true parallel execution is available; start both agents in one true parallel dispatch, or record fallback and run the same two scoped passes in the main thread. For lightweight lane, scope both final review roles to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers. Record the main review, independent final agents or fallback passes, confirmation decisions, all findings, all main-thread fixes/replies, and re-review closure in `review.md`; implementation is not complete until all required final reviews have zero open confirmed findings after required fixes and re-review. Non-blocking/minor/informational/follow-up final-review findings count as open confirmed findings when valid and must be fixed before completion.
+After all tasks are complete, run final implementation review. Both lanes require one main-thread final implementation review plus Main Final Code Review Pass 1 and Main Final Code Review Pass 2 on the complete implementation diff. For lightweight lane, scope both final code review passes to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers. Record all three main-thread review passes, cross-check decisions, all findings, all main-thread fixes/replies, and re-review closure in `review.md`; implementation is not complete until all required final reviews have zero open confirmed findings after required fixes and re-review. Non-blocking/minor/informational/follow-up final-review findings count as open confirmed findings when valid and must be fixed before completion.
 
 Do not pass the full conversation history as review context.
 

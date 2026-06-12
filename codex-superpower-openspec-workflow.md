@@ -49,12 +49,44 @@ openspec/changes/<change-id>/
 ## 3. 命令流程
 
 ```text
+CC-FixBug <jira-id-or-url>
+  -> .agent/workdir/cc-fixbug/<jira-id>/jira.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/brainstorm.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/context.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/brainstorm-review.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/spec.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/design.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/spec-review.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/tasks.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/tasks-review.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/task-reviews.md
+  -> .agent/workdir/cc-fixbug/<jira-id>/review.md
+  -> CC-Deploy
+  -> .agent/workdir/cc-fixbug/<jira-id>/deploy-params/<environment>.json
+  -> .agent/workdir/cc-fixbug/<jira-id>/cc-deploy.md
+  -> CC-Commit
+  -> .agent/workdir/cc-fixbug/<jira-id>/cc-commit.md
+
+CC-Deploy
+  -> package Java/Python changed services
+  -> remote deploy to specified environment
+  -> post-deploy verification
+
+CC-Commit
+  -> local bug-fix commit
+  -> Gerrit review push: git push <gerrit-remote> HEAD:refs/for/<target-branch>
+
 /sp-code-to-spec <scope>
   -> docs/ai-context/source-index.md
   -> docs/ai-context/codebase-inventory.md
   -> openspec/project.md
-  -> docs/standards/modules/<module>/<module>-<capability>-spec.md
-  -> docs/standards/modules/<module>/<module>-<capability>-design.md
+  -> docs/<project-name>/readme.md
+  -> docs/<project-name>/<module>/readme.md
+  -> docs/<project-name>/<module>/<feature>/readme.md
+  -> docs/<project-name>/<module>/<feature>/spec/spec.md
+  -> docs/<project-name>/<module>/<feature>/design/design.md
+  -> docs/<project-name>/<module>/<feature>/flow/flow.md
+  -> docs/<project-name>/<module>/<feature>/other/<supporting-topic>.md
   -> docs/rules/business-standards.md
   -> docs/rules/<project-rule>.md
   -> docs/rules/<language>-code-standards.md or docs/rules/<language>-<runtime>-code-standards.md
@@ -98,16 +130,19 @@ openspec/changes/<change-id>/
 
 ## 4. 阶段规则
 
-- `/sp-code-to-spec` 是可选初始化流程，用于已有代码库第一次接入时生成当前系统画像、当前状态能力 spec、当前功能业务定义、功能说明、功能流程说明、功能点/分支矩阵、模块/功能点当前状态 design、项目 rules 和 standards；它不属于 `/sp-goal` 必跑阶段，不创建 `openspec/changes/<change-id>/`，不写代码，不归档。当前状态 spec 必须写入 `docs/standards/modules/<module>/<module>-<capability>-spec.md`，不得写入 `openspec/specs/`。多模块项目必须按模块和功能点拆分 spec/design；多语言项目必须按语言/runtime 拆分代码规范。Evidence / 证据是支撑结论的项目内来源和证明说明；Unknowns / 待确认问题是证据不足、冲突、语义不清或需要负责人确认的行为，不是已批准需求或规则。
+- `CC-FixBug` 是 Jira Bug 修复流程。它读取 Jira ID 和 Bug 信息，先生成并复审 bug-focused `sp-brainstorm` 草稿；只有 reviewed brainstorm/context 需要客户/使用人确认。确认后，直接继续生成 workdir 内的 spec/design/tasks，实现修复、完成 review，通过 `CC-Deploy` 打包并远程部署 Java/Python 服务到指定环境，再通过 `CC-Commit` 提交 Gerrit review；不再要求额外 spec/design/task/deploy/commit 确认，除非 Jira 信息、部署环境信息、权限或 Gerrit 目标缺失导致无法安全继续。所有过程产物必须写入 `.agent/workdir/cc-fixbug/<jira-id>/`，不得写入 `openspec/changes/`、`openspec/specs/` 或 `docs/wiki/`。
+- `CC-Deploy` 必须基于项目配置、脚本或部署文档执行 Java/Python 服务打包和远程部署。目标环境、服务、主机别名、远程路径、重启命令或健康检查缺失时，可以提示用户输入非敏感环境信息；不得要求用户在对话中提供密码、私钥、token 或其他密钥。部署结果和 post-deploy 验证必须写入 `.agent/workdir/cc-fixbug/<jira-id>/cc-deploy.md`，可复用非敏感参数写入 `deploy-params/<environment>.json`。
+- `CC-Commit` 必须提交到 Gerrit review，不得直接 push 到普通分支。提交信息必须体现 Bug 修复，并包含 `Bug-Id`、`Jira`、`Bug-Name`、`Solution`、`Modified-Points`、`Tests`、`Deploy` 和 `Review`。默认不得提交 `.agent/workdir/` 过程证据。
+- `/sp-code-to-spec` 是可选初始化流程，用于已有代码库第一次接入时生成当前系统画像、项目/模块/功能文档、项目 rules 和 standards；它不属于 `/sp-goal` 必跑阶段，不创建 `openspec/changes/<change-id>/`，不写代码，不归档。当前状态功能文档必须写入 `docs/<project-name>/<module>/<feature>/`，不得写入 `docs/standards/modules/` 或 `openspec/specs/`。每个功能目录必须包含 `readme.md`、`spec/spec.md`、`design/design.md`、`flow/flow.md`，需要补充说明时使用 `other/`。多模块项目必须按模块和功能点拆分；多语言项目必须按语言/runtime 拆分代码规范。`/sp-code-to-spec` 不生成旧式矩阵、证据或待确认问题固定章节模板。
 - `/sp-brainstorm` 必须先在 brainstorm 内生成 Business Story Baseline，包括用户故事、验收标准、非目标和成功指标；它不是独立 workflow，而是后续 Lightweight Precheck 和需求分析的业务输入。
 - `/sp-brainstorm` 必须随后做 Lightweight Precheck，根据最小上下文和影响面判断 workflow lane。默认 full；只有简单 bug、文案、配置或小逻辑调整，并且行为边界不变、影响范围小、验证入口明确、没有升级触发器，才允许 lightweight。这个判断必须和 brainstorm/context 草稿一起 review，并由客户/使用人确认。
 - `/sp-brainstorm` 必须先在对话中生成 Business Story Baseline、Precheck、workflow lane、brainstorm/context 草稿，由主进程 review 并修订后，才让客户/使用人确认；确认后再写入 workdir。
 - `/sp-spec` 负责同时生成 proposal、spec 和 design。Spec/design 的 review 证据写入 workdir，不能交给 `/sp-tasks` 补做 design。
 - `/sp-tasks` 只生成 tasks 和 tasks-review，不允许修改 proposal/spec/design。
 - `/sp-impl` 按 workflow lane 执行 review。Full lane 每完成一个 task 必须先做 Alignment Review，再做 Security Review；lightweight lane 每个 task 做 scoped lightweight alignment/verification review，只有触及安全、数据、输入、日志、配置、依赖、数据库、API/IO、异步或外部服务风险时才做 Security Review。发现 finding 必须修复并复审后才能进入下一个 task。
-- `/sp-impl` 所有任务完成后，必须先由主进程做一次 final implementation review，然后在可真并行时启动两个只读独立 final review agents；lightweight lane 也保留两个最终 review 角色，但范围收敛到 compact contracts、changed code、verification evidence 和 escalation triggers；如果不能真并行，则 main 线程执行两个同等 fallback pass。final review 中确认有效的所有 finding，包括 non-blocking、minor、informational 和 follow-up，都必须修复并复审后才能完成。
+- `/sp-impl` 所有任务完成后，必须全部在 main 线程完成最终 review：先做一次 final implementation review，再做 Main Final Code Review Pass 1 和 Main Final Code Review Pass 2；lightweight lane 也保留两个最终 review 角色，但范围收敛到 compact contracts、changed code、verification evidence 和 escalation triggers。final review 中确认有效的所有 finding，包括 non-blocking、minor、informational 和 follow-up，都必须修复并复审后才能完成。
 - 如果目标存量代码文件在修改前已经超过 1000 行，不先做大重构阻塞功能；必须记录 baseline 行数，先完成并验证本次功能，再进行拆分重构并复跑受影响验证，之后才能标记任务完成。
-- Review 可按风险分级。低风险、窄范围检查允许 lightweight review，但必须记录证据；brainstorm/spec/tasks 和每个 task 的过程 review 都由 main agent 完成，不启动子代理；只有 impl 全部任务完成后的最终实现 review 才使用两个只读子代理。如果当前工具不能真正并行，只能顺序或假并行运行子代理，则记录 blocker 并由 main 线程执行两个同等 final review fallback pass。
+- Review 可按风险分级。低风险、窄范围检查允许 lightweight review，但必须记录证据；brainstorm/spec/tasks、每个 task 的过程 review、impl 最终 review 和 complete review 都由 main agent 完成，不启动子代理、不启动并行 review 线程，也不需要 fallback 子代理流程。
 - `/sp-complete` 只有在任务、测试、review、finding closure、Wiki 和归档都完成后，才创建本地 git commit。
 - `/sp-goal` 模式下，brainstorm 缺确认是唯一正常需要额外用户确认的情况；brainstorm 已确认后，后台逻辑、UI、API、配置和 E2E 决策通过 review 后记录为 goal-mode decision evidence，不再额外打断用户确认，除非 artifact 存在必须澄清的新范围或真实歧义。
 
@@ -123,7 +158,7 @@ openspec/changes/<change-id>/
 - 如果需求没有要求兼容性、fallback、降级或 silent default，不允许生成这些代码。
 - 方法/函数不得超过 5 个入参；确实需要更多时使用字段明确的 data object。所有开发语言中，项目自有方法/函数参数不得使用异常类对象、异常实例、Map/dict/object/`**kwargs`、未类型化 key-value bag 或同类 Map-like 对象；每个参数必须有自解释的领域命名、明确类型/schema、归属和校验预期。
 - 修改或生成的代码、注释、配置、测试数据和文档不得出现乱码。
-- 代码实现必须包含有用注释和可追踪日志，日志不得暴露敏感信息，优先包含 `trace_id`。
+- 代码实现必须包含有用注释和可追踪日志，Java 日志必须使用 SLF4J，日志不得暴露敏感信息，优先包含 `trace_id`。
 
 ## 6. Review 证据要求
 

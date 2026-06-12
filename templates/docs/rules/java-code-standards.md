@@ -135,13 +135,18 @@ Maven dependencies MUST be managed at the appropriate parent or module level.
 - Exclusions MUST be documented when used to avoid logging, security, classpath, or version conflicts.
 - New dependencies MUST be referenced by design and tasks before implementation.
 
-## JAVA-010: Logging and Errors
+## JAVA-010: SLF4J Logging and Errors
 
-Java code MUST use the project's logging framework.
+Java code MUST use the SLF4J API for application logging.
 
 - Follow `docs/rules/logging-standards.md` when present.
-- Use class-level loggers or Lombok `@Slf4j` when the project uses Lombok.
+- Use class-level `org.slf4j.Logger` instances or Lombok `@Slf4j` when the project uses Lombok.
+- Do not use `System.out`, `System.err`, `printStackTrace`, `java.util.logging`, Log4j APIs directly, or ad hoc console output for application behavior logs.
+- Use SLF4J parameterized messages, for example `log.info("order submitted order_id={}", safeOrderId)`. Do not build log messages with string concatenation, `String.format`, or eager JSON/object serialization unless the log level is explicitly guarded.
+- When logging exceptions, pass the exception object as the final SLF4J argument, for example `log.error("external call failed provider={} operation={}", provider, operation, ex)`.
+- Do not pass exceptions through normal business method parameters only for logging. Log or map them at the boundary that owns the failure handling.
 - Use MDC or the project's trace context mechanism to include `trace_id` in every request, job, async, and external-call log when context exists.
+- Clear MDC values at request/job boundaries and restore or propagate MDC explicitly for async work.
 - Log enough context to trace important system behavior and diagnose failures, but do not log sensitive information.
 - Log request/job boundaries, state transitions, major decisions, external calls, retries, failures, async handoff/completion, and permission/security denials when relevant.
 - Include safe correlation context such as request IDs, job IDs, operation names, tenant-safe IDs, or resource IDs when available.

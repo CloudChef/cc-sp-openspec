@@ -56,6 +56,18 @@
 - 不得吞掉异常后只打印字符串。
 - 同一个异常 SHOULD 在最合适的边界记录一次，避免每层重复打印造成噪声。
 
+## LOG-005A: Java SLF4J 使用规范
+
+Java 应用日志 MUST 通过 SLF4J API 输出。
+
+- 使用 `org.slf4j.Logger` class-level logger，或在项目使用 Lombok 时使用 `@Slf4j`。
+- 不得使用 `System.out`、`System.err`、`printStackTrace`、`java.util.logging`、直接 Log4j API 或临时 console output 作为应用行为日志。
+- 使用 SLF4J 参数化占位符：`log.info("order submitted order_id={}", safeOrderId)`。
+- 不得用字符串拼接、`String.format` 或未受日志级别保护的对象序列化构造日志消息。
+- 异常日志必须把异常对象作为 SLF4J 最后一个参数，例如 `log.error("provider call failed provider={} operation={}", provider, operation, ex)`。
+- 不能为了日志把异常对象作为普通业务方法参数向下传递；在拥有失败处理语义的边界记录或映射为明确错误结果对象。
+- Java 链路追踪优先使用 MDC 保存 `trace_id`，异步任务必须显式传播、恢复或清理 MDC，避免串链路或丢失 `trace_id`。
+
 ## LOG-006: 敏感信息禁止
 
 日志 MUST 默认使用白名单字段，不得输出敏感信息。
