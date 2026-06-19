@@ -56,7 +56,7 @@ Then create:
 4. Verify `brainstorm-review.md`, `spec-review.md`, `design-review.md`, and `tasks-review.md` record required main-process comprehensive or allowed lightweight review, main-thread responses, and zero unresolved review findings.
 5. Verify `review.md` records final implementation review closure: one main-thread final implementation review, Main Final Code Review Pass 1, Main Final Code Review Pass 2, final finding cross-check, main-thread responses, confirmed non-blocking/minor/informational/follow-up final-review finding fixes, and zero unresolved review findings. Lightweight lane scopes the two final code review passes to compact contracts, changed code, verification evidence, and escalation triggers.
 6. Verify every task in `tasks.md` is marked complete with `[x]`.
-7. Verify `task-reviews.md` shows every task passed the review gates required by the workflow lane. Full lane requires Alignment Review and Security Review. Lightweight lane requires scoped lightweight alignment/verification review and requires Security Review only when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk exists.
+7. Verify `task-reviews.md` shows every task passed the review gates required by the workflow lane. Full lane requires Alignment Review and Security Review. Lightweight lane requires scoped lightweight alignment/verification review and requires Security Review only when security/data/input/logging/output/config/dependency/database/API/IO/async/external-service risk exists.
 8. Verify `task-reviews.md` has zero open findings.
 9. Verify `review.md` has zero unresolved findings.
 10. Verify coverage evidence is at least 85% for changed/affected code.
@@ -64,7 +64,7 @@ Then create:
 12. Verify Masked-Test Analysis, Decision Chain Trace, and related review evidence cover every gate, filter, sort, and transform before the target behavior, not only that the sections exist.
 13. Verify coverage percentage is not used as a substitute for scenario coverage or requirement-to-test mapping.
 14. Verify test parameter files are independently saved as valid JSON under `test-params/`, and verify same-module reusable data was reused or non-reuse was justified.
-15. Verify implementation-standard evidence: changed code paths match tasks, applicable customer/user confirmations or `/sp-goal` goal-mode decision records are recorded and followed, same/equivalent logic is reused or generalized without avoidable duplication, existing-code changes stay inside approved requirements with no unrequested fallback/compatibility behavior, methods/functions have <= 5 inputs or use explicit named data objects, method/function parameters do not use exception objects/classes, map-like objects, generic objects, or non-self-explanatory parameter definitions, useful comments and behavior logs are present, `trace_id` is propagated/emitted when context exists, logs include exception stack traces when relevant, logs exclude sensitive information, generated/modified comments/code/config/test data/workflow artifacts contain no mojibake or unreadable text, tests target project-owned code rather than dependency packages or third-party APIs, standalone full verification is complete, required real E2E tests are designed and executed, browser/UI QA is complete when relevant, generated/modified code files are <= 1000 lines, existing oversized target files have baseline line-count evidence plus completed post-functionality refactor/split verification, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
+15. Verify implementation-standard evidence: changed code paths match tasks, applicable customer/user confirmations or `/sp-goal` goal-mode decision records are recorded and followed, same/equivalent logic is reused or generalized without avoidable duplication, existing-code changes stay inside approved requirements with no unrequested fallback/compatibility behavior, methods/functions have <= 5 inputs or use explicit named data objects, method/function parameters do not use exception objects/classes, map-like objects, generic objects, or non-self-explanatory parameter definitions, useful comments and behavior logs are present, `trace_id` is propagated/emitted when context exists, logs include exception stack traces when relevant, logs and all output channels exclude sensitive information, generated/modified comments/code/config/test data/workflow artifacts contain no mojibake or unreadable text, tests target project-owned code rather than dependency packages or third-party APIs, standalone full verification is complete, required real E2E tests are designed and executed, browser/UI QA is complete when relevant, newly generated code files are <= 1000 lines, existing project files are not treated as file-size findings solely because they already exceed 1000 lines, database runtime/pool rules are satisfied when relevant, backend APIs follow OpenAPI with Controller/Service separation, and API IO/async rules are satisfied.
 16. Inspect relevant implementation files or diffs referenced by the change artifacts.
 17. Derive a human-readable feature/story title from specs, design, design-review, code, rules, and review evidence.
 18. Convert that title to a concise kebab-case wiki filename.
@@ -91,7 +91,7 @@ Do not archive if any pre-archive gate fails. Do not mark completion successful 
 - Any task in `tasks.md` is unchecked.
 - Any task lacks review evidence required by its workflow lane.
 - Any full-lane task lacks Alignment Review or Security Review evidence.
-- Any lightweight-lane task lacks scoped lightweight alignment/verification review evidence, or lacks Security Review evidence when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk exists.
+- Any lightweight-lane task lacks scoped lightweight alignment/verification review evidence, or lacks Security Review evidence when security/data/input/logging/output/config/dependency/database/API/IO/async/external-service risk exists.
 - Any finding remains open in `task-reviews.md`.
 - Tests are dedicated to dependency packages, SDK internals, framework behavior, or third-party API/provider correctness instead of project-owned code.
 - Any unresolved finding remains in `review.md`.
@@ -114,12 +114,12 @@ Do not archive if any pre-archive gate fails. Do not mark completion successful 
 - Same/equivalent logic is duplicated without documented justification.
 - Existing-code changes include unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior.
 - Any method/function has more than 5 input parameters without an explicit named data object, uses exception-object parameters, uses map-like/generic-object/key-value-bag parameters, or has non-self-explanatory parameter definitions.
-- Useful code comment, logging, `trace_id`, exception stack trace, or sensitive-data logging evidence is missing.
+- Useful code comment, logging, `trace_id`, exception stack trace, or sensitive-output evidence for logs/print/stdout/stderr/Shell/Ansible/CI/deploy output is missing.
 - Encoding/no-mojibake evidence is missing, or generated comments, code, configuration, test parameters, or workflow artifacts contain garbled text.
 - Standalone full verification evidence is missing for API, UI, bug-entry, or external-service behavior when relevant.
 - Required real E2E test design or execution evidence is missing.
 - Browser/UI QA evidence is missing for UI changes when a runnable target exists.
-- Any generated or modified code file exceeds 1000 lines after implementation, or an existing oversized target file was changed without baseline evidence, post-functionality refactor/split evidence, and affected verification.
+- Any newly generated code file exceeds 1000 lines after implementation.
 - Changed code paths do not match `tasks.md` and lack documented justification.
 - Required database runtime or connection pool evidence is missing.
 - Backend API OpenAPI, Controller, or Service evidence is missing when APIs changed.

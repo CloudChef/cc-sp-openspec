@@ -103,6 +103,7 @@ Python code MUST not hide important failures.
 - Log request/job boundaries, state transitions, major decisions, external calls, retries, failures, async handoff/completion, and permission/security denials when relevant.
 - Log integration name, operation, endpoint or safe resource identifier, correlation ID, and exception message when available.
 - Do not log secrets, decrypted passwords, tokens, access keys, private keys, cookies, session identifiers, signed URLs, raw credentials, full personal data, or sensitive request/response bodies.
+- Python output channels such as logs, `print`, stdout/stderr writes, exception messages, CLI output, test output, and deployment/helper output MUST follow `LOG-006A` in `docs/rules/logging-standards.md`; do not print sensitive data through non-log output paths.
 - Return empty collections only when the calling contract treats missing external data as non-fatal.
 - Raise or map exceptions when the caller must distinguish failure from empty data.
 - Use explicit fallback values for missing metrics or labels only when the approved requirement or design defines that fallback behavior.

@@ -153,10 +153,10 @@ Copy-Item -Path C:\Projects\cmps\sp-openspec\skills\* -Destination $HOME\.agents
 
 模板默认提供这些规则：
 
-- `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、需求边界与 fallback 控制、方法参数/data object、自解释参数、禁止异常对象参数、禁止 Map 类参数、单独完整验证、真实 E2E 测试设计与执行、相同逻辑复用、文档默认中文、单文件 1000 行限制、存量超限文件先完成功能再拆分、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
+- `docs/rules/project-implementation-standards.md`: 通用实现规则，包括代码路径、需求边界与 fallback 控制、方法参数/data object、自解释参数、禁止异常对象参数、禁止 Map 类参数、单独完整验证、真实 E2E 测试设计与执行、相同逻辑复用、文档默认中文、新建代码文件 1000 行限制、存量文件不因已有行数超限而作为 finding、数据库、OpenAPI、Controller/Service、API IO 和异步要求。
 - `docs/rules/ai-workflow-quality-standards.md`: AI 工作流质量规则，包括 brainstorm 产品挑战、design 多视角规划、UI 浏览器验证、安全审查和 wiki/项目经验沉淀。
 - `docs/rules/business-standards.md`: 项目级业务规范，包括业务术语、领域对象、状态生命周期、权限/审批/准入策略、不变量、跨功能业务规则，以及功能说明不得包含代码或伪代码的边界。
-- `docs/rules/logging-standards.md`: 日志规则，包括统一格式、`trace_id`、日志级别、参数完整性、异常堆栈、Java SLF4J 使用规范、敏感信息脱敏、异步/性能、结构化检索和监控告警。
+- `docs/rules/logging-standards.md`: 日志和输出安全规则，包括统一格式、`trace_id`、日志级别、参数完整性、异常堆栈、Java SLF4J 使用规范、敏感信息脱敏、Java/Python/Shell/Ansible/CI/deploy 输出敏感信息检查、异步/性能、结构化检索和监控告警。
 - `docs/rules/encoding-standards.md`: 编码和乱码规则，要求生成或修改的注释、代码、配置、测试数据和文档文本可读、编码正确、无乱码。
 - `docs/rules/java-code-standards.md`: Java/Spring 规范，结合参考项目实践和 Google Java Style。
 - `docs/rules/python-code-standards.md`: Python 规范，结合参考项目实践和 Google Python Style。
@@ -191,7 +191,7 @@ CC-FixBug <jira-id-or-url>
 /sp-code-to-spec <scope>
 ```
 
-`/sp-code-to-spec` 用于已有代码库第一次接入时，从当前代码、测试、配置、README、部署脚本和已有文档中生成初始上下文、`openspec/project.md`、项目/模块/功能文档、项目业务规则、语言/runtime 规则和标准草案。当前状态功能文档是项目知识文档，必须统一写到 `docs/<project-name>/<module>/<feature>/`，不得写入 `docs/standards/modules/` 或 `openspec/specs/`；`openspec/` 只保留项目 workflow 配置和 `/sp-spec` 生成的真实变更契约。每个功能目录必须使用真实项目名、模块名和功能名，包含 `readme.md`、`spec/spec.md`、`design/design.md`、`flow/flow.md`，需要补充说明时再创建 `other/`。不得使用 `module-1`、`feature-1`、`capability-001`、`common`、`misc`、`general`、`default`、`design` 这类通用名或序号名。`/sp-code-to-spec` 不生成旧式矩阵、证据或待确认问题固定章节模板；只需要用业务语言写清当前功能说明、当前行为规格、当前设计实现和当前流程说明。代码标识符和路径只放在 source reference、source mapping、设计基线或规则来源中。多语言项目必须按语言/runtime 生成或更新独立规范，例如 `docs/rules/java-code-standards.md`、`docs/rules/python-code-standards.md`、`docs/rules/typescript-react-code-standards.md`。如果当前代码能证明稳定的项目级业务术语、状态生命周期、策略、不变量或跨功能规则，可以生成或更新 `docs/rules/business-standards.md`。它不是功能开发流程，不会创建 `openspec/changes/<change-id>/`、不会写代码、不会归档；所有生成内容必须先 review 并经用户确认。
+`/sp-code-to-spec` 用于已有代码库第一次接入时，从当前代码、测试、配置、README、部署脚本和已有文档中生成初始上下文、`openspec/project.md`、项目/模块/功能文档、项目业务规则、语言/runtime 规则和标准草案。当前状态功能文档是项目知识文档，必须统一写到 `docs/<project-name>/<module>/<feature>/`，不得写入 `docs/standards/modules/` 或 `openspec/specs/`；`openspec/` 只保留项目 workflow 配置和 `/sp-spec` 生成的真实变更契约。每个功能目录必须使用真实项目名、模块名和功能名，包含 `<feature>.md`、`spec/spec.md`、`design/design.md`、`flow/flow.md`，需要补充说明时再创建 `other/`。每个 feature 必须识别功能点；单功能点 feature 可以在 `spec.md`、`design.md` 和 `flow.md` 中分节说明，多功能点 feature 必须在 `spec/`、`design/`、`flow/` 下用真实功能点名生成明细文件。功能点 design 必须包含相关 class/module、low-level design、关键方法签名、参数定义、返回值、data flow、IO 和验证入口。不得使用 `module-1`、`feature-1`、`function-1`、`capability-001`、`common`、`misc`、`general`、`default`、`design` 这类通用名或序号名。`/sp-code-to-spec` 不生成旧式矩阵、证据或待确认问题固定章节模板；只需要用业务语言写清当前功能说明、当前行为规格、当前设计实现、功能点 low-level design 和当前流程说明。代码标识符和路径只放在 source reference、source mapping、设计基线或规则来源中。多语言项目必须按语言/runtime 生成或更新独立规范，例如 `docs/rules/java-code-standards.md`、`docs/rules/python-code-standards.md`、`docs/rules/typescript-react-code-standards.md`。如果当前代码能证明稳定的项目级业务术语、状态生命周期、策略、不变量或跨功能规则，可以生成或更新 `docs/rules/business-standards.md`。它不是功能开发流程，不会创建 `openspec/changes/<change-id>/`、不会写代码、不会归档；所有生成内容必须先 review 并经用户确认。
 
 自动补完剩余流程：
 
@@ -223,7 +223,7 @@ Lightweight 判断必须发生在 `/sp-brainstorm`。流程先在 brainstorm 内
 3. 任务拆分：执行 `/sp-tasks <change-id>`。
    - 产物：`openspec/changes/<change-id>/tasks.md` 和 `.agent/workdir/sp-openspec/<change-id>/tasks-review.md`。
    - 目的：把已经通过 review 的设计转成实现任务、验证入口和 Review 入口。
-   - 要求：`/sp-tasks` 不生成或修改 `design.md`、`design-review.md`。任务必须包含代码路径、客户确认证据或 goal-mode decision evidence、需求边界/fallback 决策、方法参数/data object 计划、文件拆分计划、存量超限文件 baseline 行数和先功能后拆分计划、数据库/API/IO/异步影响、确认后的 E2E 要求、可复用 JSON 测试参数文件、同模块测试数据复用计划或不复用原因、85% 覆盖率目标，以及 workflow lane 对应的 review gate。Full lane 任务要求 Alignment Review 和 Security Review；lightweight lane 任务要求 scoped lightweight alignment/verification review，只有触及安全、数据、输入、日志、配置、依赖、数据库、API/IO、异步或外部服务风险时才要求 Security Review。任务草稿完成后，主进程必须完成全面或允许的轻量 review，并修复所有 confirmed finding 后，`tasks-review.md` 零 unresolved finding 才能进入 `/sp-impl`。如果任务拆分发现缺少设计决策，必须回到 `/sp-spec`；`/sp-goal` 不会仅因为缺少设计确认而额外询问用户。
+   - 要求：`/sp-tasks` 不生成或修改 `design.md`、`design-review.md`。任务必须包含代码路径、客户确认证据或 goal-mode decision evidence、需求边界/fallback 决策、方法参数/data object 计划、新建代码文件拆分计划、数据库/API/IO/异步影响、确认后的 E2E 要求、可复用 JSON 测试参数文件、同模块测试数据复用计划或不复用原因、85% 覆盖率目标，以及 workflow lane 对应的 review gate。存量项目文件不因已有行数超过 1000 行而作为 finding，不要求记录 baseline 行数或强制拆分。Full lane 任务要求 Alignment Review 和 Security Review；lightweight lane 任务要求 scoped lightweight alignment/verification review，只有触及安全、数据、输入、日志/输出、配置、依赖、数据库、API/IO、异步或外部服务风险时才要求 Security Review。任务草稿完成后，主进程必须完成全面或允许的轻量 review，并修复所有 confirmed finding 后，`tasks-review.md` 零 unresolved finding 才能进入 `/sp-impl`。如果任务拆分发现缺少设计决策，必须回到 `/sp-spec`；`/sp-goal` 不会仅因为缺少设计确认而额外询问用户。
 
 4. 实现任务：执行 `/sp-impl <change-id>`。
    - 产物：代码变更、更新后的 `openspec/changes/<change-id>/tasks.md`，以及 `.agent/workdir/sp-openspec/<change-id>/test-params/`、`task-reviews.md`、`review.md`。

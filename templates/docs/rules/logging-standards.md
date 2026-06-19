@@ -77,6 +77,18 @@ Java 应用日志 MUST 通过 SLF4J API 输出。
 - 脱敏 MUST 在进入日志参数前完成，不能依赖日志平台事后处理。
 - DEBUG/TRACE 日志同样必须遵守脱敏规则。
 
+## LOG-006A: 所有输出通道敏感信息检查
+
+所有代码输出通道都 MUST 检查是否会打印敏感数据，不限于应用日志。
+
+- 适用范围包括 Java 日志、Python `logging` / `print`、JavaScript/TypeScript `console`、Shell `echo` / `printf` / `set -x` / stdout / stderr、Ansible `debug` / `fail` / `assert` / registered result、CI/CD 脚本、部署脚本、命令行工具输出、异常消息和测试输出。
+- 新增或修改任何输出语句前，必须确认输出值不会包含密码、token、access key、secret key、private key、cookie、session、Authorization header、验证码、签名 URL、原始凭据、解密值、完整个人信息、敏感业务数据、完整请求/响应体、完整环境变量、Ansible inventory/host/group vars 中的秘密字段或第三方服务凭据。
+- Shell 脚本不得在处理密钥、登录命令、curl header、数据库连接串、云凭据或部署凭据时开启 `set -x`；需要调试时必须局部关闭回显、输出安全占位符或仅输出非敏感资源 ID。
+- Ansible 任务处理 secrets、credentials、tokens、certificates、private keys、connection strings 或含敏感字段的 registered result 时必须使用 `no_log: true`，不得通过 `debug: var=...` 或 `debug: msg=...` 打印完整变量。
+- 输出命令行参数、配置、环境变量、对象、集合、异常上下文、HTTP 请求/响应、SQL 参数或第三方 SDK 返回值时，必须先做白名单选择、脱敏、哈希、尾号化或替换为安全 ID。
+- 不能依赖日志平台、CI 平台、终端历史、Ansible callback plugin 或部署平台事后脱敏；代码输出前就必须完成敏感数据控制。
+- Review 必须搜索并检查语言/工具对应的输出入口，例如 `log.`, `logger.`, `print`, `console.`, `System.out`, `System.err`, `echo`, `printf`, `set -x`, `debug:`, `fail:`, `assert:`, `register:` 后续输出、`stdout`、`stderr` 和异常消息。
+
 ## LOG-007: 性能与异步
 
 日志不能成为业务性能瓶颈。
@@ -114,8 +126,8 @@ Java 应用日志 MUST 通过 SLF4J API 输出。
 ## LOG-011: 设计、实现和 Review 要求
 
 - `design.md` MUST 说明新增或修改行为的日志策略、关键事件、`trace_id` 传播方式、脱敏策略和性能考虑。
-- `tasks.md` MUST 为每个相关任务列出日志与注释要求。
-- 实现代码 MUST 补充有用注释和日志，不得留下无上下文、无 trace、无堆栈、无脱敏的日志。
+- `tasks.md` MUST 为每个相关任务列出日志、输出通道敏感信息检查与注释要求。
+- 实现代码 MUST 补充有用注释和日志，不得留下无上下文、无 trace、无堆栈、无脱敏的日志或敏感数据输出。
 - Alignment Review MUST 检查日志是否覆盖关键行为和验证入口。
-- Security Review MUST 检查日志是否泄露敏感信息。
-- Final Review 和 `/sp-complete` MUST 记录日志、`trace_id` 和脱敏证据。
+- Security Review MUST 检查日志、print、stdout/stderr、Shell 输出、Ansible 输出、CI/CD 输出和异常消息是否泄露敏感信息。
+- Final Review 和 `/sp-complete` MUST 记录日志、`trace_id`、输出通道敏感信息检查和脱敏证据。

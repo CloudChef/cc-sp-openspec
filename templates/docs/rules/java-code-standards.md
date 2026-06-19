@@ -151,6 +151,7 @@ Java code MUST use the SLF4J API for application logging.
 - Log request/job boundaries, state transitions, major decisions, external calls, retries, failures, async handoff/completion, and permission/security denials when relevant.
 - Include safe correlation context such as request IDs, job IDs, operation names, tenant-safe IDs, or resource IDs when available.
 - Do not log secrets, passwords, tokens, access keys, private keys, cookies, session identifiers, signed URLs, raw credentials, decrypted values, full personal data, or sensitive request/response bodies.
+- Java output channels such as logs, `System.out`, `System.err`, exception messages, test output, command output, and deployment/helper output MUST follow `LOG-006A` in `docs/rules/logging-standards.md`; do not print sensitive data through non-log output paths.
 - Do not swallow exceptions silently.
 - For external API failures, log provider, operation, status/error code, and safe request identifiers.
 - Use business exceptions for expected domain failures and technical exceptions for infrastructure failures.

@@ -17,9 +17,9 @@
   - Reuse/common logic impact: `<reuse existing/extract shared abstraction/extend shared abstraction/isolated with justification>`
   - Requirement scope / fallback: `<exact requirement behavior + no fallback/compatibility unless required>`
   - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
-  - Comments/logging/traceability: `<comment targets + log events + trace_id propagation + sensitive-data masking>`
+  - Comments/logging/traceability: `<comment targets + log events + trace_id propagation + sensitive-data masking + sensitive-output check for logs/print/stdout/stderr/Shell/Ansible/CI/deploy output>`
   - Encoding/no-mojibake: `<encoding risk + validation + no garbled comments/code/config>`
-  - File size guardrail: each generated/modified code file must stay <= 1000 lines; existing file baseline line count: `<count/not-over-limit>`; if baseline >1000, complete functionality first, then refactor/split before task completion; split plan: `<none/path split>`
+  - File size guardrail: newly generated code files must stay <= 1000 lines; existing project files are not subject to this gate solely because they already exceed 1000 lines; new-file split plan: `<none/path split>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
   - Backend logic confirmation: `<confirmed/goal-mode recorded/not-applicable + evidence>`
   - API contract/layers: `<none/OpenAPI operation + Controller path + Service path>`
@@ -45,7 +45,7 @@
   - Coverage target: at least 85% code coverage for changed/affected code
   - Required reviews after implementation:
     - Full lane: Alignment Review against spec, design, task, rules, and changed code; Security Review against concrete authentication, authorization, tenant/user isolation, validation, data exposure, logging, dependency, configuration, database/API IO, async, and external-service risks.
-    - Lightweight lane: scoped lightweight alignment/verification review against the compact contracts, affected paths, verification evidence, tests, and escalation triggers; Security Review only when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk exists, otherwise record `security_review: not_required` with evidence.
+    - Lightweight lane: scoped lightweight alignment/verification review against the compact contracts, affected paths, verification evidence, tests, and escalation triggers; Security Review only when security/data/input/logging/output/config/dependency/database/API/IO/async/external-service risk exists, otherwise record `security_review: not_required` with evidence.
   - Review gate: all findings must be fixed and re-reviewed before the next task starts
 
 ## Implementation Order
@@ -58,9 +58,9 @@ Validation must include:
 - Reuse/common logic check showing no avoidable duplicate logic was introduced.
 - Requirement-scope/fallback check showing no unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior was added.
 - Parameter-count/data-object check showing no method/function has more than 5 inputs unless it uses an explicit named data object, and no project-owned method/function parameter uses exception objects/classes, map-like objects, generic objects, or non-self-explanatory parameter definitions.
-- Comment/logging/traceability check showing useful comments, key behavior logs, `trace_id` propagation/output, exception stack traces, correct log levels, and no sensitive data in logs.
+- Comment/logging/traceability check showing useful comments, key behavior logs, `trace_id` propagation/output, exception stack traces, correct log levels, and no sensitive data across logs, print, stdout/stderr, Shell, Ansible, CI, and deploy output channels.
 - Encoding/no-mojibake check showing generated or modified comments, code strings, configuration, test parameters, non-ASCII text, and workflow artifacts are readable and parser-compatible.
-- File length check showing every generated/modified code file is at or below 1000 lines, with baseline line-count evidence and post-functionality refactor/split verification for any touched file that was already over 1000 lines before the change.
+- File length check showing every newly generated code file is at or below 1000 lines. Existing project files are not file-size findings solely because they already exceed 1000 lines.
 - Database configuration check when database access is required: SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, connection pool configured, maximum pool size <= 100.
 - Customer/user confirmation or `/sp-goal` goal-mode decision check for backend logic, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E decisions.
 - Multi-lens review check for product, design, engineering, developer-experience, security, and QA concerns.
@@ -89,7 +89,7 @@ Every implementation task must complete the workflow-lane review loop before the
 3. For full lane, run Alignment Review. For lightweight lane, run scoped lightweight alignment/verification review.
 4. Fix every required alignment or scoped review finding.
 5. Re-run the required alignment or scoped review if fixes changed behavior or code.
-6. For full lane, run Security Review. For lightweight lane, run Security Review only when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk exists; otherwise record why it is not required.
+6. For full lane, run Security Review. For lightweight lane, run Security Review only when security/data/input/logging/output/config/dependency/database/API/IO/async/external-service risk exists; otherwise record why it is not required.
 7. Fix every required Security Review finding.
 8. Re-run Security Review if it was required and fixes changed behavior or code.
 9. Record the closed findings in `.agent/workdir/sp-openspec/<change-id>/task-reviews.md`.

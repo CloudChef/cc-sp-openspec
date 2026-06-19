@@ -10,7 +10,7 @@ context: |
   docs/rules/project-implementation-standards.md is the baseline implementation rule file when present.
   docs/rules/ai-workflow-quality-standards.md is the baseline AI workflow quality rule file when present.
   docs/rules/business-standards.md is the baseline project business terminology and business-rule file when present.
-  docs/rules/logging-standards.md is the baseline logging, Java SLF4J, trace_id, and sensitive-data logging rule file when present.
+  docs/rules/logging-standards.md is the baseline logging, Java SLF4J, trace_id, and sensitive-data output rule file when present.
   docs/rules/encoding-standards.md is the baseline encoding and no-mojibake rule file when present.
   docs/rules/java-code-standards.md, docs/rules/python-code-standards.md, docs/rules/configuration-standards.md, and docs/rules/testing-standards.md are default language/configuration/testing standards when present and applicable.
   Wiki and standards under docs/ are design inputs.
@@ -39,25 +39,28 @@ rules:
     - Do not start independent review threads, child agents, subagents, parallel review agents, or fallback subagent passes for any review, including final implementation review.
     - After /sp-impl completes all tasks and records the main-thread final implementation review, run Main Final Code Review Pass 1 and Main Final Code Review Pass 2 in the main thread.
     - Allow lightweight review mode for low-risk, narrow-scope checks; record review_mode, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision.
-    - Escalate lightweight review to full review when risk touches production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integrations, logging/security, E2E, broad qualifiers, or implementation-standard exceptions.
+    - Escalate lightweight review to full review when risk touches production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integrations, logging/output/security, E2E, broad qualifiers, or implementation-standard exceptions.
     - Do not mark tasks complete without implementation and review evidence.
     - Do not write process evidence into the durable OpenSpec change folder.
     - Stop and ask for user input when the active change cannot be resolved.
   code_to_spec:
     - Optional bootstrap only. Do not insert /sp-code-to-spec into the required /sp-goal phase sequence.
     - Use it only to derive initial current-state project/module/feature docs under docs/<project-name>/<module>/<feature>/, project context, rules, and standards from an existing codebase.
-    - It may create or update docs/ai-context/source-index.md, docs/ai-context/codebase-inventory.md, openspec/project.md, docs/<project-name>/readme.md, docs/<project-name>/<module>/readme.md, docs/<project-name>/<module>/<feature>/readme.md, docs/<project-name>/<module>/<feature>/spec/spec.md, docs/<project-name>/<module>/<feature>/design/design.md, docs/<project-name>/<module>/<feature>/flow/flow.md, optional files under docs/<project-name>/<module>/<feature>/other/, docs/rules/business-standards.md, docs/rules/*.md, docs/standards/*.md, and .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md.
+    - Documentation hierarchy is product/project -> module -> feature -> function point. Identify modules inside the product/project, features inside each module, and function points inside each feature before drafting documents.
+    - It may create or update docs/ai-context/source-index.md, docs/ai-context/codebase-inventory.md, openspec/project.md, docs/<project-name>/readme.md, docs/<project-name>/<module>/readme.md, docs/<project-name>/<module>/<feature>/<feature>.md, docs/<project-name>/<module>/<feature>/spec/spec.md, docs/<project-name>/<module>/<feature>/spec/<function-point>-spec.md, docs/<project-name>/<module>/<feature>/design/design.md, docs/<project-name>/<module>/<feature>/design/<function-point>-design.md, docs/<project-name>/<module>/<feature>/flow/flow.md, docs/<project-name>/<module>/<feature>/flow/<function-point>-flow.md, optional files under docs/<project-name>/<module>/<feature>/other/, docs/rules/business-standards.md, docs/rules/*.md, docs/standards/*.md, and .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md.
     - Do not put /sp-code-to-spec current-state specs under openspec/specs; reserve openspec for project workflow configuration and real change contracts produced by /sp-spec.
     - Do not put /sp-code-to-spec current-state docs under docs/standards/modules.
     - For multi-module projects, generate module/feature-scoped docs instead of one catch-all spec/design.
     - For multi-language projects, keep language/runtime code standards separate and record the modules each rule file applies to.
-    - Every project/module/feature document path must use real names and must not use generic names or sequence numbers such as module-1, feature-1, capability-001, common, misc, general, default, or design.
-    - Every generated feature directory must include readme.md, spec/, design/, and flow/; use other/ only for supporting notes.
+    - Every project/module/feature/function-point document path must use real names and must not use generic names or sequence numbers such as module-1, feature-1, function-1, capability-001, common, misc, general, default, or design.
+    - Every generated feature directory must include <feature>.md, spec/, design/, and flow/; use other/ only for supporting notes.
+    - Every generated feature must identify its function points. Simple single-function-point features may keep detail in spec/spec.md, design/design.md, and flow/flow.md; multi-function-point features must add function-point detail files under spec/, design/, and flow/ using real function-point names.
+    - Function-point design files must include related classes/modules, low-level responsibilities, key method signatures, parameter names and concrete types/schemas, required/optional/default/validation details, return values, data flow, IO, and verification entry points when visible in source.
     - Do not generate old fixed matrix, evidence, or owner-question section templates for this workflow.
     - Feature docs must use business language and must not contain direct code, pseudocode, call chains, SQL fragments, class/method snippets, or conditional expressions in business descriptions. Code identifiers and paths belong only in source references, source mapping, design baselines, or rule provenance.
     - Generate or update docs/rules/business-standards.md only for stable project-level business terms, lifecycle states, policies, invariants, and cross-feature rules supported by repeated project patterns or explicit user confirmation.
     - Do not create openspec/changes/<change-id>/ artifacts, write production code, write tests, create implementation tasks, archive changes, or commit.
-    - Every generated requirement, design claim, flow statement, rule, or standard must map to project-owned code, tests, config, docs, or explicit user input.
+    - Every generated requirement, design claim, flow statement, function-point claim, method-signature claim, rule, or standard must map to project-owned code, tests, config, docs, or explicit user input.
     - Draft generated artifacts in the conversation, review source mapping and overreach, then get user confirmation before writing files.
     - Put unclear behavior in 待确认事项 and record conflicts instead of guessing.
   brainstorm:
@@ -124,7 +127,7 @@ rules:
     - Define method/function parameter plans; no method/function may exceed 5 input parameters unless a named data object with explicit fields is used.
     - Project-owned method/function parameters must not use exception objects/classes, maps/dicts/generic objects/**kwargs, untyped key-value bags, or language-equivalent map-like objects.
     - Every parameter and data-object field must have a self-explanatory domain name, concrete type or schema, ownership, and validation expectation.
-    - Define useful code comments, logging events, trace_id propagation, structured fields, log levels, exception stack-trace behavior, sensitive-data masking, and logging performance considerations.
+    - Define useful code comments, logging events, trace_id propagation, structured fields, log levels, exception stack-trace behavior, sensitive-data masking, sensitive-output checks for logs/print/stdout/stderr/Shell/Ansible/CI/deploy output, and logging performance considerations.
     - Define encoding/no-mojibake risks and validation for generated or modified comments, code text, configuration, test data, non-ASCII text, import/export, serialization, logs, API payloads, database text, and UI text.
     - Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
     - Define the project-code test boundary and require mocks, stubs, contract fixtures, local fakes, or explicitly approved sandbox/test endpoints for third-party integrations unless a real provider call is explicitly approved.
@@ -139,7 +142,7 @@ rules:
     - After review closure, ask the customer/user to confirm the reviewed design confirmation package in manual mode; in /sp-goal, record reviewed goal-mode decision evidence and do not ask for extra confirmation after brainstorm is confirmed.
     - For confirmed required E2E paths, define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, evidence, and fallback/skip reason when no runnable target exists.
     - If the confirmed or goal-mode recorded E2E decision reveals missing or incorrect spec behavior, stop and update specs before creating tasks or implementing.
-    - Keep planned generated/modified code files at or below 1000 lines; split before implementation when planned new code would exceed the limit. If an existing target file is already over 1000 lines, record its baseline line count and require implementation to complete functionality first, then refactor/split and re-run affected verification before task completion.
+    - Keep planned newly generated code files at or below 1000 lines; split before implementation when planned new code would exceed the limit. Existing project files are not file-size findings solely because they already exceed 1000 lines; do not require baseline line-count evidence or forced refactor/split plans for existing files.
     - Explicitly decide whether a database is required.
     - If database access is required, use SQLite for development-stage local behavior, MySQL for implementation/deployment-stage behavior, and a connection pool with maximum size <= 100.
     - Design backend APIs from OpenAPI contracts and separate at least Controller and Service responsibilities.
@@ -162,9 +165,9 @@ rules:
     - Each task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
     - Each task must state requirement-scope/fallback rules and prohibit unrequested fallback or compatibility behavior.
     - Each task must state method/function parameter constraints, any required named data object, exception-object/map-like parameter prohibition, and self-explanatory parameter definitions.
-    - Each task must state code comment and logging requirements, including trace_id, log levels, structured fields, exception stack traces, and sensitive-data exclusion when relevant.
+    - Each task must state code comment and logging requirements, including trace_id, log levels, structured fields, exception stack traces, and sensitive-data exclusion for logs/print/stdout/stderr/Shell/Ansible/CI/deploy output when relevant.
     - Each task must state encoding/no-mojibake validation when it changes comments, code text, configuration, test data, non-ASCII text, or text-bearing behavior.
-    - Each task must include the <= 1000 line file-size guardrail, existing target file baseline line count, and split plan when needed. If baseline >1000, the task must say to complete functionality first, verify it, then refactor/split and re-run affected verification before completion.
+    - Each task must include the <= 1000 line file-size guardrail and split plan only for newly generated code files. Existing project files are not subject to this gate solely because they already exceed 1000 lines.
     - Each task must include applicable product, design, engineering, developer-experience, security, and QA review lens requirements.
     - Each task must identify database, OpenAPI/Controller/Service, API IO, and async impact when relevant.
     - Each task must include validation.
@@ -183,7 +186,7 @@ rules:
     - Each task must specify independent JSON test parameter files under .agent/workdir/sp-openspec/<change-id>/test-params/, identify same-module reusable parameter files or project fixtures before proposing new data, record the reuse plan or non-reuse reason, and identify stable project fixture paths when committed tests need reusable files after completion.
     - Each task must require at least 85% coverage for changed/affected code.
     - Full-lane tasks must include Alignment Review and Security Review gates.
-    - Lightweight-lane tasks must include one scoped lightweight alignment/verification review gate, plus Security Review only when the task touches security/data/input/logging/config/dependency/database/API/IO/async/external-service risk.
+    - Lightweight-lane tasks must include one scoped lightweight alignment/verification review gate, plus Security Review only when the task touches security/data/input/logging/output/config/dependency/database/API/IO/async/external-service risk.
     - Every required per-task review finding must be fixed and re-reviewed before the next task starts.
     - Do not create tasks not covered by specs or approved design.
     - Do not create or modify design.md or design-review.md in the tasks phase.
@@ -217,9 +220,9 @@ rules:
     - Check same/equivalent logic reuse and reject avoidable duplicate logic.
     - Check existing-code changes implement only approved requirements and reject unrequested fallback, compatibility, degraded-mode, dual-path, or silent default behavior.
     - Check methods/functions have no more than 5 input parameters, use explicit named data objects when needed, and do not use exception objects/classes, map-like/generic-object/key-value-bag parameters, or non-self-explanatory parameter definitions.
-    - Check useful code comments, behavior-log coverage, trace_id propagation/output, log levels, exception stack traces, and sensitive-data exclusion.
+    - Check useful code comments, behavior-log coverage, trace_id propagation/output, log levels, exception stack traces, and sensitive-data exclusion across logs/print/stdout/stderr/Shell/Ansible/CI/deploy output.
     - Check generated or modified comments, code, configuration, test parameters, and workflow artifacts for mojibake, wrong transcoding, broken escaping, and unreadable characters.
-    - Check generated/modified code files are at or below 1000 lines. If a touched target file was already over 1000 lines before the change, check baseline line-count evidence, completed post-functionality refactor/split evidence, and affected verification rerun evidence.
+    - Check newly generated code files are at or below 1000 lines. Existing project files are not file-size findings solely because they already exceed 1000 lines.
     - Check database runtime and connection pool rules when database access is required.
     - Check backend APIs follow OpenAPI and separate Controller and Service responsibilities when APIs changed.
     - Check API IO and async rules when APIs changed.
@@ -230,8 +233,8 @@ rules:
     - After all tasks are complete, run one main-thread final implementation review against every requirement, spec scenario, design decision, changed code path, test, verification result, and rule.
     - Then run Main Final Code Review Pass 1 for requirement/spec/design/code alignment and adversarial evidence, and Main Final Code Review Pass 2 for security, implementation standards, regressions, logging, data/API/async/config, test quality, and file-size gates.
     - Lightweight lane keeps the two final code review passes but scopes them to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers.
-    - Main Final Code Review Pass 1 must check specs, design, design-review, tasks, rules, architecture, tests, requirement-to-test mapping, counterexample matrices, masked-test analyses, broad-qualifier audits, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, encoding/no-mojibake evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints including exception-object/map-like parameter prohibition and self-explanatory parameter definitions, and file sizes.
-    - Main Final Code Review Pass 2 must check security, data handling, authorization, logging/trace_id/sensitive-data exposure, encoding/no-mojibake regressions, API IO, async behavior, configuration, dependencies, test quality, masked-test risks, decision-chain masking regressions, evidence-capture timing regressions, deterministic-sort regressions, narrower code qualifiers, and remaining rule violations.
+    - Main Final Code Review Pass 1 must check specs, design, design-review, tasks, rules, architecture, tests, requirement-to-test mapping, counterexample matrices, masked-test analyses, broad-qualifier audits, Decision Chain Trace, Evidence Capture Timing Audit, Deterministic Sort Audit, coverage, standalone verification, real E2E evidence, browser/UI QA evidence, comment/logging/traceability evidence, sensitive-output evidence, encoding/no-mojibake evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints including exception-object/map-like parameter prohibition and self-explanatory parameter definitions, and file sizes.
+    - Main Final Code Review Pass 2 must check security, data handling, authorization, logging/trace_id/sensitive-data exposure, non-log output channel exposure, encoding/no-mojibake regressions, API IO, async behavior, configuration, dependencies, test quality, masked-test risks, decision-chain masking regressions, evidence-capture timing regressions, deterministic-sort regressions, narrower code qualifiers, and remaining rule violations.
     - Cross-check findings across all final main-thread review passes. Fix every confirmed finding, including non-blocking/minor/informational/follow-up findings, then re-review until all reviews have zero open confirmed findings.
     - Mark out-of-spec behavior explicitly.
     - Do not silently add new requirements.
@@ -251,7 +254,7 @@ rules:
     - Require independent valid JSON test parameter files and evidence that same-module reusable test data was reused or non-reuse was justified.
     - Require standalone full verification evidence for changed behavior.
     - Require real E2E test evidence when required in design.
-    - Require implementation-standard evidence for code paths, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, exception-object/map-like parameter prohibition, self-explanatory parameter definitions, comment/logging/traceability control, encoding/no-mojibake control, file length, existing oversized-file baseline and post-functionality split verification, database runtime/pool, OpenAPI/layers, API IO, and async handling when relevant.
+    - Require implementation-standard evidence for code paths, reuse/common logic, requirement-scope/fallback control, parameter-count/data-object control, exception-object/map-like parameter prohibition, self-explanatory parameter definitions, comment/logging/traceability control, sensitive-output control, encoding/no-mojibake control, newly generated file length, database runtime/pool, OpenAPI/layers, API IO, and async handling when relevant.
     - Require project learning notes to be updated when the completed change reveals reusable patterns, pitfalls, preferences, or verification procedures, or require completion evidence that no reusable learning was found.
     - Generate docs/wiki/<feature-or-story-title>.md from specs, design, design-review, customer/user confirmations or goal-mode decision records, implemented code, rules, review evidence, and applicable Decision Chain Trace, Evidence Capture Timing Audit, and Deterministic Sort Audit evidence.
     - Derive the wiki filename from the completed feature/story, not from the raw change ID.

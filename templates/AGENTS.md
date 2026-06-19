@@ -80,7 +80,7 @@ Purpose:
 - Never skip phase artifacts, tests, coverage, reviews, finding closure, wiki generation, or archive gates.
 - Never skip required reviews. `/sp-brainstorm`, `/sp-spec`, `/sp-tasks`, per-task implementation reviews, final implementation review, and `/sp-complete` review are owned by the main agent. `/sp-impl` final closure requires one main-thread final implementation review plus Main Final Code Review Pass 1 and Main Final Code Review Pass 2 after all tasks are complete.
 - Do not start independent review threads, child agents, subagents, parallel review agents, or fallback subagent passes for any review, including final implementation review.
-- Lightweight review mode is allowed for low-risk, narrow-scope checks. It must still record evidence with `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. Escalate to full review when risk touches production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integrations, logging/security, E2E, broad qualifiers, or implementation-standard exceptions.
+- Lightweight review mode is allowed for low-risk, narrow-scope checks. It must still record evidence with `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. Escalate to full review when risk touches production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integrations, logging/output/security, E2E, broad qualifiers, or implementation-standard exceptions.
 - Never skip main-process comprehensive or allowed lightweight review.
 
 Rules:
@@ -165,12 +165,15 @@ Rules:
 - Do not use `/sp-code-to-spec` for a new feature, bug fix, or behavior change; use `/sp-brainstorm` instead.
 - Do not write production code, tests, migrations, or configs.
 - Do not create `openspec/changes/<change-id>/` artifacts unless the user explicitly asks for the normal change workflow.
-- For multi-module projects, generate `docs/<project-name>/<module>/<feature>/readme.md`, `spec/spec.md`, `design/design.md`, and `flow/flow.md` instead of one catch-all spec/design.
+- `/sp-code-to-spec` uses the hierarchy product/project -> module -> feature -> function point.
+- For multi-module projects, generate `docs/<project-name>/<module>/<feature>/<feature>.md`, `spec/spec.md`, `design/design.md`, and `flow/flow.md` instead of one catch-all spec/design.
+- Each feature must identify its function points. Simple single-function-point features may keep details in `spec/spec.md`, `design/design.md`, and `flow/flow.md`; multi-function-point features must add function-point detail files under `spec/`, `design/`, and `flow/` using real function-point names, such as `<function-point>-spec.md`, `<function-point>-design.md`, and `<function-point>-flow.md`.
+- Function-point design files must include related classes/modules, low-level responsibilities, key method signatures, parameter names and types/schemas, required/optional/default/validation details, return values, data flow, IO, and verification entry points when visible in source.
 - Do not put `/sp-code-to-spec` current-state specs under `openspec/specs/`; reserve `openspec/` for project workflow configuration and real change contracts produced by `/sp-spec`.
 - Do not put `/sp-code-to-spec` current-state docs under `docs/standards/modules/`.
 - For multi-language projects, generate or update separate language/runtime rule files and record which modules each rule file applies to.
-- Every generated project/module/feature path must use real project, module, and feature names. Do not use generic names or sequence numbers such as `module-1`, `feature-1`, `capability-001`, `common`, `misc`, `general`, `default`, or `design`.
-- Every feature directory must include `readme.md`, `spec/`, `design/`, and `flow/`; create `other/` only when supporting notes are useful.
+- Every generated project/module/feature/function-point path must use real project, module, feature, and function-point names. Do not use generic names or sequence numbers such as `module-1`, `feature-1`, `function-1`, `capability-001`, `common`, `misc`, `general`, `default`, or `design`.
+- Every feature directory must include `<feature>.md`, `spec/`, `design/`, and `flow/`; create `other/` only when supporting notes are useful.
 - Do not generate or require old fixed matrix, evidence, or owner-question section templates for this workflow.
 - Feature docs must be business-readable and must not include direct code, pseudocode, call chains, SQL fragments, class/method snippets, or conditional expressions in business descriptions. Put code identifiers and paths only in source references, source mapping, design baselines, or rule provenance.
 - Generate or update `docs/rules/business-standards.md` only for stable project-level business terms, lifecycle states, policies, invariants, and cross-feature rules supported by repeated project patterns or explicit user confirmation.
@@ -239,7 +242,7 @@ Rules:
 - Use OpenSpec Requirement and Scenario format.
 - Review proposal/spec alignment before design.
 - Do not create design until `spec-review.md` has zero unresolved blocking gaps.
-- `design.md` must include Source Mapping, Rules Compliance, Spec Gaps, code path planning, reuse/common logic planning, requirement-scope/fallback decisions, parameter/data-object planning, explicit self-explanatory parameter definitions, exception-object/map-like parameter prohibition, comments/logging/traceability planning, encoding/no-mojibake planning, standalone verification, E2E design, and customer/user confirmation evidence or `/sp-goal` goal-mode decision evidence.
+- `design.md` must include Source Mapping, Rules Compliance, Spec Gaps, code path planning, reuse/common logic planning, requirement-scope/fallback decisions, parameter/data-object planning, explicit self-explanatory parameter definitions, exception-object/map-like parameter prohibition, comments/logging/traceability planning, sensitive-output planning, encoding/no-mojibake planning, standalone verification, E2E design, and customer/user confirmation evidence or `/sp-goal` goal-mode decision evidence.
 - `design.md` must prepare a pending confirmation package for backend logic decisions, UI mockup/function description, API paths/parameters, configuration parameter names/values, and E2E required/not-required decisions.
 - Before manual customer/user confirmation or `/sp-goal` goal-mode decision recording, the main process must review the spec/design draft, revise, and re-run affected review until there are no unresolved blocking findings except explicit pending customer/user decisions.
 - After review closure, manual `/sp-spec` must record customer/user confirmation for backend logic decisions, UI mockup/function description when applicable, API paths/parameters when applicable, configuration parameter names/values when applicable, and E2E required/not-required decision. `/sp-goal` must record the same decisions as reviewed goal-mode decision evidence without asking for extra confirmation after brainstorm is confirmed.
@@ -269,7 +272,7 @@ Rules:
 - If a design decision, API/config detail, E2E decision, mockup, or spec update is missing, return to `/sp-spec` instead of inventing it in tasks. In `/sp-goal`, do not return only to collect extra design confirmation after brainstorm is confirmed; use reviewed goal-mode decision evidence.
 - Every task must reference a requirement, approved design decision, closed design-review evidence, applicable rules, target code paths, reuse/common logic impact, implementation-standard impact, and validation.
 - Every task must include requirement-scope/fallback instructions, method/function parameter constraints, exception-object/map-like parameter prohibition, and self-explanatory parameter definition requirements.
-- Every task must include code comment and logging requirements, including `trace_id`, log levels, structured fields, and sensitive-data exclusion when relevant.
+- Every task must include code comment and logging requirements, including `trace_id`, log levels, structured fields, and sensitive-data exclusion for logs/print/stdout/stderr/Shell/Ansible/CI/deploy output when relevant.
 - Every task must include encoding/mojibake validation requirements when it changes comments, code, configuration, test data, or text-bearing behavior.
 - Every task must include standalone full verification from the relevant entry point.
 - Every task must include applicable customer/user confirmation evidence or `/sp-goal` goal-mode decision evidence for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, and E2E decisions, or a clear not-applicable reason.
@@ -285,7 +288,7 @@ Rules:
 - Every task must state the project-owned code/behavior under test and prohibit tests dedicated to dependency packages or third-party API/provider correctness.
 - Every task must require requirement-to-test mapping, a Requirement Counterexample Matrix for broad requirements, Masked-Test Analysis for gate/decision chains, Broad-Qualifier Audit for spec-vs-code qualifier mismatches, Decision Chain Trace for applicable gate/filter/sort/score/state-transition behavior, Evidence Capture Timing Audit for semantic evidence fields, and Deterministic Sort Audit for sort/rank/order behavior.
 - Coverage percentage must not substitute scenario coverage or requirement-to-test mapping.
-- Every task must include the review gates required by the workflow lane. Full lane requires Alignment Review and Security Review. Lightweight lane requires scoped lightweight alignment/verification review and requires Security Review only when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk exists.
+- Every task must include the review gates required by the workflow lane. Full lane requires Alignment Review and Security Review. Lightweight lane requires scoped lightweight alignment/verification review and requires Security Review only when security/data/input/logging/output/config/dependency/database/API/IO/async/external-service risk exists.
 - `tasks-review.md` must confirm each task has the lane-specific gates and finding closure requirements.
 - The main process must run comprehensive or allowed lightweight task review, confirm issue status, fix, reply, and record closure in `tasks-review.md`.
 - Do not proceed to `/sp-impl` until `tasks-review.md` records main-process review, main-thread responses, and zero unresolved blocking findings.
@@ -343,16 +346,16 @@ Rules:
 - Existing-code changes must implement only approved requirements. Do not add fallback, compatibility, degraded-mode, dual-path, or silent default behavior unless specs/design/tasks explicitly require it.
 - Methods/functions must have no more than 5 input parameters, and project-owned parameters must use explicit self-explanatory names and concrete types/schemas. Do not use exception objects/classes, maps/dicts/generic objects/`**kwargs`, or untyped key-value bags as parameters; use explicit named data objects instead.
 - Code implementation must include useful comments for non-obvious behavior and logs that trace key behavior with `trace_id` when context exists.
-- Logs must not include secrets, credentials, tokens, session identifiers, raw personal data, or sensitive request/response bodies.
+- Logs, print statements, stdout/stderr writes, Shell `echo`/`printf`/`set -x`, Ansible `debug`/`fail`/registered result output, CI/CD output, deployment script output, exception messages, and test output must not include secrets, credentials, tokens, session identifiers, raw personal data, sensitive business data, or sensitive request/response bodies.
 - Generated or modified comments, code, configuration, test parameters, and workflow artifacts must not contain mojibake, wrong transcoding, or unreadable characters.
-- Generated/modified code files must stay <= 1000 lines. If an existing target file is already over 1000 lines before the change, record the baseline line count, complete and verify the approved functionality first, then refactor/split the oversized file and re-run affected verification before marking the task complete.
+- Newly generated code files must stay <= 1000 lines. Existing project files are not file-size findings solely because they already exceed 1000 lines; do not require baseline line-count evidence or forced refactor/split plans for existing files.
 - Database, OpenAPI, Controller/Service, API IO, and async rules must be implemented and evidenced when relevant.
 - Do not write tests for empty/no-op code.
 - Do not count tests that only verify class or method initialization.
 - Do not write or count tests dedicated to dependency packages, SDK internals, framework behavior, or third-party API/provider correctness.
-- After each task, run review gates required by the workflow lane. Full lane requires Alignment Review against spec, design, design-review, task, rules, requirement-to-test mapping, counterexample evidence, masked-test analysis, broad-qualifier audit, and changed code, plus Security Review against concrete authentication, authorization, tenant/user isolation, validation, data exposure, logging, dependency, configuration, database/API IO, async, and external-service risks when relevant.
-- Lightweight lane requires one scoped lightweight alignment/verification review against the Lightweight Precheck, compact contracts, affected paths, tests, verification, and escalation triggers, plus Security Review only when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk exists.
-- Security Review must check concrete authentication, authorization, validation, data exposure, logging, `trace_id`, sensitive-data exposure, dependency, configuration, API IO, async, and external-service risks when relevant.
+- After each task, run review gates required by the workflow lane. Full lane requires Alignment Review against spec, design, design-review, task, rules, requirement-to-test mapping, counterexample evidence, masked-test analysis, broad-qualifier audit, and changed code, plus Security Review against concrete authentication, authorization, tenant/user isolation, validation, data exposure, logging, non-log output channels, dependency, configuration, database/API IO, async, and external-service risks when relevant.
+- Lightweight lane requires one scoped lightweight alignment/verification review against the Lightweight Precheck, compact contracts, affected paths, tests, verification, and escalation triggers, plus Security Review only when security/data/input/logging/output/config/dependency/database/API/IO/async/external-service risk exists.
+- Security Review must check concrete authentication, authorization, validation, data exposure, logging, `trace_id`, sensitive-data exposure across logs/print/stdout/stderr/Shell/Ansible/CI/deploy output, dependency, configuration, API IO, async, and external-service risks when relevant.
 - Fix every finding from required reviews and re-review before starting the next task.
 - Record all per-task review rounds and closure evidence in `task-reviews.md`.
 - Do not add behavior outside specs.

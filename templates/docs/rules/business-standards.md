@@ -21,14 +21,15 @@
 
 `/sp-code-to-spec` 生成 current-state feature docs 时，每个功能目录必须记录当前功能的业务定义。
 
+- 文档识别层级是 product/project -> module -> feature -> function point：先在产品/项目中识别 module，再在 module 中识别 feature，最后在 feature 中识别 function point。
 - 记录业务目的、参与者/客户端、领域对象、输入/输出、状态或生命周期术语、使用到的项目级业务规则。
-- `readme.md` 记录功能目的、参与者/客户端、入口、当前行为概览和相关文档链接。
-- `spec/spec.md` 记录当前行为、业务规则、输入/输出、重要变体、错误/拒绝情况和可观察结果。
-- `design/design.md` 记录当前技术实现、Source Mapping、数据/配置/日志/安全/测试入口和实现约束。
-- `flow/flow.md` 记录当前业务流程，包括触发方式、前置条件、主流程、关键分支点、数据/状态变化、外部 IO 或异步行为，以及最终可观察结果。
+- `<feature>.md` 记录功能目的、参与者/客户端、入口、功能点清单、当前行为概览和相关文档链接。
+- `spec/spec.md` 记录 feature 级当前行为、业务规则、输入/输出、重要变体、错误/拒绝情况和可观察结果；多功能点 feature 必须在 `spec/` 下用真实功能点名拆分 `<function-point>-spec.md`。
+- `design/design.md` 记录 feature 级当前技术实现、Source Mapping、共享类/模块职责、数据/配置/日志/安全/测试入口和实现约束；多功能点 feature 必须在 `design/` 下用真实功能点名拆分 `<function-point>-design.md`，并记录相关 class/module、low-level design、关键方法签名、参数定义、返回值、data flow、IO 和验证入口。
+- `flow/flow.md` 记录 feature 级当前业务流程；多功能点 feature 必须在 `flow/` 下用真实功能点名拆分 `<function-point>-flow.md`，说明触发方式、前置条件、主流程、关键分支点、数据/状态变化、外部 IO 或异步行为，以及最终可观察结果。
 - `other/` 仅用于补充说明，不作为必需过程证据目录。
 - 单一功能的局部行为优先放在 `docs/<project-name>/<module>/<feature>/` 中；`/sp-code-to-spec` 不得把当前状态 feature docs 写入 `docs/standards/modules/` 或 `openspec/specs/`。
-- `/sp-code-to-spec` 不要求旧式矩阵、流程或证据模板作为固定章节；只要求当前功能说明、当前行为规格、当前设计实现和当前流程说明能够支持后续维护。
+- `/sp-code-to-spec` 不要求旧式矩阵、流程或证据模板作为固定章节；只要求当前功能说明、当前行为规格、当前设计实现、功能点 low-level design 和当前流程说明能够支持后续维护。
 
 ## BUS-003: 项目级业务规则
 

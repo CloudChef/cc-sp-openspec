@@ -54,10 +54,10 @@
 
 ## Generated Current-State Feature Docs
 
-Record one row per generated current-state feature directory. Multi-module projects MUST use `docs/<project-name>/<module>/<feature>/`.
+Record one row per generated current-state feature directory. The hierarchy is product/project -> module -> feature -> function point. Multi-module projects MUST use `docs/<project-name>/<module>/<feature>/`. Record function points and function-point detail files when a feature has multiple operations or needs standalone low-level design.
 
-| Project | Module | Feature | Feature Dir | Source Summary | 待确认事项 |
-|---|---|---|---|---|---|
+| Project | Module | Feature | Feature Dir | Function Points | Function-Point Detail Files | Source Summary | 待确认事项 |
+|---|---|---|---|---|---|---|---|
 
 ## Generated Project Rules
 

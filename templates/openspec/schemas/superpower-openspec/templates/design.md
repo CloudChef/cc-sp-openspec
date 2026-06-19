@@ -68,12 +68,12 @@
 | API / Method / Function Area | Expected Inputs | Parameter Count Risk | Data Object Needed | Data Object / Schema |
 |---|---|---|---|---|
 
-## Code Comments / Logging / Traceability Plan
+## Code Comments / Logging / Traceability / Sensitive Output Plan
 
-Changed behavior must include useful code comments and behavior logs. Logs must include `trace_id` when request/job context exists and must not expose sensitive information.
+Changed behavior must include useful code comments and behavior logs. Logs and all output channels, including print/stdout/stderr/Shell/Ansible/CI/deploy output, must include `trace_id` when request/job context exists and must not expose sensitive information.
 
-| Change Area | Comment Targets | Log Events | `trace_id` Propagation | Structured Fields | Log Levels | Sensitive Data Masking | Performance Notes |
-|---|---|---|---|---|---|---|---|
+| Change Area | Comment Targets | Log Events / Output Channels | `trace_id` Propagation | Structured Fields | Log Levels | Sensitive Data Masking | Sensitive Output Risk | Performance Notes |
+|---|---|---|---|---|---|---|---|---|
 
 ## Encoding / No-Mojibake Plan
 
@@ -82,11 +82,11 @@ Generated or modified comments, code, configuration, test data, logs, API payloa
 | Change Area | Encoding Risk | Affected Text / Config | Expected Encoding | Escaping / Parser Requirement | Validation Method | Not Applicable Reason |
 |---|---|---|---|---|---|---|
 
-## File Size / Split Plan
+## New File Size / Split Plan
 
-- Generated or modified code files must stay at or below 1000 lines.
-- If any planned file may exceed 1000 lines, split it before implementation.
-- If an existing target file is already over 1000 lines before the change, record its baseline line count, complete-functionality-first plan, and post-functionality refactor/split plan.
+- Newly generated code files must stay at or below 1000 lines.
+- If any planned new file may exceed 1000 lines, split it before implementation.
+- Existing project files are not subject to this gate solely because they already exceed 1000 lines; do not record baseline line-count evidence or force refactor/split plans for existing files.
 
 ## Data Impact
 

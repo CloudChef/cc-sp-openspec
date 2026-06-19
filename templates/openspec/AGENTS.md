@@ -16,10 +16,13 @@ Generated durable OpenSpec contracts, workdir evidence, review, test-parameter, 
   -> openspec/project.md
   -> docs/<project-name>/readme.md
   -> docs/<project-name>/<module>/readme.md
-  -> docs/<project-name>/<module>/<feature>/readme.md
+  -> docs/<project-name>/<module>/<feature>/<feature>.md
   -> docs/<project-name>/<module>/<feature>/spec/spec.md
+  -> docs/<project-name>/<module>/<feature>/spec/<function-point>-spec.md
   -> docs/<project-name>/<module>/<feature>/design/design.md
+  -> docs/<project-name>/<module>/<feature>/design/<function-point>-design.md
   -> docs/<project-name>/<module>/<feature>/flow/flow.md
+  -> docs/<project-name>/<module>/<feature>/flow/<function-point>-flow.md
   -> docs/<project-name>/<module>/<feature>/other/<supporting-topic>.md
   -> docs/rules/business-standards.md
   -> docs/rules/<project-rule>.md
@@ -72,13 +75,16 @@ Rules:
 
 - This is not part of the required `/sp-goal` phase sequence.
 - It must not create `openspec/changes/<change-id>/`, implementation tasks, production code, tests, migrations, configs, archive records, or commits.
-- It may create or update `docs/ai-context/source-index.md`, `docs/ai-context/codebase-inventory.md`, `openspec/project.md`, `docs/<project-name>/<module>/<feature>/readme.md`, `docs/<project-name>/<module>/<feature>/spec/spec.md`, `docs/<project-name>/<module>/<feature>/design/design.md`, `docs/<project-name>/<module>/<feature>/flow/flow.md`, optional files under `docs/<project-name>/<module>/<feature>/other/`, `docs/rules/business-standards.md`, `docs/rules/*.md`, and `docs/standards/*.md`.
+- It uses the hierarchy product/project -> module -> feature -> function point.
+- It may create or update `docs/ai-context/source-index.md`, `docs/ai-context/codebase-inventory.md`, `openspec/project.md`, `docs/<project-name>/<module>/<feature>/<feature>.md`, `docs/<project-name>/<module>/<feature>/spec/spec.md`, `docs/<project-name>/<module>/<feature>/design/design.md`, `docs/<project-name>/<module>/<feature>/flow/flow.md`, optional function-point detail files under the feature's `spec/`, `design/`, and `flow/` folders, optional files under `docs/<project-name>/<module>/<feature>/other/`, `docs/rules/business-standards.md`, `docs/rules/*.md`, and `docs/standards/*.md`.
 - It must not put `/sp-code-to-spec` current-state specs under `openspec/specs/`; reserve `openspec/` for project workflow configuration and real change contracts produced by `/sp-spec`.
 - It must not put `/sp-code-to-spec` current-state docs under `docs/standards/modules/`.
 - Multi-module projects must be split by module and feature; do not create one catch-all spec or design.
+- Each feature must identify its function points. Simple single-function-point features may keep details in `spec/spec.md`, `design/design.md`, and `flow/flow.md`; multi-function-point features must add function-point detail files under `spec/`, `design/`, and `flow/` using real function-point names.
+- Function-point design files must include related classes/modules, low-level responsibilities, key method signatures, parameter definitions, return values, data flow, IO, and verification entry points when visible in source.
 - Multi-language projects must keep language/runtime code standards separate and must record which modules each rule file applies to.
-- Every project/module/feature document path must use real names and must not use generic names or sequence numbers such as `module-1`, `feature-1`, `capability-001`, `common`, `misc`, `general`, `default`, or `design`.
-- Every generated feature directory must include `readme.md`, `spec/`, `design/`, and `flow/`; use `other/` only for supporting notes.
+- Every project/module/feature/function-point document path must use real names and must not use generic names or sequence numbers such as `module-1`, `feature-1`, `function-1`, `capability-001`, `common`, `misc`, `general`, `default`, or `design`.
+- Every generated feature directory must include `<feature>.md`, `spec/`, `design/`, and `flow/`; use `other/` only for supporting notes.
 - Do not generate old fixed matrix, evidence, or owner-question section templates for this workflow.
 - Feature docs must use business language and must not contain direct code, pseudocode, call chains, SQL fragments, class/method snippets, or conditional expressions in business descriptions. Put code identifiers and paths only in source references, source mapping, design baselines, or rule provenance.
 - Generate or update `docs/rules/business-standards.md` only for stable project-level business terms, lifecycle states, policies, invariants, and cross-feature rules supported by repeated project patterns or explicit user confirmation.
@@ -121,7 +127,7 @@ Rules:
 - Treat `docs/rules/project-implementation-standards.md` as the default baseline implementation rule file when present.
 - Treat `docs/rules/ai-workflow-quality-standards.md` as the default AI workflow quality rule file when present.
 - Treat `docs/rules/business-standards.md` as the default project business terminology and business-rule file when present.
-- Treat `docs/rules/logging-standards.md` as the default logging, Java SLF4J, `trace_id`, and sensitive-data logging rule file when present.
+- Treat `docs/rules/logging-standards.md` as the default logging, Java SLF4J, `trace_id`, and sensitive-data output rule file when present.
 - Treat `docs/rules/encoding-standards.md` as the default encoding and no-mojibake rule file when present.
 - Treat these rule files as default project standards when present and applicable:
   - `docs/rules/java-code-standards.md` for Java/Spring source.
@@ -174,7 +180,7 @@ Final main-thread review rules:
 
 - All workflow reviews are owned by the main agent; do not start independent review threads, child agents, subagents, parallel review agents, or fallback subagent passes for any phase.
 - `/sp-impl` runs one main-thread final implementation review after all tasks are complete and per-task findings are closed, then runs Main Final Code Review Pass 1 and Main Final Code Review Pass 2 in the main thread.
-- Lightweight review mode is allowed for low-risk, narrow-scope checks. It must still record evidence with `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. Escalate to full review when risk touches production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integrations, logging/security, E2E, broad qualifiers, or implementation-standard exceptions.
+- Lightweight review mode is allowed for low-risk, narrow-scope checks. It must still record evidence with `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. Escalate to full review when risk touches production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integrations, logging/output/security, E2E, broad qualifiers, or implementation-standard exceptions.
 - Main Final Code Review Pass 1 checks requirement/spec/design/code alignment and adversarial evidence.
 - Main Final Code Review Pass 2 checks security, implementation standards, regression, logging, data/API/async/config, test quality, and file-size gates.
 - The main thread cross-checks findings across all final review passes, confirms issue status, fixes, replies, verifies, and re-runs the relevant review until zero unresolved findings remain.
@@ -306,7 +312,7 @@ Mandatory implementation-standard design decisions:
 - Identify same or equivalent existing logic and define a reuse/common logic plan before implementation.
 - Define requirement scope and whether compatibility or fallback behavior is required. If specs do not require it, explicitly prohibit fallback and compatibility branches.
 - Define method/function parameter plans. No method/function may exceed 5 input parameters; if more inputs are needed, use a named data object with explicit fields. Project-owned method/function parameters must not use exception objects/classes, maps/dicts/generic objects/`**kwargs`, or untyped key-value bags, and every parameter must have a self-explanatory domain name plus concrete type/schema.
-- Define code comment needs, logging events, `trace_id` propagation, structured fields, log levels, sensitive-data masking, and log performance considerations for changed behavior.
+- Define code comment needs, logging events, `trace_id` propagation, structured fields, log levels, sensitive-data masking, sensitive-output checks for logs/print/stdout/stderr/Shell/Ansible/CI/deploy output, and log performance considerations for changed behavior.
 - Define encoding/no-mojibake risks and validation for generated or modified comments, code text, config, test data, non-ASCII text, import/export, serialization, logs, API payloads, database text, and UI text.
 - Define standalone full verification for every changed behavior, including entry point, input, expected output, command/test, evidence, and external-service skip reason when applicable.
 - Define the project-code test boundary and require mocks, stubs, contract fixtures, local fakes, or explicitly approved sandbox/test endpoints for third-party integrations unless a real provider call is explicitly approved.
@@ -317,7 +323,7 @@ Mandatory implementation-standard design decisions:
 - After review closure, manual `/sp-spec` asks the customer/user to confirm the reviewed design confirmation package and records confirmation before design is considered complete. `/sp-goal` records a reviewed goal-mode decision record and does not ask for extra confirmation after brainstorm is confirmed.
 - For confirmed required E2E paths, define command/tool, runtime target, test data, request/UI flow/job trigger, assertions, evidence, and fallback/skip reason when no runnable target exists.
 - If manual confirmation or goal-mode E2E decision review reveals missing or incorrect spec behavior, stop and update specs before creating tasks or implementing.
-- Keep every generated or modified code file at or below 1000 lines; split planned files before implementation when needed. If an existing target file is already over 1000 lines before the change, record its baseline line count, complete and verify the approved functionality first, then refactor/split the oversized file and re-run affected verification before task completion.
+- Keep every newly generated code file at or below 1000 lines; split planned new files before implementation when needed. Existing project files are not file-size findings solely because they already exceed 1000 lines; do not require baseline line-count evidence or forced refactor/split plans for existing files.
 - Explicitly state whether a database is required.
 - If a database is required, use SQLite for development-stage local behavior and MySQL for implementation/deployment-stage behavior.
 - If a database is required, configure a connection pool with maximum pool size <= 100.
@@ -358,9 +364,9 @@ Task format:
   - Reuse/common logic impact: `<reuse existing/extract shared abstraction/extend shared abstraction/isolated with justification>`
   - Requirement scope / fallback: `<exact requirement behavior + no fallback/compatibility unless required>`
   - Method/function parameter plan: `<no method/function >5 inputs, or named data object path/type>`
-  - Comments/logging/traceability: `<comment targets + log events + trace_id propagation + sensitive-data masking>`
+  - Comments/logging/traceability: `<comment targets + log events + trace_id propagation + sensitive-data masking + sensitive-output check for logs/print/stdout/stderr/Shell/Ansible/CI/deploy output>`
   - Encoding/no-mojibake: `<encoding risk + validation + no garbled comments/code/config>`
-  - File size guardrail: each generated/modified code file must stay <= 1000 lines; existing file baseline line count: `<count/not-over-limit>`; if baseline >1000, complete functionality first, then refactor/split before task completion; split plan: `<none/path split>`
+  - File size guardrail: newly generated code files must stay <= 1000 lines; existing project files are not subject to this gate solely because they already exceed 1000 lines; new-file split plan: `<none/path split>`
   - Multi-lens review: `<product/design/engineering/devex/security/QA applicable + evidence>`
   - Database impact: `<none/sqlite-dev/mysql-implementation/pool <= 100>`
   - Backend logic confirmation: `<confirmed/not-applicable + evidence>`
@@ -400,9 +406,9 @@ Rules:
 - Every task must state whether it reuses existing logic, extracts shared logic, extends shared logic, or justifies isolated implementation.
 - Every task must state the requirement-scope/fallback decision and prohibit unrequested fallback/compatibility behavior.
 - Every task must state method/function parameter constraints, any named data object required for more than 5 inputs, exception-object/map-like parameter prohibition, and self-explanatory parameter definitions.
-- Every task must state code comment and logging requirements, including `trace_id`, log levels, structured fields, and sensitive-data exclusion when relevant.
+- Every task must state code comment and logging requirements, including `trace_id`, log levels, structured fields, and sensitive-data exclusion for logs/print/stdout/stderr/Shell/Ansible/CI/deploy output when relevant.
 - Every task must state encoding/no-mojibake validation when it changes comments, code text, configuration, test data, non-ASCII text, or text-bearing behavior.
-- Every task must include the file-size guardrail, existing target file baseline line count, and split plan when needed. If baseline >1000, the task must require functionality first, verification, then refactor/split and affected verification rerun before completion.
+- Every task must include the new-file size guardrail and split plan when newly generated code may exceed 1000 lines. Existing project files are not subject to this gate solely because they already exceed 1000 lines.
 - Every task must identify database, API contract/layering, and API IO/async impact when relevant.
 - Every task must include applicable product, design, engineering, developer-experience, security, and QA review lens requirements.
 - UI tasks must include real browser QA or the project-approved UI runner when a runnable target exists.
@@ -422,7 +428,7 @@ Rules:
 - Every task must require requirement-to-test mapping, Requirement Counterexample Matrix, Masked-Test Analysis, Broad-Qualifier Audit, Decision Chain Trace, Evidence Capture Timing Audit, and Deterministic Sort Audit where applicable.
 - Run main-process task review, fix confirmed findings, re-run affected review, and record closure in `tasks-review.md` before `/sp-impl`.
 - Coverage percentage must not substitute requirement coverage or scenario-to-test mapping.
-- Every task must include the per-task implementation review gates required by the workflow lane. Full lane requires Alignment Review and Security Review. Lightweight lane requires scoped lightweight alignment/verification review and requires Security Review only when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk exists.
+- Every task must include the per-task implementation review gates required by the workflow lane. Full lane requires Alignment Review and Security Review. Lightweight lane requires scoped lightweight alignment/verification review and requires Security Review only when security/data/input/logging/output/config/dependency/database/API/IO/async/external-service risk exists.
 - Do not create tasks for behavior not covered by specs or approved design.
 
 ## Per-Task Implementation Review
@@ -430,7 +436,7 @@ Rules:
 During `/sp-impl`, every task must pass two review rounds before the next task starts:
 
 1. Alignment Review: verify the completed task against specs, design, design-review closure, task text, project-defined rules, requirement-to-test mapping, counterexample evidence, masked-test analysis, broad-qualifier audit, and changed code.
-2. Security Review: verify concrete authentication, authorization, tenant/user isolation, input validation, output encoding, sensitive data exposure, logging, dependencies, configuration, database/API IO, async/job behavior, external-service calls, and project-defined security rules when relevant.
+2. Security Review: verify concrete authentication, authorization, tenant/user isolation, input validation, output encoding, sensitive data exposure, logging, non-log output channels, dependencies, configuration, database/API IO, async/job behavior, external-service calls, and project-defined security rules when relevant.
 
 Testing rules:
 
@@ -460,7 +466,7 @@ Rules:
 - Fix every finding immediately.
 - Re-run the relevant review after fixes.
 - Do not start the next task while the current task has open findings.
-- Do not mark the task complete until validation and all reviews required by the workflow lane have no open findings. Full lane requires Alignment Review and Security Review. Lightweight lane requires scoped lightweight alignment/verification review and requires Security Review only when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk exists.
+- Do not mark the task complete until validation and all reviews required by the workflow lane have no open findings. Full lane requires Alignment Review and Security Review. Lightweight lane requires scoped lightweight alignment/verification review and requires Security Review only when security/data/input/logging/output/config/dependency/database/API/IO/async/external-service risk exists.
 - Do not mark the task complete until standalone full verification evidence is recorded, or an allowed external-service skip reason is recorded.
 - Do not mark the task complete until required real E2E evidence is recorded, or a documented environment blocker and fallback evidence are recorded.
 - Do not mark the task complete until coverage is at least 85% and required JSON test parameter files are saved, valid, and reused or justified when same-module reusable data exists.
@@ -468,7 +474,7 @@ Rules:
 - Do not mark the task complete while avoidable same/equivalent logic duplication remains.
 - Do not mark the task complete while unrequested fallback/compatibility behavior exists.
 - Do not mark the task complete while methods/functions exceed 5 input parameters without explicit named data objects, or while project-owned parameters use exception objects/classes, map-like/generic-object/key-value-bag parameters, or non-self-explanatory parameter definitions.
-- Do not mark the task complete while any generated or modified code file exceeds 1000 lines. If a touched file was already over 1000 lines before the change, task completion additionally requires baseline evidence, completed post-functionality refactor/split evidence, and affected verification rerun evidence.
+- Do not mark the task complete while any newly generated code file exceeds 1000 lines. Existing project files are not file-size findings solely because they already exceed 1000 lines.
 - Do not mark the task complete if database, OpenAPI, Controller/Service, API IO, or async evidence is missing when relevant.
 - If a finding requires behavior outside approved specs/design/tasks, stop and update OpenSpec before coding more.
 - Final completion requires `task-reviews.md` and `review.md` to show zero unresolved findings.
@@ -482,7 +488,7 @@ Completion gates:
 
 - `design-review.md` exists and has zero unresolved blocking gaps.
 - Every task in `tasks.md` is marked complete.
-- Every task has review evidence required by the workflow lane in `task-reviews.md`. Full lane requires Alignment Review and Security Review evidence. Lightweight lane requires scoped lightweight alignment/verification evidence and Security Review evidence only when security/data/input/logging/config/dependency/database/API/IO/async/external-service risk exists.
+- Every task has review evidence required by the workflow lane in `task-reviews.md`. Full lane requires Alignment Review and Security Review evidence. Lightweight lane requires scoped lightweight alignment/verification evidence and Security Review evidence only when security/data/input/logging/output/config/dependency/database/API/IO/async/external-service risk exists.
 - `task-reviews.md` has zero open findings.
 - `review.md` has zero unresolved findings.
 - `brainstorm-review.md`, `spec-review.md`, `design-review.md`, and `tasks-review.md` record required main-process comprehensive or allowed lightweight review, main-thread responses, fixes, and closure.
@@ -628,7 +634,7 @@ After implementation, create or update `review.md` with:
 
 If review finds missing behavior not covered by specs, stop and update OpenSpec before coding more.
 
-Final implementation review starts only after all tasks are complete and per-task main-thread findings are closed. Both lanes must include one main-thread final implementation review, Main Final Code Review Pass 1, and Main Final Code Review Pass 2. The main-thread full review checks every requirement, spec scenario, design decision, task, changed code path, test, verification result, and rule. Main Final Code Review Pass 1 checks the implementation against specs, design, design-review, tasks, rules, architecture, tests, requirement-to-test mapping, counterexample matrices, masked-test analyses, broad-qualifier audits, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints including exception-object/map-like parameter prohibition and self-explanatory parameter definitions, browser/UI QA evidence, comment/logging/traceability evidence, encoding/no-mojibake evidence, and file-size limits. Main Final Code Review Pass 2 checks security, data handling, authorization, logging/trace_id/sensitive-data exposure, encoding/no-mojibake regressions, API IO, async behavior, configuration, dependencies, test quality, masked-test risks, narrower code qualifiers, and remaining rule violations. Lightweight lane keeps the same two final code review passes but scopes them to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers. The main thread cross-checks findings, confirms issue status, fixes every confirmed finding, including non-blocking/minor/informational/follow-up findings, replies, verifies, and re-runs the relevant review until all confirmed findings are closed before `/sp-complete`.
+Final implementation review starts only after all tasks are complete and per-task main-thread findings are closed. Both lanes must include one main-thread final implementation review, Main Final Code Review Pass 1, and Main Final Code Review Pass 2. The main-thread full review checks every requirement, spec scenario, design decision, task, changed code path, test, verification result, and rule. Main Final Code Review Pass 1 checks the implementation against specs, design, design-review, tasks, rules, architecture, tests, requirement-to-test mapping, counterexample matrices, masked-test analyses, broad-qualifier audits, coverage, standalone verification, real E2E evidence, reuse/common logic, fallback/compatibility constraints, parameter/data-object constraints including exception-object/map-like parameter prohibition and self-explanatory parameter definitions, browser/UI QA evidence, comment/logging/traceability evidence, sensitive-output evidence, encoding/no-mojibake evidence, and file-size limits. Main Final Code Review Pass 2 checks security, data handling, authorization, logging/trace_id/sensitive-data exposure, non-log output channel exposure, encoding/no-mojibake regressions, API IO, async behavior, configuration, dependencies, test quality, masked-test risks, narrower code qualifiers, and remaining rule violations. Lightweight lane keeps the same two final code review passes but scopes them to the Lightweight Precheck, compact contracts, changed code, tests, verification evidence, security-review applicability, and escalation triggers. The main thread cross-checks findings, confirms issue status, fixes every confirmed finding, including non-blocking/minor/informational/follow-up findings, replies, verifies, and re-runs the relevant review until all confirmed findings are closed before `/sp-complete`.
 
 ## No CLI Requirement
 
@@ -655,11 +661,11 @@ For validation, inspect:
 - Standalone verification evidence is present for changed behavior, including real API calls, UI tests, bug-entry regression checks, and external service checks when relevant.
 - Required real E2E tests are designed and executed with command, runtime target, test data, assertions, and evidence; unit/mock/initialization/isolated method checks are not accepted as E2E substitutes.
 - Tests have independent parameter files and meaningful assertions.
-- Generated/modified code files are at or below 1000 lines, and any touched file that was already oversized before the change has baseline line-count evidence plus completed post-functionality refactor/split verification.
+- Newly generated code files are at or below 1000 lines. Existing project files are not file-size findings solely because they already exceed 1000 lines.
 - Same or equivalent logic is reused or generalized without avoidable duplication.
 - Existing-code changes implement only approved requirements, with no unrequested fallback or compatibility branches.
 - Methods/functions have no more than 5 input parameters, use explicit named data objects when needed, and do not use exception objects/classes, map-like/generic-object/key-value-bag parameters, or non-self-explanatory parameter definitions.
-- Code comments are useful for non-obvious behavior, logs cover key behavior, `trace_id` is propagated and emitted, and logs exclude sensitive information.
+- Code comments are useful for non-obvious behavior, logs cover key behavior, `trace_id` is propagated and emitted, and logs/print/stdout/stderr/Shell/Ansible/CI/deploy output exclude sensitive information.
 - Generated or modified comments, code, configuration, test parameters, and workflow artifacts contain no mojibake, wrong transcoding, or unreadable characters.
 - Database decisions and connection pool constraints are satisfied when relevant.
 - Backend APIs follow OpenAPI and separate Controller and Service responsibilities when relevant.

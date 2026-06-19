@@ -13,13 +13,13 @@ Design and task artifacts MUST identify the generated or modified code paths for
 
 ## PIR-002: File Length Limit
 
-Generated or modified code files MUST stay at or below 1000 lines.
+Newly generated code files MUST stay at or below 1000 lines.
 
-- If a planned file would exceed 1000 lines, the design and tasks MUST split it into smaller modules before implementation.
-- If an existing target file is already over 1000 lines before the change, do not block functional work with an up-front broad refactor. Record the baseline line count and planned split, complete the approved functional change first with tests and verification, then refactor/split the oversized file before marking the task complete.
-- The post-functionality split MUST preserve behavior and be verified with the same affected tests, standalone verification, and relevant E2E/UI checks.
-- Implementation review MUST check changed code file lengths.
-- A task cannot be marked complete while any generated or modified code file exceeds 1000 lines.
+- If planned new code would create a new file over 1000 lines, the design and tasks MUST split it into smaller modules before implementation.
+- Existing project files are not subject to the 1000-line gate solely because they already exceed 1000 lines.
+- Do not require baseline line-count evidence, display existing oversized-file counts, or force refactor/split work only because an existing target file is over 1000 lines.
+- When modifying existing files, keep the change scoped to the approved requirement and prefer extracting new cohesive logic only when it is required by the current design, reuse, testability, or maintainability need.
+- Implementation review MUST check newly generated code file lengths. Existing-file size is not a finding unless the current change creates a new oversized file or adds unrelated broad refactoring outside the approved scope.
 
 ## PIR-003: Database Runtime and Connection Pool
 
@@ -123,7 +123,7 @@ Code changes MUST stay inside the approved requirement and design scope.
 
 ## PIR-011: Code Comments and Behavior Logging
 
-Implementation MUST include meaningful code comments and behavior logs for changed system behavior.
+Implementation MUST include meaningful code comments and behavior logs for changed system behavior, and MUST check every output channel for sensitive data exposure.
 
 - When `docs/rules/logging-standards.md` exists, implementation MUST follow it.
 - Code comments MUST explain non-obvious business rules, domain invariants, security-sensitive decisions, complex algorithms, async/concurrency behavior, integration mappings, error handling, and side effects.
@@ -133,9 +133,13 @@ Implementation MUST include meaningful code comments and behavior logs for chang
 - Logs MUST use the project's logging framework and appropriate log levels.
 - Logs MUST include safe correlation context such as request IDs, job IDs, tenant-safe IDs, operation names, or resource IDs when available.
 - Logs MUST NOT include secrets, passwords, tokens, access keys, private keys, cookies, session identifiers, signed URLs, raw credentials, decrypted values, full personal data, full request/response bodies containing sensitive information, or sensitive business data.
+- This sensitive-output rule applies to every language and automation surface, including Java, Python, JavaScript/TypeScript, Shell, Ansible, CI/CD scripts, deployment scripts, CLI output, stdout/stderr, exception messages, and test output.
+- `print`, `console`, `System.out`, `System.err`, `echo`, `printf`, `set -x`, Ansible `debug`, Ansible `fail`, Ansible `assert`, registered command results, and direct stdout/stderr writes MUST be reviewed as output channels, not treated as harmless debug code.
+- Shell and deployment scripts MUST NOT echo full environment variables, connection strings, command lines containing secrets, Authorization headers, curl headers with tokens, cloud credentials, database passwords, or private key paths when the path itself is sensitive.
+- Ansible tasks that handle credentials, tokens, private keys, certificates, connection strings, vault values, inventory secrets, or sensitive registered results MUST use `no_log: true` and MUST NOT print full vars/results in debug or failure output.
 - Sensitive values MUST be omitted, masked, hashed, or replaced with safe identifiers before logging.
-- `design.md` and `tasks.md` MUST identify comment/logging needs for new or changed behavior.
-- Implementation review MUST check comment usefulness, behavior-log coverage, log level choice, and sensitive-data exclusion.
+- `design.md` and `tasks.md` MUST identify comment/logging needs and sensitive-output risks for new or changed behavior.
+- Implementation review MUST check comment usefulness, behavior-log coverage, log level choice, all output statements, and sensitive-data exclusion across code, scripts, automation, tests, and deployment artifacts.
 
 ## PIR-012: Encoding and Mojibake Prevention
 
@@ -189,7 +193,7 @@ Implementation review MUST actively try to disprove broad requirements before ma
 The main thread MUST perform all phase reviews, per-task implementation reviews, final implementation review, focused final code review passes, and completion review itself. Do not start independent review threads, child agents, subagents, parallel review agents, or fallback subagent passes.
 
 - Lightweight review mode MAY be used only when `/sp-brainstorm` has recorded and the user has confirmed a `lightweight` workflow lane from a reviewed Lightweight Precheck. Later phases must not invent lightweight eligibility in `/sp-impl`.
-- Lightweight review evidence must record `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. It MUST escalate to full review for production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integration, logging/security, E2E-required behavior, broad qualifiers, implementation-standard exception risks, or disproved precheck assumptions.
+- Lightweight review evidence must record `review_mode: lightweight`, scope, rationale, artifacts reviewed, skipped full-review areas with reasons, findings, and escalation decision. It MUST escalate to full review for production behavior outside the approved compact scope, security, data, API, UI, async/IO, external integration, logging/output/security, E2E-required behavior, broad qualifiers, implementation-standard exception risks, or disproved precheck assumptions.
 - `brainstorm-review.md` MUST record Lightweight Precheck, workflow lane decision, main-process comprehensive or allowed lightweight review, main-thread responses, customer/user confirmation of the lane, and zero unresolved blocking findings before `/sp-spec`.
 - `spec-review.md` and `design-review.md` MUST record workflow lane, main-process comprehensive or allowed lightweight review, main-thread responses, and zero unresolved blocking findings before `/sp-tasks`.
 - `tasks-review.md` MUST record workflow lane, main-process comprehensive or allowed lightweight review, main-thread responses, lane-specific review gates, and zero unresolved blocking findings before `/sp-impl`.

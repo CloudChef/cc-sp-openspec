@@ -29,7 +29,7 @@ Read:
 - `docs/rules/project-implementation-standards.md`, when present
 - `docs/rules/ai-workflow-quality-standards.md`, when present
 - `docs/rules/business-standards.md`, when business terms, lifecycle states, policies, permissions, eligibility, approval, status transitions, or cross-capability business rules are involved
-- `docs/rules/logging-standards.md`, when comments, logs, traceability, `trace_id`, observability, or sensitive-data logging risk is involved
+- `docs/rules/logging-standards.md`, when comments, logs, traceability, `trace_id`, observability, or sensitive-data output risk is involved
 - `docs/rules/encoding-standards.md`, when generated or modified comments, code, configuration, test data, non-ASCII text, file import/export, serialization, logs, API payloads, database text, or UI text are involved
 - `docs/rules/java-code-standards.md`, when Java code is involved
 - `docs/rules/python-code-standards.md`, when Python code is involved
@@ -48,7 +48,7 @@ Read:
 - Active `docs/wiki/*.md` files for business context
 - `docs/ai-context/codebase-inventory.md`, when present
 
-When `/sp-code-to-spec` generates current-state feature docs, they belong under `docs/<project-name>/<module>/<feature>/` with `readme.md`, `spec/spec.md`, `design/design.md`, `flow/flow.md`, and optional `other/` notes. These current-state docs must not be written under `docs/standards/modules/` or `openspec/specs/`; project-level reusable business terminology, lifecycle states, policies, invariants, and cross-feature rules belong in `docs/rules/business-standards.md` only when supported by repeated project patterns or explicit user confirmation.
+When `/sp-code-to-spec` generates current-state feature docs, the hierarchy is product/project -> module -> feature -> function point. Feature docs belong under `docs/<project-name>/<module>/<feature>/` with `<feature>.md`, `spec/spec.md`, `design/design.md`, `flow/flow.md`, optional real function-point detail files under `spec/`, `design/`, and `flow/`, and optional `other/` notes. Multi-function-point features must use real function-point names for detail files, and function-point design must include related classes/modules, method signatures, parameter definitions, data flow, IO, and verification entry points when visible in source. These current-state docs must not be written under `docs/standards/modules/` or `openspec/specs/`; project-level reusable business terminology, lifecycle states, policies, invariants, and cross-feature rules belong in `docs/rules/business-standards.md` only when supported by repeated project patterns or explicit user confirmation.
 
 ### Architecture
 
