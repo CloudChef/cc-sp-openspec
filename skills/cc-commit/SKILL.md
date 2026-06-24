@@ -9,7 +9,7 @@ description: Use when the user invokes CC-Commit, cc-commit, or a CC-FixBug work
 
 Use this skill to create a local bug-fix commit and submit it to Gerrit for review. This is the required final step for `cc-fixbug` after implementation, review, deployment, and post-deploy verification are complete.
 
-The commit and Gerrit review must describe a Jira bug fix. The commit message must include the bug fix requirement, bug ID, Jira ID, bug name, solution, modified points, test evidence, deployment evidence, and review evidence.
+The commit and Gerrit review must describe a Jira bug fix. The commit message must include the bug fix requirement, bug ID, Jira ID, bug name, root cause, solution, modified points, test evidence, deployment evidence, and review evidence.
 
 Do not commit `.agent/workdir/` process artifacts.
 
@@ -18,6 +18,7 @@ Do not commit `.agent/workdir/` process artifacts.
 - Jira ID, such as `ABC-123`
 - Bug ID when different from the Jira ID
 - Bug name/title
+- Root cause of the bug, including the failed assumption or broken code/data path that produced the user-visible issue, backed by concrete evidence when available
 - Workdir evidence from `.agent/workdir/cc-fixbug/<jira-id>/`
 - Code/test/project file changes that implement the fix
 - Deployment evidence from `.agent/workdir/cc-fixbug/<jira-id>/cc-deploy.md`
@@ -31,16 +32,17 @@ Before committing:
 
 1. Read `.agent/workdir/cc-fixbug/<jira-id>/brainstorm.md`, `spec.md`, `design.md`, `tasks.md`, `task-reviews.md`, `review.md`, and `cc-deploy.md` when present.
 2. Confirm all implementation/review findings are closed or explicitly false-positive with evidence.
-3. Confirm tests and standalone bug-entry verification are recorded.
-4. Confirm `cc-deploy.md` records successful remote deployment and post-deploy verification, or records an explicit user/project-approved reason deployment is not applicable.
-5. Confirm the working tree does not contain unrelated changes. If unrelated changes exist, stage only the bug-fix files.
-6. Confirm `.agent/workdir/` files are not staged.
-7. Confirm Gerrit submit target:
+3. Confirm the root cause has been identified and is stated concretely enough for reviewers to understand why the bug happened. Prefer citing concrete evidence such as request parameters, logs, timestamps, stack lines, database state, or reproducible steps.
+4. Confirm tests and standalone bug-entry verification are recorded.
+5. Confirm `cc-deploy.md` records successful remote deployment and post-deploy verification, or records an explicit user/project-approved reason deployment is not applicable.
+6. Confirm the working tree does not contain unrelated changes. If unrelated changes exist, stage only the bug-fix files.
+7. Confirm `.agent/workdir/` files are not staged.
+8. Confirm Gerrit submit target:
    - Prefer a configured `gerrit` remote.
    - Otherwise use the project-approved review remote.
    - If only `origin` exists and it is the Gerrit remote, use `origin`.
    - Determine target branch from the current branch upstream, project docs, or user-provided target.
-8. Confirm Gerrit `commit-msg` hook or project-approved Change-Id mechanism is available when the Gerrit server requires `Change-Id`.
+9. Confirm Gerrit `commit-msg` hook or project-approved Change-Id mechanism is available when the Gerrit server requires `Change-Id`.
 
 If the Gerrit target or required Change-Id mechanism cannot be determined, stop before commit/push and report the blocker.
 
@@ -55,6 +57,10 @@ Bug-Fix: <bug-name>
 Bug-Id: <bug-id>
 Jira: <jira-id>
 Bug-Name: <bug-name>
+
+Root-Cause:
+- <why the bug happened; name the broken assumption, missing guard, stale data path, race, config mismatch, or dependency behavior>
+- <evidence that proves the cause, such as request parameters, logs, timestamps, database rows, stack lines, or reproduction steps>
 
 Solution:
 - <solution summary>
@@ -79,6 +85,7 @@ Rules:
 - `Bug-Id` is required. If the project has no separate bug ID, use the Jira ID.
 - `Jira` is required and must contain the Jira ID.
 - `Bug-Name` is required and must match the Jira title/name or user-confirmed title.
+- `Root-Cause` is required and must explain the concrete cause of the bug, not only restate the symptom. When evidence exists, include the evidence in the commit message.
 - `Solution` is required and must state the actual fix strategy.
 - `Modified-Points` is required and must list the meaningful code/test/config changes.
 - `Tests` is required and must list real commands or verification evidence.
@@ -104,7 +111,7 @@ git push <gerrit-remote> HEAD:refs/for/<target-branch>
 ## Do Not
 
 - Do not push directly to `main`, `master`, or a normal remote branch for this workflow.
-- Do not submit without Jira ID, bug ID, bug name, solution, modified points, tests, deployment, and review evidence in the commit message.
+- Do not submit without Jira ID, bug ID, bug name, root cause, solution, modified points, tests, deployment, and review evidence in the commit message.
 - Do not submit without deployment evidence or an approved deployment-not-applicable record.
 - Do not commit `.agent/workdir/` process evidence.
 - Do not include unrelated changes.
