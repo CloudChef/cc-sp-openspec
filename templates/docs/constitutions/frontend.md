@@ -1,8 +1,8 @@
-# 前端与 UI 标准
+# SmartCMP 前端与 UI 宪章
 
 ## 状态
 
-通用基线规范。复制到具体项目后，应根据项目实际前端框架、组件库、主题样式、页面参考和测试工具补充项目专有内容。
+CMP 分支专用规范。本文在通用可迁移 UI 原则基础上，直接固化 SmartCMP 的 UI 设计源、页面类型、共享 class、ng-zorro/Angular/AngularJS 约束、页面参考、测试目录和 Review 门禁。
 
 ## 目标
 
@@ -19,11 +19,13 @@
 
 ## UI 设计源
 
-每个项目应维护一个项目级 UI 设计源，例如 `docs/constitutions/frontend.md`、`ui/DESIGN.md`、设计系统文档或组件库文档。
+SmartCMP UI 的项目级设计源是 `ui/DESIGN.md`，本文件是复制模板后的 constitution 入口。
 
-- UI 任务开始前必须读取项目级 UI 设计源。
-- 如果项目存在 Figma、设计系统、组件库文档、历史页面参考或当前功能文档，必须作为设计输入。
-- 如果项目没有明确设计源，必须从相同模块、相同页面类型或相同组件族中选择一个已实现页面作为参考。
+- UI 任务开始前必须读取 `ui/DESIGN.md` 和本文件。
+- Angular 模板、组件和 Less 变更必须读取 `ui/src/app` 下同模块或同页面类型的参考页面。
+- Legacy AngularJS 页面和样式变更必须读取 `ui/static` 下同模块或同页面类型的参考页面。
+- Shared SmartCMP UI styles 变更必须读取 `ui/src/styles.less`、`ui/static/parent/css/theme-common.less` 和受影响页面。
+- 如果存在 Figma、设计系统、组件库文档、历史页面参考或当前功能文档，必须作为设计输入。
 - 参考页面只用于布局、密度、组件组合、交互模式和状态展示，不得复制无关业务字段、权限、API、数据模型或临时代码。
 - `design.md` 必须记录 UI 参考来源、页面类型、mockup/功能说明、状态设计、测试入口和确认方式。
 
@@ -40,33 +42,169 @@ UI 任务必须按以下顺序执行：
 7. 实现后必须执行 UI 测试或真实浏览器/项目认可 UI runner 验证；没有可运行目标时记录 blocker 和可替代证据。
 8. 完成前必须做 UI review，检查参考一致性、样式复用、长文本、状态、权限、响应式、测试和无关页面影响。
 
-## 项目 UI 契约
+## SmartCMP UI 契约
 
-具体项目应在本文件或项目专有 UI 设计源中补齐以下契约：
+SmartCMP UI 任务必须遵守以下契约：
 
 ```yaml
 ui_contract:
-  framework: "<React/Vue/Angular/AngularJS/其他>"
-  component_library: "<项目组件库或第三方组件库>"
-  design_source: "<Figma/设计系统/组件库文档/项目 UI 设计文档>"
+  framework:
+    - Angular under ui/src/app
+    - legacy AngularJS under ui/static
+  component_library:
+    - ng-zorro-antd for Angular pages
+    - existing SmartCMP Angular components
+    - existing SmartCMP AngularJS cc-* directives/components
+    - Bootstrap-era legacy grid/classes for legacy AngularJS pages
+  design_source:
+    - ui/DESIGN.md
+    - docs/constitutions/frontend.md
+    - nearby implemented pages in the same module/page family
   golden_references:
-    list_page: "<列表页参考路径>"
-    detail_page: "<详情页参考路径>"
-    form_page: "<表单页参考路径>"
-    modal_or_drawer: "<弹窗或抽屉参考路径>"
-    dashboard_or_card: "<仪表盘或卡片参考路径>"
+    angular_operational_list:
+      - ui/src/app/charging/price/price-list/price-list.component.html
+      - ui/src/app/asset-management/assets-maintenance/assets-maintenance-list/assets-maintenance-list.component.html
+    angular_dense_form:
+      - ui/src/app/charging/price/price-detail/price-detail.component.html
+      - ui/src/app/asset-management/assets-maintenance/assets-maintenance-detail/assets-maintenance-detail.component.html
+    legacy_list:
+      - ui/static/business_group/partial/business_group_list.html
+      - ui/static/approval/partial/myApproval.html
+    legacy_work_order_detail:
+      - ui/static/approval/partial/deployApplication.html
+      - ui/static/approval/partial/genericApplication.html
+    resource_status_list:
+      - ui/static/vm/partial/vm_list_template.html
+    alarm_order_badge_list:
+      - ui/src/app/alarm-activity/alarm-triggered-edit/alarm-order-list/alarm-order-list.html
   shared_classes_or_tokens:
-    layout: []
-    spacing: []
-    typography: []
-    status: []
-    table: []
-    form: []
-  ui_test_root: "<项目 UI 测试目录>"
-  visual_or_browser_runner: "<Playwright/Cypress/Testing Library/项目自定义 runner>"
+    layout:
+      - smartcmp-*
+      - catalog-detail-*
+      - catalog-detail-block
+      - catalog-detail-block-title
+      - smartcmp-block-header
+      - smartcmp-block-title
+      - smartcmp-block-body
+    list_and_filter:
+      - data-table-toolbar
+      - filter-actions
+      - advanced-search-area
+      - cc-toolbar
+      - page-filter-box
+    table:
+      - nz-table
+      - legacy yacmp table patterns
+      - icon-in-table
+    status:
+      - cc-badge
+      - cc-badge-solid
+      - cc-badge-btn
+      - ccBadgeStyle
+      - vmStatusPipe
+      - alarmTriggeredStatusStylePipe
+      - taskTransform
+      - requestStateColorFilter
+      - approvalStateFilter
+      - slaStatesFilter
+      - vmStatusFilter
+      - vmStatusIconFilter
+      - alarmTriggeredStatusStyleFilter
+    text:
+      - text-ellipsis
+      - ellipsis-text
+      - overflow-hidden-ellipsis
+    spacing:
+      - mrg*
+      - pad*
+  allowed_spacing_px: [0, 4, 5, 8, 9, 10, 12, 15, 16, 20, 24, 72]
+  allowed_font_size_px: [12, 13, 14, 16, 18, 20]
+  allowed_radius_px: [2, 4, 8]
+  allowed_control_height_px: [24, 30, 32, 34, 40]
+  ui_test_root: ui/tests
+  visual_or_browser_runner:
+    - project-approved UI runner
+    - real browser QA when runnable target exists
 ```
 
-没有项目专有契约时，`/sp-code-to-spec` 应从现有代码中识别并生成这些内容；普通功能开发不得凭空发明全新 UI 体系。
+普通功能开发不得凭空发明全新 UI 体系。`/sp-code-to-spec` 只允许基于现有 SmartCMP 代码和可信文档补充上述契约，不得把其他产品的视觉系统引入 SmartCMP。
+
+## SmartCMP 必选页面类型
+
+UI 变更必须先分类为以下页面类型之一，并使用对应参考和骨架：
+
+- `list/table`: 运营列表、资源列表、审批列表、配置列表。
+- `detail/edit`: 只读详情、编辑页、配置表单、价格/资产维护表单。
+- `work_order`: 审批、申请、工单详情、流程动作页。
+- `dashboard/card`: 仪表盘、概览卡片、指标卡。
+- `modal/drawer`: 确认、短表单、选择器、检查器、快速搜索、向导。
+- `shell`: 应用壳、侧边栏、顶部栏、全局搜索、用户菜单。
+- `legacy_angularjs`: `ui/static` 下的历史 AngularJS 页面。
+
+Angular 页面必须保持 Angular/ng-zorro 风格；AngularJS 页面必须保持 AngularJS、`cc-*` 指令和 Bootstrap-era grid 风格。不得在同一页面族中混用不兼容的视觉体系。
+
+## SmartCMP 共享样式复用顺序
+
+写新 CSS 前必须按顺序检查：
+
+1. 是否已有 ng-zorro 组件能力或输入参数可完成。
+2. 是否已有 SmartCMP Angular 组件或 AngularJS `cc-*` 指令可复用。
+3. 是否已有 `smartcmp-*`、`catalog-detail-*`、`data-table-toolbar`、`filter-actions`、`advanced-search-area`、`cc-badge`、`icon-in-table`、`text-ellipsis`、`ellipsis-text`、`overflow-hidden-ellipsis` 可复用。
+4. 是否已有 `mrg*`、`pad*` 工具类可表达间距。
+5. 是否已有同模块页面局部 class 可作为 reference pattern。
+6. 只有以上都不满足时，才允许新增 component-local Less。
+
+新增 class 必须按结构或行为命名，不得使用 `my-*`、`custom-*`、`new-*`、`temp-*`、`status-*`、`state-*` 这类前缀。
+
+## SmartCMP Golden Reference Pages
+
+写 UI 代码前必须选择一个 reference，并在 `design.md`、`tasks.md` 或 review 证据中记录。
+
+| Page Family | Reference Path | Reuse For |
+| --- | --- | --- |
+| Angular operational list | `ui/src/app/charging/price/price-list/price-list.component.html` | 页面说明、`data-table-toolbar`、`.filter-actions`、`.advanced-search-area`、`nz-table`、可调整表头、右下分页、`cc-badge` 分类列 |
+| Angular maintenance list | `ui/src/app/asset-management/assets-maintenance/assets-maintenance-list/assets-maintenance-list.component.html` | 工具栏/筛选/表格/分页栈、已验证间距、条件空态和分页渲染 |
+| Angular dense configuration form | `ui/src/app/charging/price/price-detail/price-detail.component.html` | `catalog-detail-block`、`smartcmp-block-header`、`nz-form-item` 9px 行节奏、`nzMd=6/12` label/control 网格、翻译 placeholder |
+| Angular maintenance detail/form | `ui/src/app/asset-management/assets-maintenance/assets-maintenance-detail/assets-maintenance-detail.component.html` | 多区块详情/编辑页、区块标题节奏、条件表单区块、表单/表格组合 |
+| Legacy AngularJS list | `ui/static/business_group/partial/business_group_list.html` | `alarm-header`、`data-table-toolbar`、`cc-toolbar`、`page-filter-box`、legacy table classes、`cc-empty-data`、`cc-pagination` |
+| Legacy approval/work-order list | `ui/static/approval/partial/myApproval.html` | 列表上方 tabs、待办/已办模式、`cc-badge` 状态渲染、`cc-loading`、列显隐、审批表格密度 |
+| Legacy work-order detail | `ui/static/approval/partial/deployApplication.html`, `ui/static/approval/partial/genericApplication.html` | 申请/详情块分组、`catalog-request-block-container`、审批/工单元数据、紧凑 request-form 区块 |
+| VM/resource status list | `ui/static/vm/partial/vm_list_template.html` | 运行时状态 badge/icon 配对、名称前实体图标、legacy table 长文本处理 |
+| Alarm/order badge list | `ui/src/app/alarm-activity/alarm-triggered-edit/alarm-order-list/alarm-order-list.html` | 使用 `ccBadgeStyle` 的优先级、影响、紧急程度和工单状态 badge |
+
+参考选择规则：
+
+1. 优先选择同 feature area 的页面。
+2. 没有同 feature reference 时，选择同 page family：Angular list、Angular form、legacy list、work order、dashboard/card、modal/drawer。
+3. 混合页面先选择主流程 reference，再按需借用小的 sub-pattern。
+4. 参考页面与本宪章冲突时，保留参考页面业务行为，用本宪章修正布局、间距和样式复用。
+5. 最终 review 必须说明采用的 reference path，或说明为什么没有适用 reference。
+
+## SmartCMP 禁止项
+
+- 不得创建自定义 toolbar/filter shell/status chip，除非共享类和 reference pattern 明确无法覆盖。
+- 不得新增单页局部状态颜色、`.status-*`、`.state-*` 或 raw hex color，除非 design/review 说明原因并映射到项目语义。
+- 不得使用宽泛 global selector 影响 AngularJS 历史页面或无关 Angular 页面。
+- 不得无作用域覆盖 ng-zorro 内部结构。
+- 不得引入新的 UI library、视觉系统、第三方品牌风格、decorative gradient background 或 marketing layout。
+- 不得把新 UI test 放到 `ui/src/app` 组件旁、`ui/static` legacy 页面目录或临时 feature 文件夹；新 UI test 必须放在 `ui/tests/`。
+
+## SmartCMP Review Checklist
+
+完成 UI 变更前必须检查：
+
+- 页面类型已分类，并命名了 SmartCMP reference path。
+- 页面遵循 `ui/DESIGN.md` 和本宪章的 matching archetype。
+- 复用了 existing SmartCMP class skeleton、ng-zorro 组件、SmartCMP 组件或 AngularJS `cc-*` 指令。
+- 间距使用 `mrg*`/`pad*` 或允许的 px/token，没有 off-rhythm margin/padding。
+- 状态使用 `cc-badge`、`ccBadgeStyle`、现有 pipe/filter 或已有状态 class。
+- 表格列顺序遵循 identity、state、type/source、ownership、metrics、time、actions。
+- 表单使用同一 label/control grid，并保留校验、placeholder、禁用和提交状态。
+- 长文本有 ellipsis、wrapping 或 tooltip。
+- 空、加载、错误、权限、禁用状态稳定。
+- 新 CSS 局部作用域化，且没有 broad selector 或不必要 class。
+- 新 UI test 在 `ui/tests/`，并验证真实界面行为。
+- 有真实浏览器 QA 或项目认可 UI runner 证据；如果无法运行，记录 blocker 和风险。
 
 ## 页面类型规范
 
