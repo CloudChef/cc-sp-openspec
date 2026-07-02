@@ -1,4 +1,4 @@
-# Workflow Standards
+# Workflow Constitution
 
 ## Status
 
@@ -11,3 +11,4 @@ Draft project placeholder. Replace this file with project-specific workflow rule
 - Notifications
 - Audit behavior
 - Exception handling
+

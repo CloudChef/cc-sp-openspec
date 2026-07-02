@@ -93,7 +93,7 @@ CC-Commit
   -> docs/rules/business-standards.md
   -> docs/rules/<project-rule>.md
   -> docs/rules/<language>-code-standards.md or docs/rules/<language>-<runtime>-code-standards.md
-  -> docs/standards/<area>.md
+  -> docs/constitutions/<area>.md
   -> .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md
 
 /sp-goal <requirement-or-change-id>
@@ -136,7 +136,7 @@ CC-Commit
 - `CC-FixBug` 是 Jira Bug 修复流程。它读取 Jira ID 和 Bug 信息，先生成并复审 bug-focused `sp-brainstorm` 草稿；只有 reviewed brainstorm/context 需要客户/使用人确认。确认后，直接继续生成 workdir 内的 spec/design/tasks，实现修复、完成 review，通过 `CC-Deploy` 打包并远程部署 Java/Python 服务到指定环境，再通过 `CC-Commit` 提交 Gerrit review；不再要求额外 spec/design/task/deploy/commit 确认，除非 Jira 信息、部署环境信息、权限或 Gerrit 目标缺失导致无法安全继续。所有过程产物必须写入 `.agent/workdir/cc-fixbug/<jira-id>/`，不得写入 `openspec/changes/`、`openspec/specs/` 或 `docs/wiki/`。
 - `CC-Deploy` 必须基于项目配置、脚本或部署文档执行 Java/Python 服务打包和远程部署。目标环境、服务、主机别名、远程路径、重启命令或健康检查缺失时，可以提示用户输入非敏感环境信息；不得要求用户在对话中提供密码、私钥、token 或其他密钥。部署结果和 post-deploy 验证必须写入 `.agent/workdir/cc-fixbug/<jira-id>/cc-deploy.md`，可复用非敏感参数写入 `deploy-params/<environment>.json`。
 - `CC-Commit` 必须提交到 Gerrit review，不得直接 push 到普通分支。提交信息必须体现 Bug 修复，并包含 `Bug-Id`、`Jira`、`Bug-Name`、`Solution`、`Modified-Points`、`Tests`、`Deploy` 和 `Review`。默认不得提交 `.agent/workdir/` 过程证据。
-- `/sp-code-to-spec` 是可选初始化流程，用于已有代码库第一次接入时生成当前系统画像、项目/模块/功能文档、项目 rules 和 standards；它不属于 `/sp-goal` 必跑阶段，不创建 `openspec/changes/<change-id>/`，不写代码，不归档。当前状态功能文档必须写入 `docs/<project-name>/<module>/<feature>/`，不得写入 `docs/standards/modules/` 或 `openspec/specs/`。每个功能目录必须包含 `<feature>.md`、`spec/spec.md`、`design/design.md`、`flow/flow.md`，需要补充说明时使用 `other/`。每个 feature 必须识别功能点；单功能点 feature 可以在 `spec.md`、`design.md` 和 `flow.md` 中分节说明，多功能点 feature 必须在 `spec/`、`design/`、`flow/` 下用真实功能点名生成明细文件。功能点 design 必须包含相关 class/module、low-level design、关键方法签名、参数定义、返回值、data flow、IO 和验证入口。多模块项目必须按模块和功能点拆分；多语言项目必须按语言/runtime 拆分代码规范。`/sp-code-to-spec` 不生成旧式矩阵、证据或待确认问题固定章节模板。
+- `/sp-code-to-spec` 是可选初始化流程，用于已有代码库第一次接入时生成当前系统画像、项目/模块/功能文档、项目 rules 和 constitutions；它不属于 `/sp-goal` 必跑阶段，不创建 `openspec/changes/<change-id>/`，不写代码，不归档。当前状态功能文档必须写入 `docs/<project-name>/<module>/<feature>/`，不得写入 `docs/constitutions/modules/` 或 `openspec/specs/`。每个功能目录必须包含 `<feature>.md`、`spec/spec.md`、`design/design.md`、`flow/flow.md`，需要补充说明时使用 `other/`。每个 feature 必须识别功能点；单功能点 feature 可以在 `spec.md`、`design.md` 和 `flow.md` 中分节说明，多功能点 feature 必须在 `spec/`、`design/`、`flow/` 下用真实功能点名生成明细文件。功能点 design 必须包含相关 class/module、low-level design、关键方法签名、参数定义、返回值、data flow、IO 和验证入口。多模块项目必须按模块和功能点拆分；多语言项目必须按语言/runtime 拆分代码规范。`/sp-code-to-spec` 不生成旧式矩阵、证据或待确认问题固定章节模板。
 - `/sp-brainstorm` 必须先在 brainstorm 内生成 Business Story Baseline，包括用户故事、验收标准、非目标和成功指标；它不是独立 workflow，而是后续 Lightweight Precheck 和需求分析的业务输入。
 - `/sp-brainstorm` 必须随后做 Lightweight Precheck，根据最小上下文和影响面判断 workflow lane。默认 full；只有简单 bug、文案、配置或小逻辑调整，并且行为边界不变、影响范围小、验证入口明确、没有升级触发器，才允许 lightweight。这个判断必须和 brainstorm/context 草稿一起 review，并由客户/使用人确认。
 - `/sp-brainstorm` 必须先在对话中生成 Business Story Baseline、Precheck、workflow lane、brainstorm/context 草稿，由主进程 review 并修订后，才让客户/使用人确认；确认后再写入 workdir。
@@ -200,3 +200,5 @@ $CODEX_HOME/skills/
 ```
 
 复制后的业务项目只需要长期维护 `openspec/` 核心契约、`docs/rules/`、`docs/wiki/` 和代码本身；`.agent/workdir/` 是过程证据目录，默认不进入 Git。
+
+

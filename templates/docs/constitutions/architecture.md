@@ -1,4 +1,4 @@
-# Architecture Standards
+# Architecture Constitution
 
 ## Status
 
@@ -11,3 +11,4 @@ Draft project placeholder. Replace this file with project-specific architecture 
 - Data ownership
 - Integration boundaries
 - Migration expectations
+

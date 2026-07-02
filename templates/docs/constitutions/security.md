@@ -1,4 +1,4 @@
-# Security Standards
+# Security Constitution
 
 ## Status
 
@@ -11,3 +11,4 @@ Draft project placeholder. Replace this file with project-specific security rule
 - RBAC
 - Sensitive data handling
 - Audit logging
+

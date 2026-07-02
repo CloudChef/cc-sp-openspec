@@ -21,7 +21,7 @@ Process evidence for this phase is not a long-term OpenSpec contract. Write brai
 - Existing `AGENTS.md` or project agent instructions
 - `openspec/project.md`, if present
 - `docs/ai-context/source-index.md`, if present
-- Relevant `docs/rules/*.md`, `docs/standards/*.md`, `docs/wiki/*.md`, existing specs, and similar code
+- Relevant `docs/rules/*.md`, `docs/constitutions/*.md`, `docs/wiki/*.md`, existing specs, and similar code
 
 ## Outputs
 
@@ -37,7 +37,7 @@ Create or update only after the user confirms the reviewed final brainstorm/cont
 2. Use Superpower brainstorming behavior if available.
 3. Read `docs/ai-context/source-index.md` first when it exists.
 4. Read relevant project-defined rules under `docs/rules/*.md` when they exist.
-5. Inspect relevant standards, wiki snapshots, existing OpenSpec specs, and similar implementation patterns.
+5. Inspect relevant constitutions, wiki snapshots, existing OpenSpec specs, and similar implementation patterns.
 6. Before the Lightweight Precheck, draft a Business Story Baseline in the conversation. It must include user story, acceptance criteria, non-goals, and success metrics. For bug fixes or lightweight changes, keep it compact but still identify the affected user/system actor, the expected behavior, the excluded behavior, and how success will be verified.
 7. Use the Business Story Baseline as the business input for the Lightweight Precheck. The precheck must inspect enough code/context to judge whether the request is a simple bug/light change or a full feature. Default to full workflow when evidence is incomplete.
 8. Decide the workflow lane from the precheck:
@@ -175,3 +175,5 @@ If Superpower review guidance is unavailable in the current runtime, record the 
 - Do not proceed to `/sp-spec` until the customer/user has confirmed the reviewed final brainstorm output, including the workflow lane decision, and `brainstorm-review.md` records that confirmation evidence.
 - If the customer/user requests changes to brainstorm output, revise the draft in the conversation first, re-run affected review when the change is material, get confirmation, then update the artifacts.
 - If review findings require changing brainstorm/context content, revise and re-review the draft before asking for customer/user confirmation.
+
+

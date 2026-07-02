@@ -1,4 +1,4 @@
-# Backend Standards
+# Backend Constitution
 
 ## Status
 
@@ -11,3 +11,4 @@ Draft project placeholder. Replace this file with project-specific backend rules
 - Validation
 - Logging
 - Background jobs
+

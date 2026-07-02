@@ -71,7 +71,7 @@ project-root/
         configuration-standards.md
         testing-standards.md
         <project-rule>.md
-      standards/
+      constitutions/
         architecture.md
         backend.md
         frontend.md
@@ -181,7 +181,7 @@ project-root/
       configuration-standards.md
       testing-standards.md
       <project-rule>.md
-    standards/
+    constitutions/
       architecture.md
       backend.md
       frontend.md
@@ -261,7 +261,7 @@ CC-Commit
   -> docs/rules/business-standards.md
   -> docs/rules/<project-rule>.md
   -> docs/rules/<language>-code-standards.md or docs/rules/<language>-<runtime>-code-standards.md
-  -> docs/standards/<area>.md
+  -> docs/constitutions/<area>.md
   -> .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md
 
 /sp-goal
@@ -307,9 +307,10 @@ When sources conflict, use this priority:
 3. `openspec/project.md`
 4. `docs/ai-context/codebase-inventory.md`, when present
 5. `docs/rules/*.md`
-6. `docs/standards/*.md`
+6. `docs/constitutions/*.md`
 7. active `docs/wiki/*.md`
 8. existing implementation patterns
 9. user prompt
 
 Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
+

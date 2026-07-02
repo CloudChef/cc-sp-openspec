@@ -54,7 +54,7 @@ sp-openspec/
       ai-context/
         codebase-inventory.md
       rules/
-      standards/
+      constitutions/
       wiki/
       examples/
   docs/
@@ -144,7 +144,7 @@ Copy-Item -Path C:\Projects\cmps\sp-openspec\skills\* -Destination $HOME\.agents
 - `docs/ai-context/codebase-inventory.md`: 如果运行 `/sp-code-to-spec`，记录当前代码结构、模块、入口、API、数据、配置、测试和已生成 baseline spec/design/rules。
 - `docs/ai-context/project-learnings.md`: 记录本项目可复用经验；完成 workflow 时更新，或记录没有可沉淀经验。
 - `docs/rules/*.md`: 放项目自己的规则文件。
-- `docs/standards/*.md`: 放架构、后端、前端、API、集成、安全、测试等标准。
+- `docs/constitutions/*.md`: 放架构、后端、前端、API、集成、安全、测试等项目宪章。
 - `docs/wiki/*.md`: 放已有业务知识和功能说明。
 
 默认语言：所有由流程生成的 OpenSpec 核心契约、workdir 过程证据、Review、测试参数、Mockup 说明、Wiki 和最终汇报文档默认使用中文。只有用户明确要求英文时才使用英文，并在相关 artifact 中记录该要求。
@@ -191,7 +191,7 @@ CC-FixBug <jira-id-or-url>
 /sp-code-to-spec <scope>
 ```
 
-`/sp-code-to-spec` 用于已有代码库第一次接入时，从当前代码、测试、配置、README、部署脚本和已有文档中生成初始上下文、`openspec/project.md`、项目/模块/功能文档、项目业务规则、语言/runtime 规则和标准草案。当前状态功能文档是项目知识文档，必须统一写到 `docs/<project-name>/<module>/<feature>/`，不得写入 `docs/standards/modules/` 或 `openspec/specs/`；`openspec/` 只保留项目 workflow 配置和 `/sp-spec` 生成的真实变更契约。每个功能目录必须使用真实项目名、模块名和功能名，包含 `<feature>.md`、`spec/spec.md`、`design/design.md`、`flow/flow.md`，需要补充说明时再创建 `other/`。每个 feature 必须识别功能点；单功能点 feature 可以在 `spec.md`、`design.md` 和 `flow.md` 中分节说明，多功能点 feature 必须在 `spec/`、`design/`、`flow/` 下用真实功能点名生成明细文件。功能点 design 必须包含相关 class/module、low-level design、关键方法签名、参数定义、返回值、data flow、IO 和验证入口。不得使用 `module-1`、`feature-1`、`function-1`、`capability-001`、`common`、`misc`、`general`、`default`、`design` 这类通用名或序号名。`/sp-code-to-spec` 不生成旧式矩阵、证据或待确认问题固定章节模板；只需要用业务语言写清当前功能说明、当前行为规格、当前设计实现、功能点 low-level design 和当前流程说明。代码标识符和路径只放在 source reference、source mapping、设计基线或规则来源中。多语言项目必须按语言/runtime 生成或更新独立规范，例如 `docs/rules/java-code-standards.md`、`docs/rules/python-code-standards.md`、`docs/rules/typescript-react-code-standards.md`。如果当前代码能证明稳定的项目级业务术语、状态生命周期、策略、不变量或跨功能规则，可以生成或更新 `docs/rules/business-standards.md`。它不是功能开发流程，不会创建 `openspec/changes/<change-id>/`、不会写代码、不会归档；所有生成内容必须先 review 并经用户确认。
+`/sp-code-to-spec` 用于已有代码库第一次接入时，从当前代码、测试、配置、README、部署脚本和已有文档中生成初始上下文、`openspec/project.md`、项目/模块/功能文档、项目业务规则、语言/runtime 规则和项目宪章草案。当前状态功能文档是项目知识文档，必须统一写到 `docs/<project-name>/<module>/<feature>/`，不得写入 `docs/constitutions/modules/` 或 `openspec/specs/`；`openspec/` 只保留项目 workflow 配置和 `/sp-spec` 生成的真实变更契约。每个功能目录必须使用真实项目名、模块名和功能名，包含 `<feature>.md`、`spec/spec.md`、`design/design.md`、`flow/flow.md`，需要补充说明时再创建 `other/`。每个 feature 必须识别功能点；单功能点 feature 可以在 `spec.md`、`design.md` 和 `flow.md` 中分节说明，多功能点 feature 必须在 `spec/`、`design/`、`flow/` 下用真实功能点名生成明细文件。功能点 design 必须包含相关 class/module、low-level design、关键方法签名、参数定义、返回值、data flow、IO 和验证入口。不得使用 `module-1`、`feature-1`、`function-1`、`capability-001`、`common`、`misc`、`general`、`default`、`design` 这类通用名或序号名。`/sp-code-to-spec` 不生成旧式矩阵、证据或待确认问题固定章节模板；只需要用业务语言写清当前功能说明、当前行为规格、当前设计实现、功能点 low-level design 和当前流程说明。代码标识符和路径只放在 source reference、source mapping、设计基线或规则来源中。多语言项目必须按语言/runtime 生成或更新独立规范，例如 `docs/rules/java-code-standards.md`、`docs/rules/python-code-standards.md`、`docs/rules/typescript-react-code-standards.md`。如果当前代码能证明稳定的项目级业务术语、状态生命周期、策略、不变量或跨功能规则，可以生成或更新 `docs/rules/business-standards.md`。它不是功能开发流程，不会创建 `openspec/changes/<change-id>/`、不会写代码、不会归档；所有生成内容必须先 review 并经用户确认。
 
 自动补完剩余流程：
 
@@ -237,3 +237,5 @@ Lightweight 判断必须发生在 `/sp-brainstorm`。流程先在 brainstorm 内
    - 经验沉淀：如果本次变更产生可复用模式、坑点、项目偏好或验证经验，必须更新 `docs/ai-context/project-learnings.md`；如果没有可沉淀经验，在 completion 证据中说明。
    - Commit 要求：必须等代码变更、测试、Review、workdir `completion.md`、Wiki 和核心契约 archive 都完成之后再创建本地 commit；默认不提交 `.agent/workdir/` 过程证据，只提交本次完成的代码、测试、稳定测试 fixture、Wiki、归档后的核心 OpenSpec 契约和相关文档，不自动 push；commit message 需要概括完整需求、完成的变更、方案设计、流程和完成证据，并在相关时囊括前端和后端完成内容，但不展开到过细实现细节。
    - 汇报要求：完成后必须面向使用人完整汇报做了什么，重点说明方案、代码变更、测试/验证、文档更新、Review 状态和本地 commit；OpenSpec 归档路径和内部 artifact 可以作为辅助证据简要说明。
+
+

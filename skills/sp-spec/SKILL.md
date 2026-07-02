@@ -21,7 +21,7 @@ Durable OpenSpec contracts stay in `openspec/changes/<change-id>/`: `proposal.md
 - `openspec/project.md`
 - Existing `openspec/specs/` and related active changes
 - Relevant project-defined rules under `docs/rules/*.md`, when present
-- Relevant standards, wiki snapshots, and source files referenced by `context.md`
+- Relevant constitutions, wiki snapshots, and source files referenced by `context.md`
 - Similar implementation patterns in the codebase
 
 ## Outputs
@@ -277,3 +277,4 @@ Use these groups when appropriate:
 - Do not write code.
 - If behavior is unclear, add an open question instead of inventing scope.
 - Do not proceed to `/sp-tasks` if `spec-review.md` or `design-review.md` has unresolved blocking gaps.
+

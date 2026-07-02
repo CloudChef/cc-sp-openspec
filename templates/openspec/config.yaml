@@ -13,9 +13,9 @@ context: |
   docs/rules/logging-standards.md is the baseline logging, Java SLF4J, trace_id, and sensitive-data output rule file when present.
   docs/rules/encoding-standards.md is the baseline encoding and no-mojibake rule file when present.
   docs/rules/java-code-standards.md, docs/rules/python-code-standards.md, docs/rules/configuration-standards.md, and docs/rules/testing-standards.md are default language/configuration/testing standards when present and applicable.
-  Wiki and standards under docs/ are design inputs.
+  Wiki and constitutions under docs/ are design inputs.
   Specs must reflect relevant behavior-affecting rules.
-  Design and implementation must use docs/ai-context/source-index.md, docs/rules, docs/standards, docs/wiki, and existing code patterns.
+  Design and implementation must use docs/ai-context/source-index.md, docs/rules, docs/constitutions, docs/wiki, and existing code patterns.
   Generated OpenSpec, workdir evidence, test-parameter, wiki, and workflow documents default to Chinese unless the user explicitly asks for English.
   Optional /sp-code-to-spec bootstrap may derive current-state project/module/feature docs under docs/<project-name>/<module>/<feature>/, codebase inventory, and project rules from existing code before normal change workflows.
 
@@ -45,11 +45,11 @@ rules:
     - Stop and ask for user input when the active change cannot be resolved.
   code_to_spec:
     - Optional bootstrap only. Do not insert /sp-code-to-spec into the required /sp-goal phase sequence.
-    - Use it only to derive initial current-state project/module/feature docs under docs/<project-name>/<module>/<feature>/, project context, rules, and standards from an existing codebase.
+    - Use it only to derive initial current-state project/module/feature docs under docs/<project-name>/<module>/<feature>/, project context, rules, and constitutions from an existing codebase.
     - Documentation hierarchy is product/project -> module -> feature -> function point. Identify modules inside the product/project, features inside each module, and function points inside each feature before drafting documents.
-    - It may create or update docs/ai-context/source-index.md, docs/ai-context/codebase-inventory.md, openspec/project.md, docs/<project-name>/readme.md, docs/<project-name>/<module>/readme.md, docs/<project-name>/<module>/<feature>/<feature>.md, docs/<project-name>/<module>/<feature>/spec/spec.md, docs/<project-name>/<module>/<feature>/spec/<function-point>-spec.md, docs/<project-name>/<module>/<feature>/design/design.md, docs/<project-name>/<module>/<feature>/design/<function-point>-design.md, docs/<project-name>/<module>/<feature>/flow/flow.md, docs/<project-name>/<module>/<feature>/flow/<function-point>-flow.md, optional files under docs/<project-name>/<module>/<feature>/other/, docs/rules/business-standards.md, docs/rules/*.md, docs/standards/*.md, and .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md.
+    - It may create or update docs/ai-context/source-index.md, docs/ai-context/codebase-inventory.md, openspec/project.md, docs/<project-name>/readme.md, docs/<project-name>/<module>/readme.md, docs/<project-name>/<module>/<feature>/<feature>.md, docs/<project-name>/<module>/<feature>/spec/spec.md, docs/<project-name>/<module>/<feature>/spec/<function-point>-spec.md, docs/<project-name>/<module>/<feature>/design/design.md, docs/<project-name>/<module>/<feature>/design/<function-point>-design.md, docs/<project-name>/<module>/<feature>/flow/flow.md, docs/<project-name>/<module>/<feature>/flow/<function-point>-flow.md, optional files under docs/<project-name>/<module>/<feature>/other/, docs/rules/business-standards.md, docs/rules/*.md, docs/constitutions/*.md, and .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md.
     - Do not put /sp-code-to-spec current-state specs under openspec/specs; reserve openspec for project workflow configuration and real change contracts produced by /sp-spec.
-    - Do not put /sp-code-to-spec current-state docs under docs/standards/modules.
+    - Do not put /sp-code-to-spec current-state docs under docs/constitutions/modules.
     - For multi-module projects, generate module/feature-scoped docs instead of one catch-all spec/design.
     - For multi-language projects, keep language/runtime code standards separate and record the modules each rule file applies to.
     - Every project/module/feature/function-point document path must use real names and must not use generic names or sequence numbers such as module-1, feature-1, function-1, capability-001, common, misc, general, default, or design.
@@ -89,7 +89,7 @@ rules:
     - Read docs/ai-context/source-index.md first.
     - Read relevant project-defined docs/rules/*.md files.
     - Read default Java, Python, configuration, and testing rules when the change touches those areas.
-    - Read relevant docs/standards and docs/wiki files.
+    - Read relevant docs/constitutions and docs/wiki files.
     - Inspect existing specs and similar implementation.
     - Record conflicts and context gaps instead of guessing.
   proposal:
@@ -267,3 +267,5 @@ rules:
     - Final response must report the completed work in user-facing terms: requirement/outcome, solution, code changes, tests/verification, documentation, review status, and local commit.
     - OpenSpec archive paths and internal artifacts may be included only as supporting evidence; do not lead the final response with OpenSpec bookkeeping.
     - Do not push unless the user explicitly asks.
+
+

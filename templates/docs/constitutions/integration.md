@@ -1,4 +1,4 @@
-# Integration Standards
+# Integration Constitution
 
 ## Status
 
@@ -11,3 +11,4 @@ Draft project placeholder. Replace this file with project-specific integration r
 - Idempotency
 - Timeouts
 - Failure modes
+

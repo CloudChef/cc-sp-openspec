@@ -1,4 +1,4 @@
-# API Standards
+# API Constitution
 
 ## Status
 
@@ -11,3 +11,4 @@ Draft project placeholder. Replace this file with project-specific API rules.
 - Error format
 - Versioning
 - Compatibility
+

@@ -13,7 +13,7 @@ When sources conflict, use this priority:
 3. `openspec/project.md`
 4. `docs/ai-context/codebase-inventory.md`, when present
 5. `docs/rules/*.md`
-6. `docs/standards/*.md`
+6. `docs/constitutions/*.md`
 7. `docs/wiki/*.md` with `status: active`
 8. Existing implementation patterns
 9. User prompt
@@ -48,13 +48,13 @@ Read:
 - Active `docs/wiki/*.md` files for business context
 - `docs/ai-context/codebase-inventory.md`, when present
 
-When `/sp-code-to-spec` generates current-state feature docs, the hierarchy is product/project -> module -> feature -> function point. Feature docs belong under `docs/<project-name>/<module>/<feature>/` with `<feature>.md`, `spec/spec.md`, `design/design.md`, `flow/flow.md`, optional real function-point detail files under `spec/`, `design/`, and `flow/`, and optional `other/` notes. Multi-function-point features must use real function-point names for detail files, and function-point design must include related classes/modules, method signatures, parameter definitions, data flow, IO, and verification entry points when visible in source. These current-state docs must not be written under `docs/standards/modules/` or `openspec/specs/`; project-level reusable business terminology, lifecycle states, policies, invariants, and cross-feature rules belong in `docs/rules/business-standards.md` only when supported by repeated project patterns or explicit user confirmation.
+When `/sp-code-to-spec` generates current-state feature docs, the hierarchy is product/project -> module -> feature -> function point. Feature docs belong under `docs/<project-name>/<module>/<feature>/` with `<feature>.md`, `spec/spec.md`, `design/design.md`, `flow/flow.md`, optional real function-point detail files under `spec/`, `design/`, and `flow/`, and optional `other/` notes. Multi-function-point features must use real function-point names for detail files, and function-point design must include related classes/modules, method signatures, parameter definitions, data flow, IO, and verification entry points when visible in source. These current-state docs must not be written under `docs/constitutions/modules/` or `openspec/specs/`; project-level reusable business terminology, lifecycle states, policies, invariants, and cross-feature rules belong in `docs/rules/business-standards.md` only when supported by repeated project patterns or explicit user confirmation.
 
 ### Architecture
 
 Read:
 
-- `docs/standards/architecture.md`
+- `docs/constitutions/architecture.md`
 - Relevant current-state feature docs under `docs/<project-name>/<module>/<feature>/`, when present
 - `docs/ai-context/codebase-inventory.md`, when present
 
@@ -62,8 +62,8 @@ Read:
 
 Read:
 
-- `docs/standards/backend.md`
-- `docs/standards/api.md`
+- `docs/constitutions/backend.md`
+- `docs/constitutions/api.md`
 - Relevant current-state feature docs under `docs/<project-name>/<module>/<feature>/`, when present
 - `docs/ai-context/codebase-inventory.md`, when present
 
@@ -71,13 +71,16 @@ Read:
 
 Read:
 
-- `docs/standards/frontend.md`
+- `docs/constitutions/frontend.md`
+- Relevant current-state feature docs under `docs/<project-name>/<module>/<feature>/`, when present
+- UI design source files such as `ui/DESIGN.md`, component library docs, design system docs, or Figma references when the project defines them
+- Nearby implemented pages of the same module, page type, or component family when no explicit UI design source exists
 
 ### Workflow
 
 Read:
 
-- `docs/standards/workflow.md`
+- `docs/constitutions/workflow.md`
 - `docs/ai-context/project-learnings.md`, when present
 - `docs/wiki/approval-workflow.md`
 - `docs/wiki/notification.md`
@@ -86,20 +89,20 @@ Read:
 
 Read:
 
-- `docs/standards/integration.md`
+- `docs/constitutions/integration.md`
 
 ### Security / RBAC
 
 Read:
 
-- `docs/standards/security.md`
+- `docs/constitutions/security.md`
 - `docs/wiki/rbac.md`
 
 ### Testing
 
 Read:
 
-- `docs/standards/testing.md`
+- `docs/constitutions/testing.md`
 - `docs/ai-context/codebase-inventory.md`, when present
 
 ## Design Requirement
@@ -111,3 +114,4 @@ Before writing durable `design.md` and workdir `design-review.md`, create or upd
 ```
 
 The design must reference the workdir `context.md`. Task creation must wait until the workdir `design-review.md` has no unresolved blocking gaps.
+

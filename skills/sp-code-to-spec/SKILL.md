@@ -27,7 +27,7 @@ docs/<project-name>/<module>/<feature>/
     <supporting-topic>.md
 ```
 
-Do not generate `/sp-code-to-spec` current-state documents under `docs/standards/modules/` or `openspec/specs/`.
+Do not generate `/sp-code-to-spec` current-state documents under `docs/constitutions/modules/` or `openspec/specs/`.
 
 Generated documents default to Chinese unless the user explicitly requests English. Preserve code identifiers, paths, API routes, config keys, class names, and commands exactly when they appear in source references.
 
@@ -36,7 +36,7 @@ Generated documents default to Chinese unless the user explicitly requests Engli
 Use this skill when:
 
 - A project already has code but lacks useful current-state project documentation.
-- The user asks to generate initial OpenSpec context, project docs, rules, standards, or feature documents from existing code.
+- The user asks to generate initial OpenSpec context, project docs, rules, constitutions, or feature documents from existing code.
 - The user asks to document current behavior before starting `/sp-brainstorm` or `/sp-goal`.
 - The user asks to support code review or issue analysis by mapping changed code or a reported issue to existing feature docs.
 - The team wants project-specific coding, configuration, testing, API, architecture, or business rules inferred from repeated code patterns.
@@ -46,7 +46,7 @@ Do not use it as the workflow for a specific new feature or bug fix. Use `/sp-br
 ## Inputs
 
 - Existing source code, tests, build files, configs, scripts, migrations, API documents, README files, deployment documents, and runbooks.
-- Existing `AGENTS.md`, `openspec/project.md`, `docs/rules/*.md`, `docs/standards/*.md`, `docs/wiki/*.md`, `docs/ai-context/source-index.md`, and existing `docs/<project-name>/` documents when present.
+- Existing `AGENTS.md`, `openspec/project.md`, `docs/rules/*.md`, `docs/constitutions/*.md`, `docs/wiki/*.md`, `docs/ai-context/source-index.md`, and existing `docs/<project-name>/` documents when present.
 - User-provided scope such as repository root, project name, language, module, bounded context, capability, feature, code-review diff, or issue ID.
 
 ## Durable Outputs
@@ -69,7 +69,7 @@ Create or update only documentation, never production code:
 - `docs/rules/business-standards.md` when stable project-level business terms, policies, lifecycle states, or cross-feature rules are supported by repeated project patterns or explicit user confirmation
 - `docs/rules/<language>-code-standards.md` or `docs/rules/<language>-<runtime>-code-standards.md`
 - `docs/rules/<project-rule>.md`
-- `docs/standards/<area>.md`
+- `docs/constitutions/<area>.md`
 
 Optional process outputs:
 
@@ -192,7 +192,7 @@ Use simpler project documentation instead. Keep source references close to the r
    - Function-point naming check: function-point files use real function-point names and not generic names or sequence numbers.
    - Section check: no old fixed matrix, evidence, or owner-question section templates are generated.
    - Language/runtime split check: each generated code standard applies to one language/runtime family and names the modules it covers.
-   - Conflict check: new drafts do not contradict existing `AGENTS.md`, `openspec/project.md`, rules, standards, source-index entries, or existing docs.
+   - Conflict check: new drafts do not contradict existing `AGENTS.md`, `openspec/project.md`, rules, constitutions, source-index entries, or existing docs.
    - Maintenance check: generated docs are concise enough for later `/sp-brainstorm`, `/sp-spec`, `/sp-tasks`, `/sp-impl`, code review, and issue analysis.
 13. Review generated drafts in the main thread only. Do not start independent review threads for `/sp-code-to-spec`.
 14. Confirm findings, fix confirmed issues, and re-review affected drafts until zero unresolved blocking findings.
@@ -368,7 +368,7 @@ When creating `code-to-spec-review.md`, include:
 - Do not insert `/sp-code-to-spec` into the required `/sp-goal` phase sequence.
 - Do not create `openspec/changes/<change-id>/` artifacts unless the user explicitly asks for a normal change workflow.
 - Do not write production code, tests, migrations, or configs.
-- Current-state feature docs belong under `docs/<project-name>/<module>/<feature>/`, not `docs/standards/modules/` and not `openspec/specs/`.
+- Current-state feature docs belong under `docs/<project-name>/<module>/<feature>/`, not `docs/constitutions/modules/` and not `openspec/specs/`.
 - Every feature directory must include `<feature>.md`, `spec/`, `design/`, and `flow/`; create `other/` when supporting notes are needed.
 - Documentation hierarchy is product/project -> module -> feature -> function point. Identify modules inside the product/project, identify features inside each module, and identify function points inside each feature before drafting documents.
 - Every feature must identify its function points. Simple single-function-point features may keep detail in `spec/spec.md`, `design/design.md`, and `flow/flow.md`; multi-function-point features must create function-point detail files under `spec/`, `design/`, and `flow/` using real function-point names.
@@ -383,3 +383,5 @@ When creating `code-to-spec-review.md`, include:
 - Prefer updating `docs/ai-context/source-index.md` so later workflows know which generated docs/rules/standards to read.
 - Record conflicts and owner-dependent behavior explicitly instead of guessing.
 - If generated docs would conflict with existing approved specs or rules, stop and ask the user how to resolve the conflict.
+
+

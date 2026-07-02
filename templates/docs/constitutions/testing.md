@@ -1,4 +1,4 @@
-# Testing Standards
+# Testing Constitution
 
 ## Status
 
@@ -11,3 +11,4 @@ Draft project placeholder. Replace this file with project-specific testing rules
 - End-to-end tests
 - Test data
 - Required verification commands
+

@@ -46,7 +46,7 @@ bootstrap_outputs:
   - docs/rules/<project-rule>.md
   - docs/rules/<language>-code-standards.md
   - docs/rules/<language>-<runtime>-code-standards.md
-  - docs/standards/<area>.md
+  - docs/constitutions/<area>.md
   - .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md
 
 durable_artifacts:
@@ -126,3 +126,4 @@ apply:
     - design
     - tasks
   tracks: tasks.md
+

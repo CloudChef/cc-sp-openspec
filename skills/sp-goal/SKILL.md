@@ -25,7 +25,7 @@ Only `proposal.md`, `design.md`, `tasks.md`, and `specs/<capability>/spec.md` ar
 - `openspec/AGENTS.md`, when present
 - Active folders under `openspec/changes/`
 - Existing change artifacts, when present
-- Relevant `docs/rules/*.md`, `docs/standards/*.md`, `docs/wiki/*.md`
+- Relevant `docs/rules/*.md`, `docs/constitutions/*.md`, `docs/wiki/*.md`
 - Existing implementation and tests referenced by the active change
 
 ## Outputs
@@ -141,3 +141,4 @@ Include:
 - Wiki path and archive path when useful as supporting evidence
 - Local git commit hash, or git skip reason
 - Any blocker or user input required
+

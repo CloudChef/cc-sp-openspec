@@ -27,7 +27,7 @@ Generated durable OpenSpec contracts, workdir evidence, review, test-parameter, 
   -> docs/rules/business-standards.md
   -> docs/rules/<project-rule>.md
   -> docs/rules/<language>-code-standards.md or docs/rules/<language>-<runtime>-code-standards.md
-  -> docs/standards/<area>.md
+  -> docs/constitutions/<area>.md
   -> .agent/workdir/sp-openspec/bootstrap/code-to-spec-review.md
 
 /sp-goal <requirement-or-change-id>
@@ -76,9 +76,9 @@ Rules:
 - This is not part of the required `/sp-goal` phase sequence.
 - It must not create `openspec/changes/<change-id>/`, implementation tasks, production code, tests, migrations, configs, archive records, or commits.
 - It uses the hierarchy product/project -> module -> feature -> function point.
-- It may create or update `docs/ai-context/source-index.md`, `docs/ai-context/codebase-inventory.md`, `openspec/project.md`, `docs/<project-name>/<module>/<feature>/<feature>.md`, `docs/<project-name>/<module>/<feature>/spec/spec.md`, `docs/<project-name>/<module>/<feature>/design/design.md`, `docs/<project-name>/<module>/<feature>/flow/flow.md`, optional function-point detail files under the feature's `spec/`, `design/`, and `flow/` folders, optional files under `docs/<project-name>/<module>/<feature>/other/`, `docs/rules/business-standards.md`, `docs/rules/*.md`, and `docs/standards/*.md`.
+- It may create or update `docs/ai-context/source-index.md`, `docs/ai-context/codebase-inventory.md`, `openspec/project.md`, `docs/<project-name>/<module>/<feature>/<feature>.md`, `docs/<project-name>/<module>/<feature>/spec/spec.md`, `docs/<project-name>/<module>/<feature>/design/design.md`, `docs/<project-name>/<module>/<feature>/flow/flow.md`, optional function-point detail files under the feature's `spec/`, `design/`, and `flow/` folders, optional files under `docs/<project-name>/<module>/<feature>/other/`, `docs/rules/business-standards.md`, `docs/rules/*.md`, and `docs/constitutions/*.md`.
 - It must not put `/sp-code-to-spec` current-state specs under `openspec/specs/`; reserve `openspec/` for project workflow configuration and real change contracts produced by `/sp-spec`.
-- It must not put `/sp-code-to-spec` current-state docs under `docs/standards/modules/`.
+- It must not put `/sp-code-to-spec` current-state docs under `docs/constitutions/modules/`.
 - Multi-module projects must be split by module and feature; do not create one catch-all spec or design.
 - Each feature must identify its function points. Simple single-function-point features may keep details in `spec/spec.md`, `design/design.md`, and `flow/flow.md`; multi-function-point features must add function-point detail files under `spec/`, `design/`, and `flow/` using real function-point names.
 - Function-point design files must include related classes/modules, low-level responsibilities, key method signatures, parameter definitions, return values, data flow, IO, and verification entry points when visible in source.
@@ -684,9 +684,10 @@ When sources conflict, use this priority:
 3. `openspec/project.md`
 4. `docs/ai-context/codebase-inventory.md`, when present
 5. `docs/rules/*.md`
-6. `docs/standards/*.md`
+6. `docs/constitutions/*.md`
 7. active `docs/wiki/*.md`
 8. existing implementation patterns
 9. user prompt
 
 Record conflicts in `context.md`, `design.md`, or `review.md`. Do not guess.
+

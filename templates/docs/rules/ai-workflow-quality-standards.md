@@ -33,14 +33,14 @@ Brainstorm output MUST challenge the requirement before it becomes scope.
 
 ## AIQ-001A: Existing-Code Bootstrap
 
-`/sp-code-to-spec` MAY be used before normal change workflows to generate initial current-state context, project/module/feature documentation under `docs/<project-name>/<module>/<feature>/`, project rules, language/runtime rules, and standards from an existing codebase.
+`/sp-code-to-spec` MAY be used before normal change workflows to generate initial current-state context, project/module/feature documentation under `docs/<project-name>/<module>/<feature>/`, project rules, language/runtime rules, and constitutions from an existing codebase.
 
 - Do not make `/sp-code-to-spec` part of the required `/sp-goal` phase sequence.
 - Do not use `/sp-code-to-spec` for new behavior, bug fixes, or implementation.
 - Every generated requirement, design claim, rule, or standard MUST map to project-owned code, tests, config, docs, or explicit user input.
 - Documentation hierarchy is product/project -> module -> feature -> function point. `/sp-code-to-spec` MUST identify modules inside the product/project, features inside each module, and function points inside each feature before drafting documents.
 - Current-state feature documents belong under `docs/<project-name>/<module>/<feature>/`; feature changes belong under `openspec/changes/<change-id>/`.
-- `/sp-code-to-spec` MUST NOT write current-state feature documents under `docs/standards/modules/` or `openspec/specs/`; reserve `openspec/` for project workflow configuration and real change contracts produced by `/sp-spec`.
+- `/sp-code-to-spec` MUST NOT write current-state feature documents under `docs/constitutions/modules/` or `openspec/specs/`; reserve `openspec/` for project workflow configuration and real change contracts produced by `/sp-spec`.
 - Each current-state feature directory MUST include `<feature>.md`, `spec/spec.md`, `design/design.md`, and `flow/flow.md`; use `other/` only for supporting notes.
 - Each feature MUST identify its function points. Simple single-function-point features MAY keep detail in `spec/spec.md`, `design/design.md`, and `flow/flow.md`; multi-function-point features MUST add function-point detail files under `spec/`, `design/`, and `flow/` using real function-point names.
 - Function-point design files MUST include related classes/modules, low-level responsibilities, key method signatures, parameter names and concrete types/schemas, required/optional/default/validation details, return values, data flow, IO, and verification entry points when visible in source.
@@ -126,3 +126,5 @@ Phase reviews MUST include main-process comprehensive review or allowed lightwei
 - Lightweight review MUST escalate to full review when it finds a blocking issue or when the change touches production behavior outside the approved compact scope, authentication/authorization, sensitive data, database/persistence, API contracts, UI behavior, async/IO, external integrations, logging/output/security, E2E-required behavior, broad qualifiers, or implementation-standard exceptions.
 - The main thread owns finding confirmation, fixes, replies, verification, and closure records.
 - Finding cross-check MUST compare the main final implementation review, Main Final Code Review Pass 1, and Main Final Code Review Pass 2, identify duplicates and disagreements, dismiss false positives only with evidence, record findings requiring customer/user decisions, and prove that confirmed non-blocking/minor/informational/follow-up findings were fixed before completion.
+
+

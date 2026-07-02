@@ -22,7 +22,7 @@ Use this skill to create implementation-ready tasks from formal OpenSpec specs a
 - `.agent/workdir/sp-openspec/<change-id>/design-review.md`
 - `.agent/workdir/sp-openspec/<change-id>/mockups/`, when UI changes require mockup artifacts
 - Relevant project-defined rules under `docs/rules/*.md`, when present
-- Relevant standards, wiki snapshots, and source files referenced by `design.md` or `context.md`
+- Relevant constitutions, wiki snapshots, and source files referenced by `design.md` or `context.md`
 
 ## Outputs
 
@@ -201,3 +201,4 @@ If Superpower review guidance is unavailable in the current runtime, record the 
 - `tasks-review.md` must record main-process comprehensive or allowed lightweight review, main-thread responses, and zero unresolved blocking findings before `/sp-impl`.
 - Do not proceed to `/sp-impl` if `tasks-review.md` has unresolved blocking gaps.
 - Do not proceed to `/sp-impl` if required manual customer/user confirmations or `/sp-goal` goal-mode decision records for backend logic, UI mockups/function descriptions, API paths/parameters, configuration parameters, or E2E decisions are missing.
+

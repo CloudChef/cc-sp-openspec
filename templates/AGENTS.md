@@ -2,7 +2,7 @@
 
 This project uses Codex, Superpower-style workflow skills, and OpenSpec.
 
-Superpower-style skills are the workflow layer. OpenSpec is the source of truth for approved change artifacts. Keep durable OpenSpec contracts limited to `proposal.md`, `design.md`, `tasks.md`, and `specs/<capability>/spec.md`; write process evidence to `.agent/workdir/sp-openspec/<change-id>/`. Project rules, standards, and wiki snapshots are context inputs for spec, design, implementation, and review. When present, `docs/ai-context/codebase-inventory.md` is the current-codebase map produced by optional `/sp-code-to-spec` bootstrap work and should be used for business definitions, architecture, API, data, configuration, integration, and testing questions.
+Superpower-style skills are the workflow layer. OpenSpec is the source of truth for approved change artifacts. Keep durable OpenSpec contracts limited to `proposal.md`, `design.md`, `tasks.md`, and `specs/<capability>/spec.md`; write process evidence to `.agent/workdir/sp-openspec/<change-id>/`. Project rules, constitutions, and wiki snapshots are context inputs for spec, design, implementation, and review. When present, `docs/ai-context/codebase-inventory.md` is the current-codebase map produced by optional `/sp-code-to-spec` bootstrap work and should be used for business definitions, architecture, API, data, configuration, integration, and testing questions.
 
 Always open `openspec/AGENTS.md` when a request mentions planning, proposals, specs, changes, design, tasks, implementation of an OpenSpec change, or `/sp-*` workflow commands.
 
@@ -18,6 +18,8 @@ The default baseline project implementation rules live in `docs/rules/project-im
 - `docs/rules/testing-standards.md`
 
 Additional project-specific rule files may be added under `docs/rules/`.
+
+Project constitutions live under `docs/constitutions/*.md` when present. Read the matching constitution when a change touches architecture, backend, frontend/UI, API, integration, security, testing, or workflow behavior. UI work must read `docs/constitutions/frontend.md` when present, plus any project UI design source such as `ui/DESIGN.md`, component-library docs, design-system docs, Figma references, or nearby implemented pages of the same module/page type/component family.
 
 ## Required Workflow
 
@@ -156,7 +158,7 @@ Use `sp-code-to-spec` only as an optional bootstrap workflow for existing codeba
 Purpose:
 
 - Generate initial current-state project/module/feature documentation under `docs/<project-name>/` from existing code and verified docs.
-- Generate or update `docs/ai-context/source-index.md`, `docs/ai-context/codebase-inventory.md`, `openspec/project.md`, feature docs under `docs/<project-name>/<module>/<feature>/`, project business rules, language/runtime rules, and standards.
+- Generate or update `docs/ai-context/source-index.md`, `docs/ai-context/codebase-inventory.md`, `openspec/project.md`, feature docs under `docs/<project-name>/<module>/<feature>/`, project business rules, language/runtime rules, and constitutions.
 - Help later `/sp-brainstorm`, `/sp-spec`, `/sp-tasks`, and `/sp-impl` use the existing codebase consistently.
 
 Rules:
@@ -170,7 +172,7 @@ Rules:
 - Each feature must identify its function points. Simple single-function-point features may keep details in `spec/spec.md`, `design/design.md`, and `flow/flow.md`; multi-function-point features must add function-point detail files under `spec/`, `design/`, and `flow/` using real function-point names, such as `<function-point>-spec.md`, `<function-point>-design.md`, and `<function-point>-flow.md`.
 - Function-point design files must include related classes/modules, low-level responsibilities, key method signatures, parameter names and types/schemas, required/optional/default/validation details, return values, data flow, IO, and verification entry points when visible in source.
 - Do not put `/sp-code-to-spec` current-state specs under `openspec/specs/`; reserve `openspec/` for project workflow configuration and real change contracts produced by `/sp-spec`.
-- Do not put `/sp-code-to-spec` current-state docs under `docs/standards/modules/`.
+- Do not put `/sp-code-to-spec` current-state docs under `docs/constitutions/modules/`.
 - For multi-language projects, generate or update separate language/runtime rule files and record which modules each rule file applies to.
 - Every generated project/module/feature/function-point path must use real project, module, feature, and function-point names. Do not use generic names or sequence numbers such as `module-1`, `feature-1`, `function-1`, `capability-001`, `common`, `misc`, `general`, `default`, or `design`.
 - Every feature directory must include `<feature>.md`, `spec/`, `design/`, and `flow/`; create `other/` only when supporting notes are useful.
@@ -456,9 +458,11 @@ When sources conflict, use this priority:
 2. Current OpenSpec change files and `.agent/workdir/sp-openspec/<change-id>/` evidence
 3. `openspec/project.md`
 4. `docs/rules/*.md`
-5. `docs/standards/*.md`
+5. `docs/constitutions/*.md`
 6. active `docs/wiki/*.md`
 7. existing implementation patterns
 8. user prompt
 
 If there is a conflict, report it in `context.md`, `design.md`, or `review.md`. Do not guess.
+
+

@@ -28,7 +28,7 @@
 - `design/design.md` 记录 feature 级当前技术实现、Source Mapping、共享类/模块职责、数据/配置/日志/安全/测试入口和实现约束；多功能点 feature 必须在 `design/` 下用真实功能点名拆分 `<function-point>-design.md`，并记录相关 class/module、low-level design、关键方法签名、参数定义、返回值、data flow、IO 和验证入口。
 - `flow/flow.md` 记录 feature 级当前业务流程；多功能点 feature 必须在 `flow/` 下用真实功能点名拆分 `<function-point>-flow.md`，说明触发方式、前置条件、主流程、关键分支点、数据/状态变化、外部 IO 或异步行为，以及最终可观察结果。
 - `other/` 仅用于补充说明，不作为必需过程证据目录。
-- 单一功能的局部行为优先放在 `docs/<project-name>/<module>/<feature>/` 中；`/sp-code-to-spec` 不得把当前状态 feature docs 写入 `docs/standards/modules/` 或 `openspec/specs/`。
+- 单一功能的局部行为优先放在 `docs/<project-name>/<module>/<feature>/` 中；`/sp-code-to-spec` 不得把当前状态 feature docs 写入 `docs/constitutions/modules/` 或 `openspec/specs/`。
 - `/sp-code-to-spec` 不要求旧式矩阵、流程或证据模板作为固定章节；只要求当前功能说明、当前行为规格、当前设计实现、功能点 low-level design 和当前流程说明能够支持后续维护。
 
 ## BUS-003: 项目级业务规则
@@ -56,3 +56,4 @@
 - 流程说明必须覆盖主路径、关键分支点、数据/状态变化、外部 IO、异步行为和异常/拒绝结果中实际存在的部分。
 - 流程说明必须引用 Source References，并把来源不足、冲突或需要负责人确认的部分放入待确认事项。
 - 流程说明不得替代设计文档中的代码结构说明；代码路径、类名、方法名和调用链仍然只能放在 Source References、Source Mapping 或 Design Baseline 中。
+
